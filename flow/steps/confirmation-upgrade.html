@@ -256,10 +256,13 @@
       fallback.style.display = "inline-flex";
     }
 
-    // Celebrate (visual only)
+    // Celebrate the completed booking: brand-colored confetti + a
+    // "cha-ching" cash-register cue (honors prefers-reduced-motion).
     try {
-      if (window.PFCelebrate) window.PFCelebrate();
-      else if (window.confetti) {
+      if (window.Celebrate) {
+        if (document.readyState === "complete") Celebrate.fire();
+        else window.addEventListener("load", function () { Celebrate.fire(); });
+      } else if (window.confetti) {
         confetti({ particleCount: 120, spread: 70, origin: { y: 0.65 }, colors: ["#215272", "#e9654a", "#ffffff"] });
       }
     } catch (e) {}
