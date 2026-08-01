@@ -135,6 +135,28 @@
       .os-dates-mini { margin: 10px 0; }
     }
   </style>
+  <script>
+    // Theme the Basis Theory card iframes so their text/placeholders match the
+    // native .pf-input fields (02-billing.html reference). Read by
+    // /checkout/js/basistheory-front-integration.js before mounting.
+    window.SWIFTLY_BT_APPEARANCE = {
+      style: {
+        base: {
+          fontSize: '16px',
+          fontFamily: '"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+          color: '#1c2733',
+          padding: '0',
+          lineHeight: '1.5',
+          '::placeholder': { color: '#9aa4b0' }
+        }
+      },
+      placeholders: {
+        cardNumber: '0000 0000 0000 0000',
+        expiration: 'MM / YY',
+        cvc: '***'
+      }
+    };
+  </script>
 </head>
 <body class="step-page" data-swiftly-step="billing-information">
 
