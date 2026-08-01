@@ -1,0 +1,543 @@
+@import "../vars"
+
+// Extra Pages
+.extra-header
+  position: relative
+  padding: 60px 15px 0
+  background: #107b81 url(../img/mega-header-bg.png) 50% 0 no-repeat
+  background-size: cover
+  color: #ffffff
+  text-align: center
+  &__logo
+    margin-bottom: 30px
+    img
+      margin: 0 auto
+  &__title
+    margin-bottom: 25px
+    img
+      margin: 0 auto
+  &__price
+    position: relative
+    z-index: 2
+    bottom: -73px
+    margin-top: -73px
+    svg
+      display: block
+      width: 100%
+      max-width: 163px
+      height: auto
+      margin: 0 auto
+      transform: translateX(-12px)
+
+
+.extra-hero
+  display: flex
+  align-items: flex-end
+  justify-content: center
+  min-height: 350px
+  padding-bottom: 20px
+  background: #635d4a 50% no-repeat
+  background-size: cover
+  color: #ffffff
+  i
+    font-size: 50px
+
+
+.accommodations-main
+  margin-bottom: 3px
+  padding: 45px 15px
+  background: #F5F5F5 50% no-repeat
+  background-size: cover
+
+.accommodations-box
+  position: relative
+  margin: 0 auto
+  padding-bottom: 40px
+  background-color: #ffffff
+  &.w960
+    max-width: 960px
+  &.w1090
+    max-width: 1090px
+  &__back
+    position: absolute
+    top: 2px
+    left: 2px
+    a
+      display: inline-block
+      padding: 10px 20px
+      border: 1px solid #e2e2e2
+      background-color: #f5f5f5
+      color: $colorB
+      font-weight: 500
+      font-size: 20px
+      line-height: 1em
+      transition: background-color .3s, color .3s
+      &:hover
+        background-color: $colorB
+        color: #ffffff
+        text-decoration: none
+  &__row
+    display: flex
+    padding: 40px 20px 30px
+  &__col
+    width: 50%
+  &__desc
+    padding: 30px 30px 0 20px
+    font-family: $fontA
+    h3
+      margin: 0 0 20px
+      color: #3D3B3B
+      font-weight: 900
+      font-size: 42px
+      line-height: 1.2em
+    p
+      margin: 0 0 30px
+      color: #3D3B3B
+      font-weight: 400
+      font-size: 18px
+      line-height: 1.5em
+    &--btn 
+      width: 362px
+      max-width: 100%
+    .primary-btn
+      width: 100%
+      max-width: 100%
+      padding: 19px
+      border-radius: 30px
+      box-shadow: none
+      border: none
+      display: flex
+      align-items: center
+      justify-content: center
+      text-align: center
+  &__img
+    padding: 0 20px
+  &__footer
+    display: flex
+    align-items: center
+    justify-content: center
+    margin: 0 40px
+    padding: 25px 25px 25px 15px
+    background-color: #f5f5f5
+    &--price
+      margin-right: 20px
+      svg
+        display: block
+        max-width: 160px
+        height: auto
+    &--text
+      max-width: 431px
+      margin-right: 20px
+      h4
+        max-width: 431px
+        margin: 0 0 15px
+        color: #0d1f48
+        font-weight: 700
+        font-size: 24px
+        line-height: 1.2em
+      ul, li
+        margin: 0
+        padding: 0
+        list-style: none
+      ul
+        li
+          position: relative
+          padding: 1px 0 7px 27px
+          color: #3D3B3B
+          font-family: $fontA
+          font-weight: 400
+          font-size: 19px
+          //letter-spacing: -.9px
+          line-height: 1.4em
+          &:last-child
+            padding-bottom: 0
+          &:before
+            content: '\f058'
+            position: absolute
+            top: 0
+            left: 0
+            color: #2AADB1
+            font-family: "Font Awesome 5 Pro"
+            font-weight: 700
+            font-size: 18px
+          a
+            color: #2680EB
+            text-decoration: underline
+            &:hover, &:focus
+              color: $accent
+    &--timer
+      display: flex
+      align-items: center
+      justify-content: center
+      flex-direction: column
+      min-height: 134px
+      padding: 20px 25px
+      border-radius: 4px
+      background-color: #FFFD0A
+      color: #000
+      text-align: center
+      text-transform: uppercase
+      &.w300
+        width: 300px
+      p
+        margin: 0 0 10px
+        font-family: $fontC
+        font-weight: 500
+        font-size: 16px
+        line-height: 1.2em
+    &--note
+      width: 100%
+      color: #000000
+      .a
+        margin-bottom: 5px
+        font-weight: 700
+        font-size: 27px
+        line-height: 1.2em
+      .b
+        font-weight: 700
+        font-size: 18px
+        line-height: 1.2em
+  .timer
+    height: auto
+    font-family: $fontA
+    .timer-item
+      width: 40px
+    .digits
+      font-weight: 900
+      font-size: 28px
+      line-height: 1em
+    .div
+      padding: 0 3px
+      font-weight: 900
+      font-size: 28px
+      line-height: 1em
+    .label
+      color: #000000
+      font-weight: 500
+      font-size: 13px
+  &__grid
+    padding: 40px 10px 0
+    &--titles
+      padding: 40px 15px
+      border-top: 1px solid #CFCFCF
+      font-family: $fontA
+      color: #3D3B3B
+      text-align: center
+      h3
+        margin: 0 0 15px
+        font-weight: 700
+        font-size: 55px
+        line-height: 1em
+      h5
+        margin: 0
+        font-weight: 700
+        font-size: 24px
+        line-height: 1.2em
+    &--row
+      display: flex
+      margin-bottom: 45px
+      &:last-child
+        margin-bottom: 0
+      &.even
+        &>div:nth-child(1)
+          order: 1
+        &>div:nth-child(2)
+          order: 2
+      &.odd
+        &>div:nth-child(1)
+          order: 2
+        &>div:nth-child(2)
+          order: 1
+    &--img, &--txt
+      width: 50%
+      padding: 0 30px
+    &--img
+      min-height: 300px
+      span
+        display: flex
+        align-items: center
+        justify-content: center
+        width: 100%
+        height: 100%
+        background: #777777 50% no-repeat
+        background-size: cover
+        a
+          display: flex
+          align-items: center
+          justify-content: center
+          width: 100%
+          height: 100%
+          transition: transform .2s
+          &:hover
+            text-decoration: none
+            transform: scale(1.5)
+    &--txt
+      align-self: center
+      color: #3D3B3B
+      font-family: $fontA
+      h4
+        margin: 0 0 20px
+        font-weight: 900
+        font-size: 31px
+        line-height: 1.1em
+        text-transform: uppercase
+      p
+        margin: 0 0 25px
+        font-weight: 400
+        font-size: 18px
+      .primary-btn
+        max-width: 247px
+        padding: 15px 30px
+        font-size: 15px
+        border: 0
+        border-radius: 30px
+
+
+.accommodations-details
+  padding: 0 20px 0 10px
+  &__title
+    position: relative
+    margin-bottom: 20px
+    padding: 15px 15px
+    background-color: #3D3B3B
+    color: #ffffff
+    font-family: $fontA
+    font-weight: 400
+    font-size: 22px
+    line-height: 1.2em
+    text-align: center
+    &:after
+      content: ''
+      position: absolute
+      left: 50%
+      bottom: -20px
+      transform: translateX(-50%)
+      width: 0
+      height: 0
+      border-style: solid
+      border-width: 20px 19px 0 19px
+      border-color: #3D3B3B transparent transparent transparent
+  &__td
+    padding: 11px 15px
+    &.even
+      background-color: #ffffff
+    &.odd
+      background-color: #f5f5f5
+    &--inner
+      display: flex
+      width: 100%
+      max-width: 360px
+      margin: 0 auto
+    &--ico
+      min-width: 30px
+      width: 30px
+      margin-right: 20px
+      text-align: center
+    &--txt
+      padding-top: 3px
+      color: #071330
+      font-weight: 500
+      font-size: 20px
+      line-height: 1.2em
+
+.accommodations-images
+  display: grid
+  grid-template-columns: repeat(4, 1fr)
+  grid-template-rows: repeat(1, 1fr)
+  grid-column-gap: 3px
+  grid-row-gap: 3px
+  .img
+    height: 272px
+    background: #888 50% no-repeat
+    background-size: cover
+
+
+.accommodations-btn
+  padding: 30px 0
+
+
+.page-breadcrumbs
+  padding: 0 15px
+  border-top: 1px solid #e2e2e2
+  border-bottom: 1px solid #e2e2e2
+  background-color: #f5f5f5
+  &__inner
+    max-width: 870px
+    margin: 0 auto
+  a
+    display: inline-block
+    padding: 10px 20px
+    color: $colorB
+    font-weight: 500
+    font-size: 20px
+    line-height: 1em
+    transition: background-color .3s, color .3s
+    &:hover
+      background-color: $colorB
+      color: #ffffff
+      text-decoration: none
+
+.single-box
+  max-width: 870px
+  margin: 0 auto
+  background-color: #ffffff
+  &__header
+    padding: 2.5em 1.5em 1.5em
+    text-align: center
+    h3
+      position: relative
+      display: inline-block
+      margin: 0 0 35px
+      color: #205272
+      font-family: $fontD
+      font-weight: 400
+      font-size: 48px
+      line-height: 1.1em
+      &:before
+        content: ''
+        position: absolute
+        left: 0
+        right: 0
+        bottom: -10px
+        width: 80%
+        height: 4px
+        margin: 0 auto
+        background-color: $accent
+    p
+      max-width: 800px
+      margin: 0 auto
+      color: #071330
+      font-weight: 400
+      font-size: 19px
+      letter-spacing: -.3px
+      line-height: 1.45em
+      a
+        color: #3b6bf4
+        text-decoration: underline
+        &:hover
+          color: $accent
+  &__body
+    padding: 0 2em 2em
+
+.info-box
+  max-width: 750px
+  margin: 0 auto
+  border: 1px solid #cccccc
+  border-radius: 3px
+  &__title
+    position: relative
+    margin: -1px -1px 0
+    padding: 12px 10px
+    border-radius: 3px 3px 0 0
+    background-color: #071330
+    color: #ffffff
+    font-family: $fontC
+    font-weight: 500
+    font-size: 20px
+    line-height: 1.3em
+    text-align: center
+    &:before
+      content: ''
+      position: absolute
+      bottom: -19px
+      left: 50%
+      transform: translateX(-50%)
+      width: 0
+      height: 0
+      border-style: solid
+      border-width: 20px 19px 0 19px
+      border-color: #071330 transparent transparent transparent
+  &__content
+    padding: 3em 2.5em 2.5em
+    &--list
+      margin-bottom: 30px
+      ul, li
+        margin: 0
+        padding: 0
+        list-style: none
+      &>ul
+        &>li
+          position: relative
+          padding-left: 30px
+          padding-bottom: 25px
+          font-size: 18px
+          line-height: 1.5em
+          color: #071330
+          &:before
+            content: '\f058'
+            position: absolute
+            top: 0
+            left: 0
+            color: #F4056F
+            font-family: "Font Awesome 5 Pro"
+            font-weight: 700
+            font-size: 20px
+          &:last-child
+            padding-bottom: 0
+          &>ul
+            margin-top: 15px
+            li
+              position: relative
+              padding: 8px 10px 8px 40px
+              color: #071330
+              font-size: 16px
+              line-height: 1.5em
+              &:before
+                content: '\f111'
+                position: absolute
+                top: 8px
+                left: 18px
+                color: #071330
+                font-family: "Font Awesome 5 Pro"
+                font-weight: 700
+                font-size: 8px
+              &:nth-child(odd)
+                background-color: #fafafa
+
+    &--btn
+      margin-bottom: 40px
+    &--bottom
+      text-align: center
+      p
+        margin: 0
+        font-size: 19px
+        line-height: 1.5em
+        a
+          color: #3b6bf4
+          text-decoration: underline
+          &:hover, &:focus
+            color: $accent
+
+.taxes-height
+  min-height: calc(100vh - 48px - 42px - 99px - 164px)
+
+.mega-bottomNote
+  margin-bottom: -41px
+  padding: 21px
+  font-family: $fontA
+  text-align: center
+  p
+    margin: 0 0 20px
+    font-weight: 400
+    font-size: 17px
+    line-height: 1.3em
+    &:last-child
+      margin-bottom: 0
+  @media (max-width: 991px)
+    margin-bottom: 0
+  @media (max-width: 767px)
+    margin-top: -31px
+
+.mega-bottomNote2
+  padding: 21px 21px 0
+  font-family: $fontA
+  text-align: center
+  p
+    margin: 0 0 20px
+    font-weight: 400
+    font-size: 17px
+    line-height: 1.3em
+    &:last-child
+      margin-bottom: 0
+
+@import "media"

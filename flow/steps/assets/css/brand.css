@@ -1,0 +1,563 @@
+/* ============================================================
+   VacationVIP / Massanutten — Shared Brand Design System
+   Used by every step in the payment-flow-w-upgrades package.
+   Tokens + reusable components (header, footer, buttons,
+   form fields, stepper, attention bar, pricing) pulled from
+   the main site so the checkout matches the brand.
+   ============================================================ */
+
+/* The hidden attribute must always win, even over display:flex/grid. */
+[hidden] { display: none !important; }
+
+:root {
+  /* Brand colors */
+  --navy: #215272;
+  --navy-deep: #071330;
+  --coral: #e9654a;
+  --coral-hover: #b64f39;
+  --coral-dark: #a03020;
+  --yellow: #fffb53;
+
+  /* Demand bar — refined amber */
+  --amber-1: #F7D774;
+  --amber-2: #F2C544;
+  --amber-ink: #2A1B10;
+  --amber-ink-soft: #6B5233;
+  --scarcity: #E0361F;
+  --amber-divider: rgba(42, 27, 16, .16);
+
+  /* Neutrals */
+  --ink: #071330;
+  --text: #1c2733;
+  --muted: #667085;
+  --line: #d9dee5;
+  --field-border: #b7c0cc;
+  --bg: #f6f7f9;
+  --white: #ffffff;
+
+  /* Typography */
+  --font: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+
+  /* Radii + shadows */
+  --radius: 12px;
+  --radius-sm: 6px;
+  --radius-pill: 40px;
+  --shadow-card: 0 6px 24px rgba(7, 19, 48, 0.08);
+  --shadow-soft: 0 2px 8px rgba(7, 19, 48, 0.06);
+
+  /* Layout */
+  --maxw: 1090px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+/* ============ SITE HEADER (matches homepage .tb top bar) ============ */
+.pf-navbar {
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 40px;
+  border-bottom: 3px solid var(--coral);
+  position: relative;
+  z-index: 20;
+}
+.pf-navbar__logo { height: 30px; width: auto; display: block; }
+@media (max-width: 767px) {
+  .pf-navbar { padding: 8px 12px; border-bottom-width: 2px; }
+  .pf-navbar__logo { height: 20px; }
+}
+
+/* ============ ATTENTION BAR ============ */
+/* ============ ALERT BAR (social-proof ticker) ============ */
+.alert-bar {
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px 24px;
+  background: var(--yellow);
+  box-shadow: inset 0 -1px 0 rgba(42, 27, 16, .14);
+  overflow: hidden;
+}
+.alert-ticker { position: relative; height: 24px; width: 280px; }
+.alert-item {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  white-space: nowrap;
+  color: var(--amber-ink); font-size: 15px; font-weight: 600; letter-spacing: .005em;
+  opacity: 0;
+  animation: alert-fade 6s ease-in-out infinite;
+}
+/* Second item runs the same cycle offset by half, so the pair always
+   crossfades in opposite phase — a seamless, jump-free loop. */
+.alert-item:nth-child(2) { animation-delay: -3s; }
+.alert-ic { width: 17px; height: 17px; flex: 0 0 auto; color: var(--amber-ink-soft); stroke-width: 2; }
+.alert-num { font-weight: 800; color: var(--amber-ink); font-variant-numeric: tabular-nums; }
+
+@keyframes alert-fade {
+  0%   { opacity: 1; transform: translateY(0); }
+  42%  { opacity: 1; transform: translateY(0); }
+  50%  { opacity: 0; transform: translateY(-6px); }
+  92%  { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .alert-bar { padding: 10px 16px; }
+  .alert-ticker { width: 240px; height: 22px; }
+  .alert-item { font-size: 13.5px; }
+  .alert-ic { width: 15px; height: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .alert-item { animation: none; opacity: 0; }
+  .alert-item:first-child { opacity: 1; }
+}
+
+/* ============ PAGE SHELL ============ */
+.pf-main {
+  padding: 40px 20px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+.pf-container { width: 100%; max-width: var(--maxw); margin: 0 auto; }
+
+/* ============ STEPPER ============ */
+.pf-stepper {
+  display: flex;
+  width: 100%;
+  max-width: var(--maxw);
+  gap: 0;
+}
+.pf-step {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pf-step__label {
+  font-weight: 700;
+  font-size: 18px;
+  color: #999;
+}
+.pf-step__bar { height: 6px; background: #d5dae1; border-radius: 3px; }
+.pf-step.is-active .pf-step__label { color: var(--coral); }
+.pf-step.is-active .pf-step__bar { background: var(--coral); }
+.pf-step.is-done .pf-step__label { color: var(--navy); }
+.pf-step.is-done .pf-step__bar { background: var(--navy); }
+@media (max-width: 767px) { .pf-step__label { font-size: 14px; } }
+
+/* ============ CARDS ============ */
+.pf-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+.pf-card__pad { padding: 28px; }
+@media (max-width: 767px) { .pf-card__pad { padding: 20px; } }
+
+.pf-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+.pf-subtitle {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+/* ============ FORM FIELDS ============ */
+.pf-field { position: relative; display: flex; flex-direction: column; }
+.pf-field > label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.pf-field > label .pf-hint { font-weight: 400; font-size: 11px; color: var(--muted); }
+.pf-input {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 16px;
+  color: var(--text);
+  background: var(--white);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.pf-input::placeholder { color: #9aa4b0; }
+.pf-input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33, 82, 114, 0.12); }
+.pf-input.is-invalid { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(233, 101, 74, 0.14); }
+.pf-field__error { color: var(--coral); font-size: 12px; margin-top: 5px; display: none; }
+.pf-field.is-invalid .pf-field__error { display: block; }
+
+.pf-row { display: flex; gap: 12px; }
+.pf-row > * { flex: 1 1 0; min-width: 0; }
+@media (max-width: 520px) { .pf-row { flex-direction: column; } }
+
+/* ============ CHECKBOXES ============ */
+.pf-check { display: flex; gap: 12px; align-items: flex-start; }
+.pf-check input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 22px; height: 22px;
+  border: 2px solid var(--field-border);
+  border-radius: 5px;
+  margin: 2px 0 0;
+  cursor: pointer;
+  position: relative;
+  background: #fff;
+}
+.pf-check input[type="checkbox"]:checked { background: var(--coral); border-color: var(--coral); }
+.pf-check input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px; top: 2px;
+  width: 5px; height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.pf-check__text { font-size: 12px; line-height: 1.5; color: var(--text); }
+.pf-check__text a { color: var(--navy); text-decoration: underline; }
+
+/* ============ BUTTONS ============ */
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #fff;
+  background: var(--coral);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 15px 24px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .2s, transform .05s;
+}
+.pf-btn:hover { background: var(--coral-hover); }
+.pf-btn:active { transform: translateY(1px); }
+.pf-btn:disabled { background: #c9ccd2; cursor: not-allowed; }
+.pf-btn--ghost {
+  background: transparent;
+  color: var(--navy);
+  border: 2px solid var(--navy);
+}
+.pf-btn--ghost:hover { background: rgba(33,82,114,.06); }
+
+/* ---- Shared action bar: static in flow on desktop, fixed thumb-zone bar on mobile ---- */
+.pf-actionbar { display: flex; gap: 12px; margin-top: 24px; }
+.pf-actionbar .pf-btn { flex: 1 1 auto; width: auto; }
+.pf-actionbar .pf-btn--ghost { flex: 0 0 auto; }
+@media (max-width: 900px) {
+  .pf-actionbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    margin: 0; gap: 10px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 18px rgba(7, 19, 48, .12);
+  }
+  .pf-actionbar .pf-btn { font-size: 15px; padding: 14px 18px; }
+}
+
+/* ============ ORDER SUMMARY / PRICING ============ */
+.pf-summary__img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+.pf-summary__name { font-size: 20px; font-weight: 800; color: var(--ink); margin: 16px 0 4px; }
+/* Guest-reviews style rating (matches homepage .ta-summary) */
+.os-rating__bubbles { height: 20px; width: auto; display: block; }
+.os-rating__reviews { color: #3a3a4a; font-size: 15px; font-weight: 700; }
+.os-purchased { color: #8a8f98; font-size: 13px; font-weight: 400; margin: 6px 0 0; }
+/* Mobile: go horizontal (thumbnail left, review info right) like the homepage guest-reviews. */
+@media (max-width: 767px) {
+  .os-review-head { display: flex; align-items: center; gap: 14px; }
+  .os-review-head .pf-summary__img { width: 104px; height: 80px; flex: 0 0 auto; }
+  .os-review-info { flex: 1 1 auto; min-width: 0; }
+  .os-review-info .pf-summary__name { margin: 0 0 4px; font-size: 17px; }
+  .os-rating__bubbles { height: 18px; }
+  .os-purchased { font-size: 12px; }
+}
+/* "What's included" checklist (matches homepage .rd-pkg-list bottom bar) */
+.os-includes { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.os-includes li { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; color: #262626; }
+.os-includes li .pf-i { width: 18px; height: 18px; flex: 0 0 auto; color: var(--coral); }
+.os-includes__gc { color: #1b5cdd; text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+.pf-price-line { display: flex; justify-content: space-between; font-size: 15px; padding: 4px 0; }
+.pf-price-line .pf-strike { text-decoration: line-through; color: var(--muted); }
+.pf-price-line .pf-save { color: var(--coral); font-weight: 700; }
+.pf-price-total {
+  display: flex; justify-content: space-between;
+  font-size: 18px; font-weight: 800; color: var(--ink);
+  border-top: 1px solid var(--line);
+  margin-top: 8px; padding-top: 10px;
+}
+.pf-hold {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+}
+.pf-hold__label { font-size: 14px; font-weight: 700; color: var(--ink); }
+.pf-hold__timer { font-size: 40px; font-weight: 900; color: var(--coral); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pf-hold__note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* ============ SITE FOOTER (matches homepage .footer-2) ============ */
+.pf-footer {
+  color: #fff;
+  text-align: center;
+  background-color: var(--navy);
+  background-image: url('../images/pattern.png');
+  background-repeat: repeat;
+  background-blend-mode: overlay;
+  padding: 30px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.pf-footer__logo { width: auto; }
+.pf-footer__bbb { display: inline-block; background: #fff; border-radius: 8px; }
+.pf-footer__bbb img { display: block; border: 0; }
+.pf-footer a { color: #fff; }
+.pf-footer__legal { color: #fff; max-width: 120ch; text-wrap: pretty; margin: 0; }
+.pf-footer__links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+.pf-footer__eho { display: none; }
+@media (max-width: 767px) { .pf-footer { padding-left: 16px; padding-right: 16px; } }
+
+/* ============ INLINE ICONS (Lucide, matches homepage) ============ */
+.pf-i { width: 16px; height: 16px; color: var(--coral); flex: 0 0 auto; stroke-width: 2; }
+.pf-i--lg { width: 20px; height: 20px; }
+.pf-stars { display: inline-flex; gap: 2px; vertical-align: middle; }
+.pf-stars .pf-i { width: 15px; height: 15px; color: #f5a623; fill: #f5a623; }
+.up-list .k { display: inline-flex; align-items: center; gap: 7px; }
+.os-line { display: flex; align-items: center; gap: 7px; }
+.os-badges { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.os-badges img { width: 84px; height: auto; display: block; }
+.os-travel { margin: 6px 0 0; }
+.bill-safe__icons { display: inline-flex; align-items: center; gap: 10px; }
+.bill-safe__icons .pf-i { width: 24px; height: 24px; color: var(--muted); }
+
+/* ============ "Know your dates?" Yes/No toggle (Figma: default NO) ============ */
+.os-dates-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.os-toggle {
+  position: relative; flex: 0 0 auto; width: 64px; height: 26px;
+  border: 0; border-radius: 20px; cursor: pointer; padding: 0;
+  background: var(--neutral-500, #999); transition: background .2s ease;
+}
+.os-toggle__label {
+  position: absolute; top: 50%; right: 11px; transform: translateY(-50%);
+  font-size: 12px; font-weight: 700; color: #fff; line-height: 1; letter-spacing: .01em;
+}
+.os-toggle__knob {
+  position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+  border-radius: 50%; background: #fff; transition: left .2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+}
+.os-toggle[aria-checked="true"] { background: var(--coral); }
+.os-toggle[aria-checked="true"] .os-toggle__label { right: auto; left: 11px; }
+.os-toggle[aria-checked="true"] .os-toggle__knob { left: 41px; }
+
+/* ============ TOAST (purchase confirmed) ============ */
+.pf-toast-wrap {
+  position: fixed; top: 20px; left: 0; right: 0; z-index: 1000;
+  display: flex; justify-content: center; padding: 0 16px; pointer-events: none;
+}
+.pf-toast {
+  pointer-events: auto;
+  display: inline-flex; align-items: center; gap: 20px;
+  background: linear-gradient(rgba(42, 153, 107, 0.14), rgba(42, 153, 107, 0.14)), #ffffff;
+  -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px);
+  border: 2px solid #9fe3c4; border-radius: 8px;
+  padding: 14px 16px 14px 24px;
+  color: #077648; font-weight: 600; font-size: 16px;
+  box-shadow: 0 8px 24px rgba(7, 19, 48, .18);
+  transform: translateY(-16px); opacity: 0;
+  transition: opacity .3s ease, transform .3s ease;
+}
+.pf-toast.is-visible { transform: translateY(0); opacity: 1; }
+.pf-toast__close { background: none; border: none; color: #077648; font-size: 20px; line-height: 1; cursor: pointer; padding: 0; }
+.pf-toast__action { background: none; border: none; color: #077648; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; padding: 4px 2px; text-decoration: underline; }
+
+/* ============ EDITABLE UPGRADES CART ============ */
+.pf-cart { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.pf-cart__row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.pf-cart__k { display: flex; align-items: center; gap: 8px; color: var(--text); flex: 1 1 auto; min-width: 0; }
+.pf-cart__k .pf-i { width: 18px; height: 18px; flex: 0 0 auto; color: var(--coral); }
+.pf-cart__v { font-weight: 700; color: var(--ink); white-space: nowrap; }
+.pf-cart__row.is-off .pf-cart__k,
+.pf-cart__row.is-off .pf-cart__v { color: var(--muted); }
+.pf-cart__row.is-off .pf-cart__k .pf-i { color: var(--muted); }
+.pf-cart__empty { color: var(--muted); font-style: italic; padding: 6px 0; }
+.pf-cart__btn {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px;
+  border-radius: var(--radius-pill); border: 1px solid var(--field-border);
+  background: #fff; padding: 4px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.pf-cart__btn .pf-i { width: 14px; height: 14px; }
+.pf-cart__btn--add { color: var(--navy); border-color: var(--navy); }
+.pf-cart__btn--add:hover { background: rgba(33, 82, 114, .08); }
+.pf-cart__btn--remove { color: var(--muted); }
+.pf-cart__btn--remove:hover { color: var(--coral); border-color: var(--coral); background: rgba(233, 101, 74, .06); }
+.pf-cart__qty { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.pf-cart__step { width: 22px; height: 22px; border-radius: 50%; border: none; background: var(--navy); color: #fff; font-size: 15px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+.pf-cart__step:hover { background: var(--navy-deep); }
+.pf-cart__qtynum { min-width: 16px; text-align: center; font-weight: 700; font-size: 13px; color: var(--ink); }
+.pf-cart__btn:disabled, .pf-cart__step:disabled, .pf-cart__del:disabled { opacity: .4; cursor: not-allowed; }
+.pf-cart__btn--add:disabled:hover { background: #fff; }
+.pf-cart__step:disabled:hover { background: var(--navy); }
+.pf-cart__del:disabled:hover { color: var(--muted); }
+.pf-cart__del { background: none; border: none; padding: 2px; margin-left: 2px; color: var(--muted); cursor: pointer; display: inline-flex; align-items: center; }
+.pf-cart__del .pf-i { width: 16px; height: 16px; }
+.pf-cart__del:hover { color: var(--coral); }
+
+/* Paid / confirmed indicators (base package on post-payment upsell steps) */
+.up-paid-banner { display: flex; align-items: center; gap: 8px; background: rgba(0, 170, 108, .1); color: #077648; border: 1px solid rgba(0, 170, 108, .32); border-radius: var(--radius-sm); padding: 9px 12px; font-weight: 700; font-size: 13px; margin: 16px 0 4px; }
+.up-paid-banner .pf-i { width: 18px; height: 18px; flex: 0 0 auto; }
+.up-paid-banner strong { font-weight: 800; }
+.up-paid-badge { display: inline-flex; align-items: center; gap: 3px; background: #00aa6c; color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; border-radius: var(--radius-pill); padding: 2px 7px; margin-right: 6px; vertical-align: middle; }
+.up-paid-badge .pf-i { width: 11px; height: 11px; }
+
+/* ============ MODAL (retention / "wonder why not") ============ */
+.pf-modal {
+  position: fixed; inset: 0; z-index: 1001;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(7, 19, 48, .55);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.pf-modal.is-open { display: flex; }
+/* On short/phone viewports a tall modal must scroll so its buttons stay reachable. */
+@media (max-width: 767px) {
+  .pf-modal { align-items: flex-start; padding: 14px; }
+  .pf-modal__card { margin: auto; }
+}
+.pf-modal__card {
+  position: relative; background: #fff; border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .36);
+  padding: 40px 48px; max-width: 560px; width: 100%;
+  display: flex; flex-direction: column; gap: 28px;
+}
+@media (max-width: 520px) { .pf-modal__card { padding: 28px 22px; gap: 20px; } }
+.pf-modal__head { display: flex; align-items: center; gap: 16px; }
+.pf-modal__icon { width: 32px; height: 32px; color: var(--coral); flex: 0 0 auto; }
+.pf-modal__title { font-size: 26px; font-weight: 800; color: var(--ink); margin: 0; }
+.pf-modal__body { font-size: 16px; line-height: 1.5; color: var(--text); }
+.pf-modal__body p { margin: 0 0 12px; }
+.pf-modal__body strong { color: var(--ink); }
+.pf-modal__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.pf-modal__actions .pf-btn { width: auto; flex: 1 1 auto; }
+.pf-modal__close { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 26px; line-height: 1; color: var(--muted); cursor: pointer; }
+
+/* ============ RESPONSIVE (tablet/mobile stacked layouts) ============
+   When the two-column step grids collapse to a single column, the summary
+   spans the full column width so both stacked rows match. */
+@media (max-width: 900px) {
+  .os-summary, .up-summary { max-width: none; width: 100%; margin: 0; }
+  /* Clear the fixed bottom action bar so no content hides behind it. */
+  .pf-main { padding-bottom: 32px; }
+  .pf-footer { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
+
+/* ============ MOBILE VERTICAL COMPRESSION ============
+   Tighten global spacing/sizes so a step fits the phone viewport. */
+@media (max-width: 767px) {
+  .pf-main { padding: 18px 14px 32px; gap: 16px; }
+  .pf-container { }
+  .pf-card__pad { padding: 18px 16px; }
+  .pf-title { font-size: 18px; }
+  .pf-subtitle { font-size: 11.5px; }
+  .pf-stepper { gap: 0; }
+  .pf-step { gap: 8px; }
+
+  /* Summary card — compact */
+  .pf-summary__img { height: 150px; }
+  .pf-summary__name { font-size: 18px; margin: 12px 0 4px; }
+  .os-includes { gap: 8px; margin-top: 12px; }
+  .os-includes li { font-size: 14px; }
+  .pf-price-line { font-size: 14px; padding: 3px 0; }
+  .pf-price-total { font-size: 17px; margin-top: 6px; padding-top: 8px; }
+  .pf-hold { padding: 12px; }
+  .pf-hold__timer { font-size: 32px; }
+
+  /* Cart rows a touch tighter */
+  .pf-cart__row { padding: 5px 0; }
+
+  /* Paid banner */
+  .up-paid-banner { margin: 12px 0 4px; padding: 8px 10px; font-size: 12.5px; }
+}
+
+/* ============ MOBILE MODAL COMPRESSION ============
+   Tighten popup padding/gaps/type so retention + review modals fit the
+   phone viewport. (Placed last so it wins over the base modal rules.) */
+@media (max-width: 767px) {
+  .pf-modal__card { padding: 22px 18px; gap: 16px; border-radius: 18px; }
+  .pf-modal__head { gap: 12px; }
+  .pf-modal__icon { width: 26px; height: 26px; }
+  .pf-modal__title { font-size: 20px; line-height: 1.2; }
+  .pf-modal__body { font-size: 14px; line-height: 1.45; }
+  .pf-modal__body p { margin: 0 0 8px; }
+  .pf-modal__actions { gap: 8px; }
+  .pf-modal__actions .pf-btn { font-size: 15px; padding: 13px 18px; }
+  .pf-modal__close { top: 12px; right: 14px; font-size: 24px; }
+}
+
+/* ============ SHORT-VIEWPORT SAFETY (iPhone SE class: <=700px tall) ============
+   No modal may ever exceed the visible viewport: cap the card height and let it
+   scroll internally so the action buttons are always reachable. dvh tracks the
+   real visible area when mobile browser chrome expands/collapses. */
+@media (max-width: 767px) {
+  /* Doubled selector outranks page-level skins like .tp-card { overflow: hidden } */
+  .pf-modal .pf-modal__card {
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+@media (max-height: 700px) {
+  /* .tp-card keeps its own edge-to-edge layout (padding: 0) */
+  .pf-modal .pf-modal__card:not(.tp-card) { padding: 18px 16px; gap: 12px; }
+  .pf-modal__title { font-size: 18px; }
+  .pf-modal__body { font-size: 13px; line-height: 1.4; }
+  .pf-modal__actions .pf-btn { font-size: 14px; padding: 12px 16px; }
+
+  /* Slim the fixed thumb-zone action bar so the sticky stack doesn't
+     swallow the scroll zone on short phones. */
+  .pf-actionbar { padding-top: 8px; }
+  .pf-actionbar .pf-btn { font-size: 14px; padding: 11px 16px; }
+}

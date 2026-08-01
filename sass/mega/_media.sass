@@ -1,0 +1,184 @@
+@import "../vars"
+
+@media only screen and (max-width: 991px)
+  .accommodations-box
+    &__back
+      a
+        padding: 7px 15px
+        font-size: 17px
+    &__desc
+      padding: 5px 20px 0
+      text-align: center
+      h3
+        font-size: 39px
+        &.h3-small
+          font-size: 34px
+      &--btn
+        margin: 0 auto
+      p
+        margin-left: auto
+        margin-right: auto
+    &__footer
+      justify-content: center
+      flex-wrap: wrap
+      &--timer
+        flex-direction: row
+        width: auto
+        min-height: 0
+        margin: 25px auto 0
+        padding: 15px 35px
+        &.w300
+          width: auto
+        p
+          margin: 0 15px 0 0
+          font-size: 20px
+    &__grid
+      &--txt 
+        h4
+          font-size: 25px
+    &.w960
+      max-width: 100%
+
+  .accommodations-main
+    background-image: none
+    padding: 0
+
+  .accommodations-images
+    grid-template-columns: repeat(2, 1fr)
+    grid-template-rows: repeat(2, 1fr)
+    .img
+      height: 230px
+  .accommodations-details
+    &__td
+      &--inner
+        max-width: 280px
+
+
+
+@media only screen and (max-width: 767px)
+  .extra-header
+    padding-top: 39px
+  .extra-hero
+    min-height: 200px
+    padding-bottom: 15px
+  .accommodations-box
+    padding-bottom: 30px
+    &__row
+      flex-direction: column
+      padding: 30px 0
+    &__col
+      width: 100%
+    &__desc
+      padding: 18px 20px 30px
+      text-align: center
+      h3
+        font-size: 36px
+      p
+        //max-width: 335px
+        margin-left: auto
+        margin-right: auto
+        margin-bottom: 30px
+      &--btn 
+        margin: 0 auto
+        .primary-btn
+          margin: 0 auto
+    &__footer
+      margin: 0 20px
+      padding: 0
+      background-color: #fff
+      &.mobile-grey
+        margin: 0
+        padding: 0 20px
+        background-color: #f5f5f5
+      &--price
+        margin: 0 auto 20px
+        transform: translateX(-6px)
+        svg
+          max-width: 170px
+      &--text
+        width: 100%
+        margin: 0 0 30px
+        h4
+          max-width: 280px
+          margin: 0 auto 15px
+          font-size: 27px
+          text-align: center
+        ul
+          max-width: 250px
+          margin: 0 auto
+          li
+            font-size: 17px
+            letter-spacing: -.3px
+            line-height: 1.3em
+      &--timer
+        flex-direction: column
+        width: 100%
+        max-width: 316px
+        min-height: 134px
+        margin-top: 0
+        margin-bottom: 29px
+        border-radius: 9px
+        &.w300
+          width: 100%
+        p
+          margin: 0 0 10px
+          font-size: 16px
+      &--btn
+        width: 100%
+        margin: 0 auto
+        text-align: center
+        .primary-btn
+          max-width: 362px
+    &__grid
+      margin-bottom: 15px
+      padding: 0
+      &--titles
+        h3
+          font-size: 42px
+      &--row
+        flex-direction: column
+        &.odd
+          &>div:nth-child(1)
+            order: 1
+          &>div:nth-child(2)
+            order: 2
+      &--img, &--txt
+        width: 100%
+      &--img
+        min-height: 0
+        height: 242px
+        padding: 0
+      &--txt
+        padding-top: 30px
+        text-align: center
+  .accommodations-images
+    display: block
+    .img
+      margin-bottom: 3px
+      height: 268px
+      &:last-child
+        margin-bottom: 0
+  .accommodations-details
+    padding: 0 0
+  .single-box
+    &__header
+      padding: 30px 20px 20px
+      p
+        font-size: 18px
+    &__body
+      padding: 0 12px 15px
+  .info-box
+    &__title
+      font-size: 18px
+    &__content
+      padding: 35px 20px 20px
+      &--list
+        ul
+          li
+            font-size: 17px
+      &--btn
+        margin-bottom: 30px
+      &--bottom
+        p
+          font-size: 16px
+          letter-spacing: -.4px

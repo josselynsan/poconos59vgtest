@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Travel Protection | Poconos Getaway Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="assets/css/brand.css" rel="stylesheet">
+  <style>
+    .tp-page { max-width: 720px; margin: 0 auto; }
+    .tp-card { max-width: 720px; padding: 0; gap: 0; display: flex; flex-direction: column; align-items: stretch; text-align: left; overflow: hidden; }
+    .tp-banner { display: flex; align-items: center; justify-content: center; gap: 9px; background: var(--navy); color: #fff; font-size: 16px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 12px 16px; }
+    .tp-banner .pf-i { width: 20px; height: 20px; color: #fff; }
+    .tp-body { padding: 32px 40px; display: flex; flex-direction: column; gap: 22px; }
+    .tp-head { display: flex; gap: 16px; align-items: flex-start; }
+    .tp-icon { width: 44px; height: 44px; color: var(--navy); flex: 0 0 auto; }
+    .tp-title { font-size: 24px; font-weight: 800; color: var(--ink); margin: 0; line-height: 1.2; }
+    .tp-sub { font-size: 16px; line-height: 1.5; color: var(--text); margin: 0; }
+    .tp-sub strong { color: var(--ink); }
+    .tp-choose { font-size: 18px; font-weight: 800; color: var(--ink); }
+    .tp-opt { border-radius: 12px; padding: 20px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
+    .tp-opt--yes { background: #e5f5ff; }
+    .tp-opt--no { background: #f7f7f7; }
+    .tp-opt.is-selected { border-color: var(--navy); }
+    .tp-opt__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .tp-opt__lead { display: flex; align-items: center; gap: 10px; }
+    .tp-opt__label { font-size: 16px; font-weight: 600; color: var(--ink); }
+    .tp-opt input[type=radio] { width: 20px; height: 20px; accent-color: var(--navy); flex: 0 0 auto; margin: 0; cursor: pointer; }
+    .tp-price { background: rgba(0, 0, 0, .08); border-radius: 6px; padding: 6px 10px; text-align: center; line-height: 1.15; flex: 0 0 auto; }
+    .tp-price strong { display: block; font-size: 16px; color: var(--ink); }
+    .tp-price span { font-size: 12px; color: var(--text); }
+    .tp-reasons { padding-left: 30px; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .tp-reasons__title { font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #205272; margin: 0; }
+    .tp-reason { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #333; }
+    .tp-reason .pf-i { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 1px; color: #555; }
+    .tp-reason p { margin: 0; line-height: 1.35; }
+    .tp-reason strong { color: #1a1a1a; }
+    .tp-reason a { color: #0037eb; text-decoration: underline; }
+    .tp-continue { align-self: flex-start; width: auto; padding-left: 44px; padding-right: 44px; }
+    .tp-continue:disabled { background: #b2b2b2; cursor: not-allowed; box-shadow: none; }
+    @media (max-width: 560px) {
+      .tp-body { padding: 24px 16px; }
+      .tp-opt__top { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="travel-protection-two">
+
+  <header class="pf-navbar">
+    <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
+  </header>
+
+  <main class="pf-main">
+    <div class="tp-page">
+      <form id="tpForm" method="post" action="javascript:void(0);" data-step-slug="travel-protection-two" onsubmit="return false;">
+        <input type="hidden" name="travel_protection_two" id="travel_protection_two" value="">
+        <div class="pf-card tp-card">
+          <div class="tp-banner"><i data-lucide="shield-check" class="pf-i" aria-hidden="true"></i> Highly Recommended</div>
+          <div class="tp-body">
+            <div class="tp-head">
+              <i data-lucide="shield-plus" class="tp-icon" aria-hidden="true"></i>
+              <h1 class="tp-title" id="tpTitle">Congrats on locking in your vacation! Now add Travel Protection for your trip!</h1>
+            </div>
+            <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong>$24.99</strong>.</p>
+            <div class="tp-choose">Select Yes or No to continue booking</div>
+
+            <div class="tp-opt tp-opt--yes" id="tpOptYes">
+              <div class="tp-opt__top">
+                <span class="tp-opt__lead"><input type="radio" name="tp" id="tpYes" value="yes"><span class="tp-opt__label">Yes, I want Travel Protection for my vacation</span></span>
+                <span class="tp-price"><strong>$24.99</strong><span>one-time, covers your whole package</span></span>
+              </div>
+              <div class="tp-reasons">
+                <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
+                <div class="tp-reason"><i data-lucide="clock" class="pf-i"></i><p><strong>Travel Delay:</strong> Unexpected delays can lead to missed hotel nights and extra costs.</p></div>
+                <div class="tp-reason"><i data-lucide="calendar-x" class="pf-i"></i><p><strong>Trip Adjustments:</strong> An unforeseen event and travel dates need to be adjusted.</p></div>
+                <div class="tp-reason"><i data-lucide="circle-x" class="pf-i"></i><p><strong>Trip Cancellations:</strong> Illness, job loss, or family emergencies can lead to non-refundable trip costs. Read <a href="../../terms-and-conditions.html">Terms and Conditions</a>.</p></div>
+              </div>
+            </div>
+
+            <div class="tp-opt tp-opt--no" id="tpOptNo">
+              <span class="tp-opt__lead"><input type="radio" name="tp" id="tpNo" value="no"><span class="tp-opt__label">No, I&rsquo;m willing to risk my vacation valued at <span id="tpRetail">$748</span>.</span></span>
+            </div>
+
+            <button type="button" class="pf-btn tp-continue" id="tpContinue" disabled>Continue</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div class="pf-toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../../terms-and-conditions.html">Terms and Conditions</a>
+      <span>|</span>
+      <a href="../../privacy-policy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script src="assets/libs/lucide/lucide.min.js"></script>
+  <script src="assets/js/flow-state.js"></script>
+  <script>
+  (function () {
+    var TP_DECISION_KEY = "swiftly_tp_decision";
+
+    function swiftlyHasOfferFlowSession() {
+      try {
+        if (new URLSearchParams(window.location.search).get("session_token")) return true;
+        if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
+      } catch (e) {}
+      return false;
+    }
+    function storageKey(key) {
+      var offerId = "";
+      var sessionToken = "";
+      try {
+        var params = new URLSearchParams(window.location.search);
+        offerId = params.get("offer_id") || "";
+        sessionToken = params.get("session_token") || "";
+      } catch (e) {}
+      if (!offerId && window.SWIFTLY_OFFER_FLOW) offerId = window.SWIFTLY_OFFER_FLOW.offerId || "";
+      if (!sessionToken && window.SWIFTLY_OFFER_FLOW) sessionToken = window.SWIFTLY_OFFER_FLOW.sessionToken || "";
+      return [key, offerId || "preview", sessionToken || "anonymous"].join(":");
+    }
+    function readStored(key) {
+      try { return sessionStorage.getItem(storageKey(key)) || ""; } catch (e) { return ""; }
+    }
+    function writeStored(key, value) {
+      try { sessionStorage.setItem(storageKey(key), value); } catch (e) {}
+    }
+
+    var configuredMode = window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradePaymentMode;
+    var mode = configuredMode === "dual" ? "dual" : "single";
+
+    // If author switches back to single, bounce to combined bonus page (TP as preference only).
+    if (mode === "single") {
+      window.location.replace("bonus-vacation.html" + window.location.search);
+      return;
+    }
+
+    var ofSession = swiftlyHasOfferFlowSession();
+    var form = document.getElementById("tpForm");
+    var s = FlowState.get();
+    var TP_CENTS = 2499;
+    document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+    document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
+
+    var tpYes = document.getElementById("tpYes");
+    var tpNo = document.getElementById("tpNo");
+    var tpOptYes = document.getElementById("tpOptYes");
+    var tpOptNo = document.getElementById("tpOptNo");
+    var tpContinue = document.getElementById("tpContinue");
+
+    function tpSelect() {
+      tpOptYes.classList.toggle("is-selected", tpYes.checked);
+      tpOptNo.classList.toggle("is-selected", tpNo.checked);
+      tpContinue.disabled = !(tpYes.checked || tpNo.checked);
+    }
+    tpYes.addEventListener("change", tpSelect);
+    tpNo.addEventListener("change", tpSelect);
+    tpOptYes.addEventListener("click", function (e) {
+      if (e.target && e.target.tagName === "A") return;
+      tpYes.checked = true; tpSelect();
+    });
+    tpOptNo.addEventListener("click", function () { tpNo.checked = true; tpSelect(); });
+
+    function hasTP() { return !!FlowState.findUpsell("travel_protection"); }
+
+    tpContinue.addEventListener("click", function () {
+      if (!(tpYes.checked || tpNo.checked)) return;
+      var tpValue = tpYes.checked ? "Yes" : "No";
+      form.elements.travel_protection_two.value = tpValue;
+      writeStored(TP_DECISION_KEY, tpValue);
+
+      if (ofSession) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(form);
+        }
+        return;
+      }
+
+      if (tpValue === "Yes") {
+        if (!hasTP()) FlowState.addUpsell("travel_protection", 1, TP_CENTS);
+        FlowState.set({ tpDecision: "yes" });
+        if (window.PFToast) PFToast("Travel Protection added!");
+      } else {
+        if (hasTP()) FlowState.removeUpsell("travel_protection");
+        FlowState.set({ tpDecision: "no" });
+      }
+      FlowState.markDecided("travel_protection");
+      console.log("[static-front] travel-protection-two submit mocked", { travel_protection_two: tpValue });
+      setTimeout(function () {
+        window.location.href = "bonus-vacation.html" + window.location.search;
+      }, tpValue === "Yes" ? 600 : 150);
+    });
+  })();
+  </script>
+  <script>lucide.createIcons();</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260730vg-dual" defer></script>
+</body>
+</html>

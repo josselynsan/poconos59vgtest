@@ -1,0 +1,86 @@
+@import "../vars"
+
+@media only screen and (min-width: 1200px)
+  .menu-btn
+    display: none
+
+@media only screen and (max-width: 1199px)
+  .site-header
+    &__inner
+      justify-content: flex-end
+    .site-menu
+      display: none
+    .site-logo
+      position: absolute
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -50%)
+    .menu-btn
+      margin-left: auto
+      order: 3
+
+@media only screen and (max-width: 991px)
+  .top-bar
+    p
+      font-size: 17px
+    .col-a
+      min-width: 185px
+    .col-b
+      min-width: 265px
+    .col-c
+      width: 58%
+      padding-left: 15px
+      padding-right: 10px
+      &__inner
+        justify-content: flex-start
+        width: auto
+  .timer-item
+    width: 35px
+
+
+@media only screen and (max-width: 767px)
+  .top-cta
+    margin-right: 0
+    &__icon
+      margin-right: 12px
+      img
+        width: 22px
+  .top-bar
+    flex-wrap: wrap
+    text-align: center
+    p
+      font-size: 14px
+    .col-a
+      order: 2
+      width: 40%
+      min-width: 0
+      padding-top: 15px
+      padding-bottom: 15px
+    .col-b
+      order: 3
+      width: 60%
+      min-width: 0
+      padding-top: 15px
+      padding-bottom: 15px
+    .col-c
+      order: 1
+      justify-content: center
+      width: 100%
+      max-width: 100%
+      padding-top: 5px
+      padding-bottom: 5px
+  .offer-expires
+    &__label
+      padding-right: 10px
+      p
+        font-size: 15px
+        letter-spacing: -.3px
+      .icon-flash
+        margin-right: 5px
+        img
+          max-width: 17px
+    .timer-item
+      width: 30px
+  .social-bar
+    padding-top: 5px
+    margin-bottom: -5px

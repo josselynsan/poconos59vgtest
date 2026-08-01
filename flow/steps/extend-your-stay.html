@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Extend Your Stay | Poconos Getaway Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="assets/css/brand.css" rel="stylesheet">
+  <style>
+    .up-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: stretch; width: 100%; max-width: var(--maxw); }
+    @media (max-width: 900px) { .up-grid { grid-template-columns: 1fr; } }
+    /* Both columns share the row height; the summary card fills its stretched column. */
+    .up-summary { display: flex; flex-direction: column; }
+    .up-summary > .pf-card { flex: 1 1 auto; }
+    @media (min-width: 901px) { .up-summary { position: sticky; top: 20px; } }
+
+    /* left offer module — consistent step-to-step layout */
+    .tk-headline { font-size: 30px; font-weight: 800; color: var(--ink); margin: 0 0 20px; line-height: 1.1; }
+    .tk-lead { font-size: 22px; font-weight: 700; color: var(--ink); margin: 0 0 10px; }
+    .tk-desc { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 24px; }
+    .tk-desc strong { color: var(--coral); }
+    .tk-save { font-size: 20px; font-weight: 800; color: var(--ink); margin: 0 0 16px; }
+
+    .tk-card { display: flex; gap: 24px; background: var(--bg); border-radius: 20px; padding: 20px; align-items: center; }
+    @media (max-width: 620px) { .tk-card { flex-direction: column; } }
+    .tk-card__img { flex: 1 1 0; min-width: 0; align-self: stretch; }
+    .tk-card__img img { width: 100%; height: 100%; min-height: 180px; object-fit: cover; border-radius: 12px; }
+    .tk-card__body { flex: 1 1 0; min-width: 0; }
+    .tk-card__name { font-size: 28px; font-weight: 800; color: var(--ink); margin: 0 0 6px; }
+    .tk-card__tag { font-size: 16px; font-weight: 700; color: var(--ink); margin: 0 0 10px; }
+    .tk-card__copy { font-size: 13px; color: var(--muted); line-height: 1.4; margin: 0; }
+    .tk-card__copy strong { color: var(--coral); }
+
+    /* Action row uses the shared .pf-actionbar (static desktop, fixed thumb-zone bar on mobile). */
+
+    /* summary — guest-reviews head matches steps 1 & 2 (styles shared from brand.css) */
+    .os-rating { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+    .up-list { margin: 16px 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .up-list .row { display: flex; justify-content: space-between; gap: 8px; }
+    .up-list .k { color: var(--text); }
+    .up-list .v { font-weight: 600; color: var(--ink); }
+    .up-upgrades-title { font-weight: 800; color: var(--ink); margin: 14px 0 8px; }
+    .up-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 900; color: var(--ink); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; }
+
+    /* Mobile vertical compression */
+    @media (max-width: 767px) {
+      .tk-headline { font-size: 22px; margin: 0 0 12px; }
+      .tk-lead { font-size: 17px; margin: 0 0 8px; }
+      .tk-desc { font-size: 14px; margin: 0 0 14px; }
+      .tk-save { font-size: 17px; margin: 0 0 12px; }
+      .tk-card { gap: 14px; padding: 14px; border-radius: 16px; }
+      .tk-card__img img { min-height: 140px; }
+      .tk-card__name { font-size: 22px; }
+      .tk-card__tag { font-size: 15px; margin: 0 0 8px; }
+      .up-list { margin: 12px 0; }
+      .up-total { font-size: 18px; padding-top: 10px; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="extend-your-stay">
+
+  <header class="pf-navbar">
+    <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
+  </header>
+
+  <main class="pf-main">
+    <div class="up-grid">
+      <!-- LEFT: OFFER (mirrors step 4 module) -->
+      <section class="pf-card">
+        <div class="pf-card__pad">
+          <h1 class="tk-headline">Extend your stay</h1>
+          <p class="tk-lead">Make the most of your getaway with an extra night</p>
+          <p class="tk-desc">Add a 4th night now at an exclusive online rate so you can slow down and enjoy more of the lakes, the trails and everything the Pocono Mountains has to offer. This price won&rsquo;t be offered again.</p>
+
+          <h2 class="tk-save">Add a 4th night and save BIG!</h2>
+          <div class="tk-card">
+            <div class="tk-card__img"><img src="assets/images/resort.webp" alt="Extend your stay in the Poconos"></div>
+            <div class="tk-card__body">
+              <div class="tk-card__name">4th Night</div>
+              <div class="tk-card__tag">Exclusive online-only rate</div>
+              <p class="tk-card__copy"><strong>Just <span id="extendPrice">$19</span> for an extra night</strong> &mdash; this is your exclusive online price, you won&rsquo;t see it again. Extend your escape and settle in.</p>
+            </div>
+          </div>
+
+          <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="extend-your-stay" onsubmit="return false;">
+            <input type="hidden" name="extend_your_stay" id="extend_your_stay" value="">
+            <button type="button" class="pf-btn cont" id="addBtn">Yes, Add 4th Night</button>
+            <button type="button" class="pf-btn pf-btn--ghost skip" id="skipBtn">Skip</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- RIGHT: PACKAGE SUMMARY -->
+      <aside class="up-summary">
+        <div class="pf-card">
+          <div class="pf-card__pad">
+            <h2 class="pf-title" style="margin-bottom:14px;">Package Summary</h2>
+            <div class="os-review-head">
+              <img class="pf-summary__img" src="assets/images/resort.webp" alt="Pocono Mountain Villas">
+              <div class="os-review-info">
+                <div class="pf-summary__name" id="sumName">Pocono Mountain Villas</div>
+                <div class="os-rating">
+                  <img class="os-rating__bubbles" src="assets/images/ta-rating.webp" alt="Rated 4 out of 5" loading="lazy">
+                  <span class="os-rating__reviews"><strong id="sumReviews">4,850</strong> reviews</span>
+                </div>
+                <p class="os-purchased">Over 8,239 People Have Purchased This Product</p>
+              </div>
+            </div>
+
+            <div class="up-paid-banner"><i data-lucide="badge-check" class="pf-i"></i><span>Payment confirmed &mdash; your package is <strong>paid &amp; secured</strong></span></div>
+
+            <div class="up-list">
+              <div class="row"><span class="k"><i data-lucide="badge-check" class="pf-i"></i>Confirmation #</span><span class="v" id="sumConf">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
+              <div class="row"><span class="k"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in</span><span class="v" id="sumCheckIn">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="banknote" class="pf-i"></i>Booking Fee</span><span class="v">$0</span></div>
+              <div class="row"><span class="k"><i data-lucide="package" class="pf-i"></i>Package Price</span><span class="v" id="sumPkg">$59</span></div>
+            </div>
+
+            <div class="up-upgrades-title">Upgrades</div>
+            <div id="upgradeList"></div>
+
+            <div class="up-total"><span>Total price</span><span id="sumTotal">$59</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Purchase-confirmed toaster mount -->
+  <div class="pf-toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <!-- Retention modal ("wonder why not?") shown when declining the 4th night -->
+  <div class="pf-modal" id="retainModal" role="dialog" aria-modal="true" aria-labelledby="retainTitle" aria-hidden="true">
+    <div class="pf-modal__card">
+      <button type="button" class="pf-modal__close" id="retainClose" aria-label="Close">&times;</button>
+      <div class="pf-modal__head">
+        <i data-lucide="sparkles" class="pf-modal__icon" aria-hidden="true"></i>
+        <h2 class="pf-modal__title" id="retainTitle">Wait! Are You Sure?</h2>
+      </div>
+      <div class="pf-modal__body">
+        <p>You&rsquo;ve secured an amazing 4-Day/3-Night stay at Pocono Mountain Villas&mdash;but why stop there? Add a 4th night for just <strong id="retainPrice">$19</strong> and make your Poconos getaway even more unforgettable!</p>
+        <p><strong>So, do you want to add an exclusive 4th night?</strong></p>
+      </div>
+      <div class="pf-modal__actions">
+        <button type="button" class="pf-btn" id="retainYes">Yes, Extend My Stay</button>
+        <button type="button" class="pf-btn pf-btn--ghost" id="retainNo">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../../terms-and-conditions.html">Terms &amp; Conditions</a>
+      <span>|</span>
+      <a href="../../privacy-policy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script src="assets/libs/lucide/lucide.min.js"></script>
+  <script src="assets/js/flow-state.js"></script>
+  <script src="assets/js/legal-modal.js"></script>
+  <script>
+  (function () {
+    var EXTEND_DECISION_KEY = "swiftly_extend_decision";
+
+    function swiftlyHasOfferFlowSession() {
+      try {
+        if (new URLSearchParams(window.location.search).get("session_token")) return true;
+        if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
+      } catch (e) {}
+      return false;
+    }
+
+    function storageKey(key) {
+      var offerId = "";
+      var sessionToken = "";
+      try {
+        var params = new URLSearchParams(window.location.search);
+        offerId = params.get("offer_id") || "";
+        sessionToken = params.get("session_token") || "";
+      } catch (e) {}
+      if (!offerId && window.SWIFTLY_OFFER_FLOW) offerId = window.SWIFTLY_OFFER_FLOW.offerId || "";
+      if (!sessionToken && window.SWIFTLY_OFFER_FLOW) sessionToken = window.SWIFTLY_OFFER_FLOW.sessionToken || "";
+      return [key, offerId || "preview", sessionToken || "anonymous"].join(":");
+    }
+    function readStored(key) {
+      try { return sessionStorage.getItem(storageKey(key)) || ""; } catch (e) { return ""; }
+    }
+    function writeStored(key, value) {
+      try { sessionStorage.setItem(storageKey(key), value); } catch (e) {}
+    }
+
+    function setStepSlug(formEl, slug) {
+      formEl.setAttribute("data-step-slug", slug);
+      var body = document.body;
+      if (body) body.setAttribute("data-swiftly-step", slug);
+      var hidden = formEl.querySelector('input[name="stepSlug"]');
+      if (!hidden) {
+        hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "stepSlug";
+        formEl.appendChild(hidden);
+      }
+      hidden.value = slug;
+    }
+
+    var EXTEND_CENTS = 1900; // $19 4th-night upgrade (flat rate — no discount)
+    var ofSession = swiftlyHasOfferFlowSession();
+    var s = FlowState.get();
+    var form = document.getElementById("upgradeForm");
+
+    var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
+    var confNo = prefill.confirmation_number || prefill.confirmationNumber || prefill.payment_transaction_id || s.confirmationNo;
+    if (!confNo && !ofSession) {
+      confNo = "MV" + Math.floor(100000 + Math.random() * 899999);
+      s = FlowState.set({ confirmationNo: confNo });
+    }
+
+    document.getElementById("extendPrice").textContent = FlowState.money(EXTEND_CENTS);
+    document.getElementById("addBtn").textContent = "Yes, Add 4th Night";
+    document.getElementById("sumName").innerHTML = s.resortName;
+    document.getElementById("sumConf").textContent = confNo || "\u2014";
+    document.getElementById("sumGuests").textContent = prefill.guestsLabel || s.guestsLabel;
+    document.getElementById("sumPkg").textContent = FlowState.money(s.priceCents);
+    document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+    // Parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day back.
+    var fmt = function (t) {
+      if (!t) return "\u2014";
+      var d;
+      if (typeof t === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t)) {
+        var p = t.split("-");
+        d = new Date(+p[0], +p[1] - 1, +p[2]);
+      } else {
+        d = new Date(t);
+      }
+      return isNaN(d.getTime()) ? "\u2014" : d.toLocaleDateString("en-US", { year: "numeric", month: "numeric", day: "numeric" });
+    };
+    var checkIn = prefill.travel_start_date || s.dates.checkIn;
+    var checkOut = prefill.travel_end_date || s.dates.checkOut;
+    document.getElementById("sumCheckIn").textContent = fmt(checkIn);
+    document.getElementById("sumCheckOut").textContent = fmt(checkOut);
+    document.getElementById("retainPrice").textContent = FlowState.money(EXTEND_CENTS);
+
+    function hasExtend() { return !!FlowState.findUpsell("extend_stay"); }
+    function updateTotals() { document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents()); }
+    var CART_OPTS = { editable: false };
+
+    // Keep the visual Upgrades cart in sync in BOTH modes (static preview and
+    // Offer Flow session). The charge itself is still driven by the hidden
+    // field posted to the flow; this only feeds the summary UI.
+    function syncUpsellUi(type, on, cents) {
+      if (on) {
+        if (!FlowState.findUpsell(type)) FlowState.addUpsell(type, 1, cents);
+      } else if (FlowState.findUpsell(type)) {
+        FlowState.removeUpsell(type);
+      }
+      FlowState.markDecided(type);
+      if (window.PFUpsells) PFUpsells.render("upgradeList", CART_OPTS);
+      updateTotals();
+    }
+
+    if (window.PFUpsells) { PFUpsells.render("upgradeList", CART_OPTS); }
+    updateTotals();
+
+    function extendDecisionFromSources() {
+      var fromPrefill = String(prefill.extend_your_stay || "").trim();
+      if (/^(yes|no)$/i.test(fromPrefill)) return fromPrefill.charAt(0).toUpperCase() + fromPrefill.slice(1).toLowerCase();
+      var fromStore = String(readStored(EXTEND_DECISION_KEY) || "").trim();
+      if (/^(yes|no)$/i.test(fromStore)) return fromStore.charAt(0).toUpperCase() + fromStore.slice(1).toLowerCase();
+      var hiddenVal = String(form.elements.extend_your_stay.value || "").trim();
+      if (/^(yes|no)$/i.test(hiddenVal)) return hiddenVal.charAt(0).toUpperCase() + hiddenVal.slice(1).toLowerCase();
+      return "";
+    }
+
+    function submitUpgrade(extendValue) {
+      form.elements.extend_your_stay.value = extendValue;
+      writeStored(EXTEND_DECISION_KEY, extendValue);
+      setStepSlug(form, "extend-your-stay");
+      var addedExtend = extendValue === "Yes" && !hasExtend();
+      syncUpsellUi("extend_stay", extendValue === "Yes", EXTEND_CENTS);
+      if (addedExtend && window.PFToast) PFToast("4th night added!");
+      if (ofSession) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(form);
+        }
+        return;
+      }
+      console.log("[static-front] extend-your-stay submit mocked", {
+        extend_your_stay: form.elements.extend_your_stay.value
+      });
+      setTimeout(function () {
+        window.location.href = "bonus-vacation.html" + window.location.search;
+      }, extendValue === "Yes" ? 900 : 200);
+    }
+
+    // Retention modal controls
+    var modal = document.getElementById("retainModal");
+    function openModal() { modal.classList.add("is-open"); modal.setAttribute("aria-hidden", "false"); }
+    function closeModal() { modal.classList.remove("is-open"); modal.setAttribute("aria-hidden", "true"); }
+
+    document.getElementById("addBtn").addEventListener("click", function () { submitUpgrade("Yes"); });
+    document.getElementById("skipBtn").addEventListener("click", openModal);
+    document.getElementById("retainYes").addEventListener("click", function () { closeModal(); submitUpgrade("Yes"); });
+    document.getElementById("retainNo").addEventListener("click", function () { closeModal(); submitUpgrade("No"); });
+    document.getElementById("retainClose").addEventListener("click", closeModal); // X just dismisses; it must not advance the flow
+    // Click outside the card just dismisses the popup (stay on the page).
+    modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+
+    // Reflect a prior decision in the summary cart so state stays consistent.
+    var existing = extendDecisionFromSources();
+    if (existing === "Yes") {
+      form.elements.extend_your_stay.value = "Yes";
+      syncUpsellUi("extend_stay", true, EXTEND_CENTS);
+    } else if (existing === "No") {
+      form.elements.extend_your_stay.value = "No";
+      syncUpsellUi("extend_stay", false, EXTEND_CENTS);
+    }
+  })();
+  </script>
+  <script>lucide.createIcons();</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260730vg-dual" defer></script>
+</body>
+</html>

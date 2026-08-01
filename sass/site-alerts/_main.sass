@@ -1,0 +1,101 @@
+@import "../vars"
+
+// Site Alert
+.site-alert
+  width: 100%
+  text-align: center
+  &__a
+    padding: 15px 15px 5px
+    background-color: $colorE
+    color: #ffffff
+    h2
+      margin: 0
+      font-family: $fontC
+      font-weight: 900
+      font-size: 39px
+      line-height: 1em
+      text-shadow: 1px 3px 0 rgba(#000, .1)
+      text-transform: uppercase
+  &__b
+    padding: 10px 15px
+    background-color: #D9299A
+    &--inner
+      display: flex
+      align-items: center
+      justify-content: center
+    .icon
+      margin-top: -1px
+      margin-left: 3px
+    p
+      margin: 0
+      padding-top: 1px
+      color: #ffffff
+      font-weight: 700
+      font-size: 22px
+      line-height: 1.2em
+  &__c
+    padding: 15px
+    background-color: $colorE
+    color: #ffffff
+    p
+      margin: 0
+      font-weight: 700
+      font-size: 17px
+      line-height: 1.2em
+  .underlined
+    padding-bottom: 2px
+    background: transparent url(../img/undeline1.svg) 50% 100% no-repeat
+    background-size: 100% auto
+
+@import "media"
+
+
+/* Regular Banner Styles */
+.holiday-bar-regular
+  background-color: #FFFD0A
+  color: #071330
+  &__inner
+    display: flex
+    align-items: center
+    justify-content: center
+    min-height: 48px
+  &__icon
+    margin: 0 12px
+    img
+      display: block
+  &__text
+    font-weight: 700
+  .line-1, .line-2
+    margin: 0 5px
+  .line-1
+    color: #ee1e27
+    font-size: 24px
+    line-height: 1.1em
+    text-transform: uppercase
+  .line-2
+    padding-left: 11px
+    border-left: 2px solid #071330
+    color: #071330
+    font-size: 19px
+    line-height: 1.1em
+  @media (max-width: 991px)
+    &__inner
+      flex-direction: column
+      padding: 9px
+    &__icon
+      margin: 0 5px
+      img
+        width: 24px
+    .line-1, .line-2
+      margin: 0
+      letter-spacing: -.2px
+      text-align: center
+    .line-1
+      //margin-bottom: 3px
+    .line-2
+      display: flex
+      align-items: center
+      justify-content: center
+      padding: 0
+      border: 0
+      font-size: 17px

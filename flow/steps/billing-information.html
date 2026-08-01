@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Payment Details | Poconos Getaway Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="assets/css/brand.css" rel="stylesheet">
+  <style>
+    .os-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; align-items: stretch; width: 100%; max-width: var(--maxw); }
+    @media (max-width: 900px) { .os-grid { grid-template-columns: 1fr; } }
+    @media (min-width: 901px) { .os-summary { position: sticky; top: 20px; } }
+
+    /* CR-04 — offer summary card: full-height image column with %-OFF pill overlay,
+       title/rating/amenities center, price block top-right (booking-site pattern) */
+    .offer-card { display: flex; align-items: stretch; width: 100%; max-width: var(--maxw); margin: 0 auto 20px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-card); overflow: hidden; }
+    .offer-card__media { position: relative; flex: 0 0 190px; min-height: 130px; }
+    .offer-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .offer-card__pill { position: absolute; left: 10px; bottom: 10px; background: var(--coral); color: #fff; font-size: 13px; font-weight: 800; line-height: 1; padding: 7px 12px; border-radius: var(--radius-pill); white-space: nowrap; }
+    /* content: details column + price column, both vertically centered */
+    .offer-card__content { flex: 1 1 auto; min-width: 0; padding: 14px 20px; display: flex; align-items: center; gap: 20px; }
+    .offer-card__info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .offer-card__title { font-size: 19px; font-weight: 800; color: var(--ink); line-height: 1.2; }
+    .offer-card__pricecol { flex: 0 0 auto; align-self: stretch; display: flex; flex-direction: column; justify-content: center; text-align: right; border-left: 1px solid var(--line); padding-left: 20px; }
+    .offer-card__dealrow { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+    .offer-card__deal { background: rgba(233, 101, 74, .12); color: var(--coral); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: var(--radius-pill); }
+    .offer-card__now { font-size: 26px; font-weight: 900; color: var(--ink); line-height: 1; }
+    .offer-card__sub { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 4px; white-space: nowrap; }
+    .offer-card__sub s { color: var(--muted); }
+    .offer-card__rating { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); flex-wrap: wrap; }
+    .offer-card__rating img { height: 16px; width: auto; display: block; }
+    .offer-card__amens { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; font-weight: 600; color: var(--text); }
+    .offer-card__amens span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .offer-card__amens .pf-i { width: 16px; height: 16px; color: var(--navy); flex: 0 0 auto; }
+    @media (max-width: 600px) {
+      .offer-card { margin-bottom: 14px; }
+      .offer-card__media { flex-basis: 94px; min-height: 96px; }
+      .offer-card__pill { left: 6px; bottom: 6px; font-size: 10px; padding: 5px 8px; }
+      .offer-card__content { padding: 8px 10px; gap: 4px; flex-direction: column; align-items: stretch; }
+      .offer-card__info { gap: 4px; }
+      .offer-card__title { font-size: 14px; }
+      /* price becomes a bottom row: sub left, price right */
+      .offer-card__pricecol { align-self: auto; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 8px; border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 4px; margin-top: 1px; }
+      .offer-card__now { font-size: 18px; }
+      .offer-card__sub { font-size: 10px; margin-top: 0; }
+      .offer-card__deal { display: none; }
+      .offer-card__rating { font-size: 11px; gap: 6px; }
+      .offer-card__rating img { height: 12px; }
+      .offer-card__amens { gap: 3px 10px; font-size: 10px; }
+      .offer-card__amens .pf-i { width: 12px; height: 12px; }
+    }
+
+    .bill-fineprint { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 6px 0 18px; }
+    .bill-fineprint a { color: var(--navy); text-decoration: underline; }
+    .bill-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 4px 0 10px; }
+    .bill-wallets { display: flex; flex-direction: column; gap: 12px; }
+    .bill-wallet {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #000; color: #fff; border: none; border-radius: var(--radius-pill);
+      font-family: var(--font); font-size: 16px; font-weight: 600; padding: 14px; cursor: pointer; width: 100%;
+    }
+    .bill-wallet:hover { background: #1a1a1a; }
+    .bill-wallet__logo { width: auto; display: block; flex: 0 0 auto; }
+    .bill-wallet__logo--apple { height: 20px; position: relative; top: -2px; }
+    .bill-wallet__logo--google { height: 18px; }
+    .bill-or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; margin: 18px 0; }
+    .bill-or::before, .bill-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .bill-fields { display: flex; flex-direction: column; gap: 12px; }
+    .pf-select {
+      width: 100%; font-family: var(--font); font-size: 16px; color: var(--text);
+      background: #fff; border: 1px solid var(--field-border); border-radius: var(--radius-sm);
+      padding: 12px 14px; outline: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23667085' d='M6 8 0 2 1.4.6 6 5.2 10.6.6 12 2z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+    }
+    .pf-select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33,82,114,.12); }
+    .pf-select.is-invalid { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(233, 101, 74, .14); }
+    .pf-select:disabled { background-color: var(--bg); color: var(--muted); cursor: not-allowed; }
+
+    /* ---- Basis Theory injected card fields ----
+       swiftly-front-tokenization.js hides the native Credit Card Number /
+       Exp. Date / CVC inputs and mounts generic Bootstrap-style containers.
+       Restyle those mounts so they look exactly like .pf-field / .pf-input /
+       .pf-row from the brand stylesheet (02-billing.html reference). */
+    .swiftly-tokenize-mount { display: flex; flex-direction: column; margin: 0; }
+    .swiftly-tokenize-mount label { font-size: 13px; font-weight: 600; color: var(--text); margin: 0 0 6px; }
+    .swiftly-tokenize-mount .form-control {
+      width: 100%;
+      background: var(--white);
+      border: 1px solid var(--field-border);
+      border-radius: var(--radius-sm);
+      /* !important beats the inline padding/min-height set by the injector */
+      padding: 0 14px !important;
+      min-height: 46px !important;
+      display: flex; flex-direction: column; justify-content: center;
+      box-shadow: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .swiftly-tokenize-mount .form-control:focus-within { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33, 82, 114, .12); }
+    .swiftly-tokenize-mount .form-control iframe { display: block; width: 100%; }
+    /* Exp. Date + CVC side by side, like .pf-row */
+    .swiftly-tokenize-mount .row { display: flex; gap: 12px; margin: 12px 0 0 !important; }
+    .swiftly-tokenize-mount .row > [class*="col"] { flex: 1 1 0; min-width: 0; padding: 0; }
+    .swiftly-tokenize-mount .row .form-group { display: flex; flex-direction: column; margin: 0; }
+    @media (max-width: 520px) { .swiftly-tokenize-mount .row { flex-direction: column; } }
+    /* Collapse the emptied .pf-row that held the native Exp/CVC inputs so it
+       doesn't leave a stray flex gap in .bill-fields. */
+    .bill-fields .pf-row:has(> .pf-field[style*="display: none"]) { display: none; }
+
+    .bill-safe { text-align: center; margin-top: 18px; }
+    .bill-safe__title { font-weight: 800; color: var(--ink); margin-bottom: 10px; }
+    .bill-safe__icons { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .bill-safe__badge { height: 28px; width: auto; display: block; }
+    .bill-safe__badge--icon { height: 24px; }
+    .bill-safe__note { font-size: 11px; color: var(--muted); margin-top: 10px; }
+
+    .os-rating { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+    .os-rating .stars { color: #00aa6c; letter-spacing: 1px; font-size: 15px; }
+    .os-dates-mini { display: flex; flex-direction: column; gap: 4px; font-size: 14px; margin: 12px 0; color: var(--text); }
+    .os-badges { display: flex; justify-content: center; gap: 16px; margin: 4px 0; }
+    .os-badges span { width: 52px; height: 52px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--navy); font-size: 22px; border: 1px solid var(--line); }
+    .os-travel { text-align: center; font-size: 13px; color: var(--muted); }
+
+    /* Mobile vertical compression */
+    @media (max-width: 767px) {
+      .bill-wallets { gap: 10px; }
+      .bill-wallet { padding: 12px; font-size: 15px; }
+      .bill-or { margin: 12px 0; }
+      .bill-fields { gap: 10px; }
+      .bill-fineprint { margin: 6px 0 14px; }
+      .bill-safe { margin-top: 14px; }
+      .bill-safe__icons { gap: 12px; }
+      .os-dates-mini { margin: 10px 0; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="billing-information">
+
+  <header class="pf-navbar">
+    <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
+  </header>
+
+  <!-- ALERT BAR (social-proof ticker) -->
+  <div class="alert-bar" role="status" aria-live="polite" aria-label="Live demand">
+    <div class="alert-ticker">
+      <div class="alert-item" data-key="viewing" data-min="180" data-max="240">
+        <i data-lucide="eye" class="alert-ic" aria-hidden="true"></i>
+        <span><span class="alert-num">211</span> viewing now</span>
+      </div>
+      <div class="alert-item" data-key="booked">
+        <i data-lucide="shopping-bag" class="alert-ic" aria-hidden="true"></i>
+        <span><span class="alert-num">27</span> booked today</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="pf-main">
+
+    <!-- CR-04 — offer summary (dynamic; mirrors the active offer) -->
+    <div class="offer-card" role="note" aria-label="Your offer summary">
+      <div class="offer-card__media">
+        <img src="assets/images/resort.webp" alt="Pocono Mountain Villas" loading="lazy">
+        <span class="offer-card__pill"><span id="offPct">93%</span> OFF</span>
+      </div>
+      <div class="offer-card__content">
+        <div class="offer-card__info">
+          <div class="offer-card__title" id="offName">Pocono Mountain Villas</div>
+          <div class="offer-card__rating">
+            <img src="assets/images/ta-rating.webp" alt="Rated 4 out of 5" loading="lazy">
+            <span><strong id="offReviews">4,850</strong> reviews</span>
+          </div>
+          <div class="offer-card__amens">
+            <span><i data-lucide="calendar-days" class="pf-i"></i><span id="offStay">4-Days / 3-Nights</span></span>
+            <span><i data-lucide="bed-double" class="pf-i"></i>1-Bedroom Condo &amp; Fireplace</span>
+            <span><i data-lucide="map-pin" class="pf-i"></i>Poconos</span>
+          </div>
+        </div>
+        <div class="offer-card__pricecol">
+          <div class="offer-card__dealrow">
+            <span class="offer-card__deal">Deal</span>
+            <span class="offer-card__now" id="offNow">$59</span>
+          </div>
+          <span class="offer-card__sub">Retail <s id="offRetail">$803</s> &middot; <span id="offPer">Per Family of Four</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf-stepper">
+      <div class="pf-step is-done"><span class="pf-step__label">Order Details</span><span class="pf-step__bar"></span></div>
+      <div class="pf-step is-active"><span class="pf-step__label">Payment Details</span><span class="pf-step__bar"></span></div>
+    </div>
+
+    <div class="os-grid">
+      <!-- LEFT: BILLING -->
+      <form class="pf-card" id="billingForm" method="post" action="javascript:void(0);" data-step-slug="billing-information" onsubmit="return false;" novalidate>
+        <div class="pf-card__pad">
+          <h2 class="pf-title">Complete Your Billing Info</h2>
+
+          <p class="bill-eyebrow">Express checkout</p>
+          <div class="bill-wallets">
+            <button type="button" class="bill-wallet" data-wallet="apple"><span>Book with</span><img class="bill-wallet__logo bill-wallet__logo--apple" src="assets/images/apple-logo.svg" alt="Apple"><span>Pay</span></button>
+            <button type="button" class="bill-wallet" data-wallet="google"><span>Book with</span><img class="bill-wallet__logo bill-wallet__logo--google" src="assets/images/google-g.svg" alt="Google"><span>Pay</span></button>
+          </div>
+
+          <div class="bill-or">Or pay with card</div>
+
+          <div class="bill-fields">
+            <div class="pf-field">
+              <input class="pf-input" name="cardholder_name" id="cardholder_name" placeholder="Name on Card" autocomplete="cc-name">
+              <span class="pf-field__error">Enter the name on your card.</span>
+            </div>
+            <p class="pf-subtitle" style="margin-top:-6px;">Please input the name exactly as it appears on credit card</p>
+
+            <div class="pf-field">
+              <select class="pf-select" name="billing_country" id="billing_country" autocomplete="billing country">
+                <option value="">Country</option>
+                <option value="US">United States</option>
+                <option value="CA">Canada</option>
+              </select>
+              <span class="pf-field__error">Select your country.</span>
+            </div>
+
+            <div class="pf-field">
+              <input class="pf-input" name="billing_address" id="billing_address" placeholder="Address" autocomplete="billing street-address">
+              <span class="pf-field__error">Enter your billing address.</span>
+            </div>
+
+            <div class="pf-row">
+              <div class="pf-field">
+                <input class="pf-input" name="billing_city" id="billing_city" placeholder="City" autocomplete="billing address-level2">
+                <span class="pf-field__error">Enter your city.</span>
+              </div>
+              <div class="pf-field">
+                <select class="pf-select" name="billing_state" id="billing_state" autocomplete="billing address-level1" disabled>
+                  <option value="">State</option>
+                </select>
+                <span class="pf-field__error">Select your state.</span>
+              </div>
+              <div class="pf-field">
+                <input class="pf-input" name="billing_zip" id="billing_zip" placeholder="Zip" inputmode="numeric" maxlength="10" autocomplete="billing postal-code">
+                <span class="pf-field__error">Enter your zip.</span>
+              </div>
+            </div>
+
+            <div class="pf-field">
+              <label>Credit Card Number</label>
+              <input class="pf-input" name="card_number" id="card_number" placeholder="0000 0000 0000 0000" inputmode="numeric" autocomplete="cc-number">
+              <span class="pf-field__error">Enter a valid card number.</span>
+            </div>
+
+            <div class="pf-row">
+              <div class="pf-field">
+                <label>Exp. Date</label>
+                <input class="pf-input" name="card_exp" id="card_exp" placeholder="MM / YY" inputmode="numeric" autocomplete="cc-exp">
+                <span class="pf-field__error">MM / YY</span>
+              </div>
+              <div class="pf-field">
+                <label>CVC</label>
+                <input class="pf-input" name="card_cvc" id="card_cvc" placeholder="***" inputmode="numeric" autocomplete="cc-csc">
+                <span class="pf-field__error">CVC</span>
+              </div>
+            </div>
+          </div>
+
+          <label class="pf-check" style="margin-top:16px;display:flex;gap:10px;align-items:flex-start;">
+            <input type="checkbox" name="terms_agreed" id="terms_agreed" value="1" required>
+            <span class="pf-check__text">By clicking the button below, I acknowledge that I have reviewed the <a href="../privacy-policy.html" target="_blank">Privacy Statement</a> and have reviewed and accept the <a href="../terms-and-conditions.html" target="_blank">Terms and Conditions</a>.</span></label>
+
+          <div class="pf-actionbar">
+            <button type="submit" class="pf-btn" id="payBtn">Pay With Credit Card</button>
+          </div>
+
+          <div class="bill-safe">
+            <div class="bill-safe__title">Guaranteed Safe Checkout</div>
+            <div class="bill-safe__icons">
+              <img src="assets/images/pay-visa.svg" alt="Visa" class="bill-safe__badge">
+              <img src="assets/images/pay-mastercard.svg" alt="Mastercard" class="bill-safe__badge">
+              <img src="assets/images/pay-amex.svg" alt="American Express" class="bill-safe__badge">
+              <img src="assets/images/pay-pci.svg" alt="PCI compliant" class="bill-safe__badge">
+              <img src="assets/images/pay-lock.svg" alt="Secure" class="bill-safe__badge bill-safe__badge--icon">
+              <img src="assets/images/pay-encrypted.svg" alt="Encrypted" class="bill-safe__badge bill-safe__badge--icon">
+            </div>
+            <div class="bill-safe__note">We use secure transmission and encrypted storage to protect your personal information.</div>
+          </div>
+        </div>
+      </form>
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <aside class="pf-card os-summary">
+        <div class="pf-card__pad">
+          <!-- De-duped (QA): the marketing card at the top of the page owns the resort identity;
+               this column is strictly the transactional order summary. -->
+          <h2 class="pf-title" style="margin:0;">Order Summary</h2>
+          <p class="pf-subtitle" style="margin:4px 0 0;">One-Bedroom Condo with Fireplace &amp; Full Kitchen &middot; Sleeps up to 2 Adults + 2 Children</p>
+
+          <div class="os-dates-mini" style="margin-top:16px;">
+            <div class="pf-price-line"><span id="sumStay">4-Days / 3-Nights</span><span class="pf-strike" id="sumRetail">$803</span></div>
+            <div class="pf-price-line"><span>Your Price</span><span class="pf-save" id="sumSave">Save 93%</span></div>
+            <div class="pf-price-line"><span>Booking Fee</span><span>$0.00</span></div>
+            <div class="pf-price-total"><span>Total</span><span id="sumTotal">$59</span></div>
+          </div>
+          <div class="os-dates-mini" id="sumDatesLines" hidden>
+            <div class="os-line"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in: <strong id="sumCheckIn">&mdash;</strong></div>
+            <div class="os-line"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out: <strong id="sumCheckOut">&mdash;</strong></div>
+          </div>
+          <div class="pf-hold">
+            <div class="pf-hold__label">We are Holding Your Reservation for:</div>
+            <div class="pf-hold__timer" id="holdTimer">00:10:00</div>
+            <div class="pf-hold__note">This Poconos getaway is in high demand. We have reserved this package for <strong id="holdMins">10 minutes</strong>.</div>
+          </div>
+          <div class="os-badges" style="margin-top:16px;">
+            <img src="assets/images/badge-01.svg" alt="Best Price Guarantee" loading="lazy">
+            <img src="assets/images/badge-02.svg" alt="100% Secure Transaction" loading="lazy">
+            <img src="assets/images/badge-03.svg" alt="12 Months to Book Dates" loading="lazy">
+          </div>
+          <p class="os-travel">Take up to 12 months to travel.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../terms-and-conditions.html">Terms &amp; Conditions</a>
+      <span>|</span>
+      <a href="../privacy-policy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script src="assets/libs/lucide/lucide.min.js"></script>
+  <script src="assets/js/flow-state.js"></script>
+  <script src="assets/js/legal-modal.js"></script>
+  <script src="assets/js/sticky-offer.js"></script>
+  <script src="assets/js/keyboard-aware.js"></script>
+  <script src="assets/js/billing-regions.js"></script>
+  <script>
+  (function () {
+    var s = FlowState.get();
+
+    // Guard: if opened standalone with no prior step, that's fine — defaults apply.
+    // CR-04 offer summary (everything pulls from the active offer/session)
+    document.getElementById("offPct").textContent = s.discountPct + "%";
+    document.getElementById("offStay").textContent = s.stayLabel;
+    document.getElementById("offName").innerHTML = s.resortName;
+    document.getElementById("offRetail").textContent = FlowState.money(s.retailCents);
+    document.getElementById("offNow").textContent = FlowState.money(s.priceCents);
+    document.getElementById("offPer").textContent = s.perLabel;
+    document.getElementById("offReviews").textContent = s.ratingReviews.toLocaleString();
+
+    document.getElementById("sumStay").textContent = s.stayLabel;
+    document.getElementById("sumRetail").textContent = FlowState.money(s.retailCents);
+    document.getElementById("sumSave").textContent = "Save " + s.discountPct + "%";
+    document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents());
+    document.getElementById("holdMins").textContent = s.holdMinutes + " minutes";
+    document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+    // Travel dates: Offer Flow session (prefill from the customer record) wins over
+    // localStorage; parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day.
+    var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
+    var fmt = function (t) {
+      if (!t) return "\u2014";
+      var d;
+      if (typeof t === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t)) {
+        var p = t.split("-");
+        d = new Date(+p[0], +p[1] - 1, +p[2]);
+      } else {
+        d = new Date(t);
+      }
+      return isNaN(d.getTime()) ? "\u2014" : d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    };
+    var checkIn = prefill.travel_start_date || s.dates.checkIn;
+    var checkOut = prefill.travel_end_date || s.dates.checkOut;
+    document.getElementById("sumCheckIn").textContent = fmt(checkIn);
+    document.getElementById("sumCheckOut").textContent = fmt(checkOut);
+    // Per Figma dev note: only show the check-in/out lines once dates are chosen.
+    document.getElementById("sumDatesLines").hidden = !checkIn;
+
+    // Hold timer (deadline persists across pages/refreshes)
+    (function () {
+      var deadline = FlowState.holdDeadline(), el = document.getElementById("holdTimer");
+      (function tick() {
+        var pad = function (n) { return String(n).padStart(2, "0"); };
+        var total = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+        var h = Math.floor(total / 3600), m = Math.floor((total % 3600) / 60), sec = total % 60;
+        el.textContent = pad(h) + ":" + pad(m) + ":" + pad(sec);
+        if (total > 0) setTimeout(tick, 1000);
+      })();
+    })();
+
+    // Live alert bar (numbers keep ticking behind the crossfade)
+    (function () {
+      var bar = document.querySelector(".alert-bar");
+      if (!bar) return;
+      var viewingItem = bar.querySelector('[data-key="viewing"]');
+      var bookedItem = bar.querySelector('[data-key="booked"]');
+      var viewing = viewingItem && viewingItem.querySelector(".alert-num");
+      var booked = bookedItem && bookedItem.querySelector(".alert-num");
+      if (!viewing) return;
+      var vMin = +viewingItem.dataset.min, vMax = +viewingItem.dataset.max;
+      (function viewingLoop() {
+        setTimeout(function () {
+          var v = +viewing.textContent + (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 4));
+          v = Math.max(vMin, Math.min(vMax, v));
+          if (v !== +viewing.textContent) viewing.textContent = v;
+          viewingLoop();
+        }, 900 + Math.random() * 900);
+      })();
+      (function bookedLoop() {
+        setTimeout(function () {
+          if (booked && Math.random() < 0.7) booked.textContent = +booked.textContent + 1;
+          bookedLoop();
+        }, 3000 + Math.random() * 3000);
+      })();
+    })();
+
+    // Input formatting
+    var f = document.getElementById("billingForm");
+
+    // Region list follows the selected country (see assets/js/billing-regions.js)
+    BillingRegions.bind(f.elements.billing_country, f.elements.billing_state);
+
+    f.elements.card_number.addEventListener("input", function (e) {
+      var v = e.target.value.replace(/\D/g, "").slice(0, 16);
+      e.target.value = v.replace(/(.{4})/g, "$1 ").trim();
+    });
+    f.elements.card_exp.addEventListener("input", function (e) {
+      var v = e.target.value.replace(/\D/g, "").slice(0, 4);
+      e.target.value = v.length > 2 ? v.slice(0, 2) + " / " + v.slice(2) : v;
+    });
+    f.elements.card_cvc.addEventListener("input", function (e) { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4); });
+
+    function invalidate(name, bad) {
+      var el = f.elements[name]; if (!el) return;
+      var field = el.closest(".pf-field"); if (field) field.classList.toggle("is-invalid", bad);
+      el.classList.toggle("is-invalid", bad);
+    }
+
+    // ----- Payment: Offer Flow owns submit when session_token is present -----
+
+    function swiftlyHasOfferFlowSession() {
+      try {
+        if (new URLSearchParams(window.location.search).get('session_token')) return true;
+        if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
+      } catch (e) {}
+      return false;
+    }
+
+    function processPaymentMock() {
+      var btn = document.getElementById("payBtn");
+      btn.disabled = true; btn.textContent = "Processing\u2026";
+      setTimeout(function () {
+        FlowState.set({ status: "purchased", payment: { provider: "mock", status: "authorized", authId: "auth_" + Date.now() } });
+        console.log("[static-front] billing payment mocked");
+        window.location.href = "bonus-vacation.html" + window.location.search;
+      }, 900);
+    }
+
+    // Wallet buttons: mock only without Offer Flow session
+    f.querySelectorAll("[data-wallet]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (swiftlyHasOfferFlowSession()) {
+          alert("Please pay with credit card for this checkout.");
+          return;
+        }
+        FlowState.set({ payment: { provider: b.getAttribute("data-wallet"), status: "authorized", authId: "wallet_" + Date.now() } });
+        processPaymentMock();
+      });
+    });
+
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = (f.elements.cardholder_name.value || "").trim();
+      var num = (f.elements.card_number.value || "").replace(/\s/g, "");
+      var exp = (f.elements.card_exp.value || "").replace(/\D/g, "");
+      var cvc = f.elements.card_cvc.value || "";
+      var addr = (f.elements.billing_address.value || "").trim();
+      var country = f.elements.billing_country.value;
+      var city = (f.elements.billing_city.value || "").trim();
+      var st = f.elements.billing_state.value;
+      var zip = (f.elements.billing_zip.value || "").trim();
+      var terms = f.elements.terms_agreed;
+      var bad = false;
+      invalidate("cardholder_name", !name); bad = bad || !name;
+      invalidate("billing_country", !country); bad = bad || !country;
+      invalidate("billing_address", !addr); bad = bad || !addr;
+      invalidate("billing_city", !city); bad = bad || !city;
+      invalidate("billing_state", !st); bad = bad || !st;
+      invalidate("billing_zip", zip.length < 5); bad = bad || zip.length < 5;
+      invalidate("card_number", num.length < 15); bad = bad || num.length < 15;
+      invalidate("card_exp", exp.length < 4); bad = bad || exp.length < 4;
+      invalidate("card_cvc", cvc.length < 3); bad = bad || cvc.length < 3;
+      if (terms && !terms.checked) { bad = true; try { terms.focus(); } catch (err) {} }
+      if (bad) { var first = f.querySelector(".pf-field.is-invalid .pf-input, .pf-field.is-invalid .pf-select"); if (first) first.focus(); return; }
+
+      if (swiftlyHasOfferFlowSession()) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(f);
+        }
+        return;
+      }
+
+      FlowState.setIn("billing", { cardName: name, address: addr, city: city, state: st, zip: zip, country: country });
+      processPaymentMock();
+    });
+  })();
+  </script>
+  <script>lucide.createIcons();</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260730vg" defer></script>
+</body>
+</html>

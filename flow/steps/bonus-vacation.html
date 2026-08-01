@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bonus Vacation Offer | Poconos Getaway Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="assets/css/brand.css" rel="stylesheet">
+  <style>
+    .up-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: stretch; width: 100%; max-width: var(--maxw); }
+    @media (max-width: 900px) { .up-grid { grid-template-columns: 1fr; } }
+    /* Both columns share the row height; the summary card fills its stretched column. */
+    .up-summary { display: flex; flex-direction: column; }
+    .up-summary > .pf-card { flex: 1 1 auto; }
+    @media (min-width: 901px) { .up-summary { position: sticky; top: 20px; } }
+
+    /* left offer module — mirrors step 4 (tickets) for a consistent step-to-step layout */
+    .tk-headline { font-size: 30px; font-weight: 800; color: var(--ink); margin: 0 0 20px; line-height: 1.1; }
+    .tk-lead { font-size: 22px; font-weight: 700; color: var(--ink); margin: 0 0 10px; }
+    .tk-desc { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 24px; }
+    .tk-desc strong { color: var(--coral); }
+    .tk-save { font-size: 20px; font-weight: 800; color: var(--ink); margin: 0 0 16px; }
+
+    /* Bonus-vacation intro + destination gallery */
+    .dest-intro { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 24px; }
+    .dest-intro strong { color: var(--ink); }
+    .dest-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .dest-tile { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; }
+    .dest-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .dest-tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.8)); }
+    .dest-tile__label { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 1; text-align: center; color: #fff; font-weight: 800; font-size: 18px; letter-spacing: .03em; text-transform: uppercase; padding: 0 8px; }
+
+    /* Action row uses the shared .pf-actionbar (static desktop, fixed thumb-zone bar on mobile). */
+
+    /* summary — guest-reviews head matches steps 1 & 2 (styles shared from brand.css) */
+    .os-rating { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+    .up-list { margin: 16px 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .up-list .row { display: flex; justify-content: space-between; gap: 8px; }
+    .up-list .k { color: var(--text); }
+    .up-list .v { font-weight: 600; color: var(--ink); }
+    .up-upgrades-title { font-weight: 800; color: var(--ink); margin: 14px 0 8px; }
+    .up-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 900; color: var(--ink); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; }
+
+    /* ---- Travel Protection popup (Add TP window) ---- */
+    .tp-card { max-width: 720px; padding: 0; gap: 0; display: flex; flex-direction: column; align-items: stretch; text-align: left; overflow: hidden; }
+    /* Full-width "Highly Recommended" banner across the top of the card */
+    .tp-banner { display: flex; align-items: center; justify-content: center; gap: 9px; background: var(--navy); color: #fff; font-size: 16px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 12px 16px; }
+    .tp-banner .pf-i { width: 20px; height: 20px; color: #fff; }
+    .tp-body { padding: 32px 40px; display: flex; flex-direction: column; gap: 22px; }
+    .tp-head { display: flex; gap: 16px; align-items: flex-start; }
+    .tp-icon { width: 44px; height: 44px; color: var(--navy); flex: 0 0 auto; }
+    .tp-title { font-size: 24px; font-weight: 800; color: var(--ink); margin: 0; line-height: 1.2; }
+    .tp-sub { font-size: 16px; line-height: 1.5; color: var(--text); margin: 0; }
+    .tp-sub strong { color: var(--ink); }
+    .tp-choose { font-size: 18px; font-weight: 800; color: var(--ink); }
+    .tp-opt { border-radius: 12px; padding: 20px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
+    .tp-opt--yes { background: #e5f5ff; }
+    .tp-opt--no { background: #f7f7f7; }
+    .tp-opt.is-selected { border-color: var(--navy); }
+    .tp-opt__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .tp-opt__lead { display: flex; align-items: center; gap: 10px; }
+    .tp-opt__label { font-size: 16px; font-weight: 600; color: var(--ink); }
+    .tp-opt input[type=radio] { width: 20px; height: 20px; accent-color: var(--navy); flex: 0 0 auto; margin: 0; cursor: pointer; }
+    .tp-price { background: rgba(0, 0, 0, .08); border-radius: 6px; padding: 6px 10px; text-align: center; line-height: 1.15; flex: 0 0 auto; }
+    .tp-price strong { display: block; font-size: 16px; color: var(--ink); }
+    .tp-price span { font-size: 12px; color: var(--text); }
+    .tp-reasons { padding-left: 30px; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .tp-reasons__title { font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #205272; margin: 0; }
+    .tp-reason { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #333; }
+    .tp-reason .pf-i { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 1px; color: #555; }
+    .tp-reason p { margin: 0; line-height: 1.35; }
+    .tp-reason strong { color: #1a1a1a; }
+    .tp-reason a { color: #0037eb; text-decoration: underline; }
+    .tp-continue { align-self: flex-start; width: auto; padding-left: 44px; padding-right: 44px; }
+    .tp-continue:disabled { background: #b2b2b2; cursor: not-allowed; box-shadow: none; }
+
+    @media (max-width: 560px) {
+      /* Stack the label and price, but render the price as a clean inline line
+         (not a floating chip) so it doesn't look detached / "hanging". */
+      .tp-opt__top { flex-direction: column; align-items: stretch; gap: 8px; }
+      .tp-price { display: flex; align-items: baseline; gap: 6px; width: 100%; background: transparent; padding: 0; text-align: left; }
+      .tp-price strong { display: inline; }
+      .tp-continue { align-self: stretch; }
+    }
+
+    /* Mobile vertical compression */
+    @media (max-width: 767px) {
+      /* Travel Protection popup — compact so it fits the phone viewport */
+      .tp-banner { font-size: 14px; letter-spacing: .04em; padding: 10px 14px; }
+      .tp-banner .pf-i { width: 17px; height: 17px; }
+      .tp-body { padding: 20px 16px; gap: 14px; }
+      .tp-head { gap: 12px; }
+      .tp-icon { width: 30px; height: 30px; }
+      .tp-title { font-size: 18px; line-height: 1.25; }
+      .tp-sub { font-size: 13.5px; line-height: 1.4; }
+      .tp-choose { font-size: 15px; }
+      .tp-opt { padding: 14px; border-radius: 10px; }
+      .tp-opt__label { font-size: 14px; }
+      .tp-price strong { font-size: 14px; }
+      .tp-price span { font-size: 11px; }
+      .tp-reasons { padding-left: 4px; margin-top: 12px; gap: 8px; }
+      .tp-reasons__title { font-size: 12px; }
+      .tp-reason { font-size: 12.5px; }
+      .tp-reason .pf-i { width: 16px; height: 16px; }
+    }
+
+    /* Short viewports (iPhone SE class) — compress the TP popup further so it
+       fits 667px without relying on internal scroll. */
+    @media (max-height: 700px) {
+      .tp-banner { font-size: 12px; padding: 8px 12px; }
+      .tp-banner .pf-i { width: 15px; height: 15px; }
+      .tp-body { padding: 14px 14px; gap: 10px; }
+      .tp-icon { width: 24px; height: 24px; }
+      .tp-title { font-size: 16px; }
+      .tp-sub { font-size: 12.5px; line-height: 1.35; }
+      .tp-choose { font-size: 14px; }
+      .tp-opt { padding: 10px 12px; }
+      .tp-opt__label { font-size: 13px; }
+      .tp-reasons { margin-top: 8px; gap: 6px; }
+      .tp-reason { font-size: 12px; }
+      .tp-reason p { line-height: 1.3; }
+      .tp-continue { padding-top: 11px; padding-bottom: 11px; font-size: 14px; }
+    }
+
+    @media (max-width: 767px) {
+
+      .tk-headline { font-size: 22px; margin: 0 0 12px; }
+      .dest-intro { font-size: 14px; margin: 0 0 16px; }
+      .dest-gallery { gap: 10px; }
+      .dest-tile__label { font-size: 14px; bottom: 10px; }
+      .up-list { margin: 12px 0; }
+      .up-total { font-size: 18px; padding-top: 10px; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="bonus-vacation">
+
+  <header class="pf-navbar">
+    <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
+  </header>
+
+  <main class="pf-main">
+    <div class="up-grid">
+      <!-- LEFT: OFFER (mirrors step 4 module) -->
+      <section class="pf-card">
+        <div class="pf-card__pad">
+          <h1 class="tk-headline">A Bonus 4-Night Getaway for only <span id="extendPrice">$49</span></h1>
+          <p class="dest-intro">Enjoy 4 nights in your choice of 40 exciting destinations such as Cancun, Orlando, Vegas, Caribbean and more! This exclusive offer provides quality lodging for just $49. <strong>You won&rsquo;t find this deal available to the public!</strong></p>
+
+          <div class="dest-gallery">
+            <div class="dest-tile"><img src="assets/images/dest-canada.webp" alt="Canada" loading="lazy"><span class="dest-tile__label">Canada</span></div>
+            <div class="dest-tile"><img src="assets/images/dest-mexican-riviera.webp" alt="Mexican Riviera" loading="lazy"><span class="dest-tile__label">Mexican Riviera</span></div>
+            <div class="dest-tile"><img src="assets/images/dest-orlando.webp" alt="Orlando" loading="lazy"><span class="dest-tile__label">Orlando</span></div>
+            <div class="dest-tile"><img src="assets/images/dest-caribbean.webp" alt="Caribbean" loading="lazy"><span class="dest-tile__label">Caribbean</span></div>
+          </div>
+
+          <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="bonus-vacation" onsubmit="return false;">
+            <input type="hidden" name="travel_protection_two" id="travel_protection_two" value="">
+            <input type="hidden" name="bonus_vacation" id="bonus_vacation" value="">
+            <button type="button" class="pf-btn cont" id="addBtn">Add Vacation &middot; $49</button>
+            <button type="button" class="pf-btn pf-btn--ghost skip" id="skipBtn">No thanks</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- RIGHT: PACKAGE SUMMARY -->
+      <aside class="up-summary">
+        <div class="pf-card">
+          <div class="pf-card__pad">
+            <h2 class="pf-title" style="margin-bottom:14px;">Package Summary</h2>
+            <div class="os-review-head">
+              <img class="pf-summary__img" src="assets/images/resort.webp" alt="Pocono Mountain Villas">
+              <div class="os-review-info">
+                <div class="pf-summary__name" id="sumName">Pocono Mountain Villas</div>
+                <div class="os-rating">
+                  <img class="os-rating__bubbles" src="assets/images/ta-rating.webp" alt="Rated 4 out of 5" loading="lazy">
+                  <span class="os-rating__reviews"><strong id="sumReviews">4,850</strong> reviews</span>
+                </div>
+                <p class="os-purchased">Over 8,239 People Have Purchased This Product</p>
+              </div>
+            </div>
+
+            <div class="up-paid-banner"><i data-lucide="badge-check" class="pf-i"></i><span>Payment confirmed &mdash; your package is <strong>paid &amp; secured</strong></span></div>
+
+            <div class="up-list">
+              <div class="row"><span class="k"><i data-lucide="badge-check" class="pf-i"></i>Confirmation #</span><span class="v" id="sumConf">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
+              <div class="row"><span class="k"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in</span><span class="v" id="sumCheckIn">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="banknote" class="pf-i"></i>Booking Fee</span><span class="v">$0</span></div>
+              <div class="row"><span class="k"><i data-lucide="package" class="pf-i"></i>Package Price</span><span class="v" id="sumPkg">$59</span></div>
+            </div>
+
+            <div class="up-upgrades-title">Upgrades</div>
+            <div id="upgradeList"></div>
+
+            <div class="up-total"><span>Total price</span><span id="sumTotal">$59</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Purchase-confirmed toaster mount -->
+  <div class="pf-toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <!-- Travel Protection popup (Add TP window) — auto-opens after payment -->
+  <div class="pf-modal" id="tpModal" role="dialog" aria-modal="true" aria-labelledby="tpTitle" aria-hidden="true">
+    <div class="pf-modal__card tp-card">
+      <div class="tp-banner"><i data-lucide="shield-check" class="pf-i" aria-hidden="true"></i> Highly Recommended</div>
+      <div class="tp-body">
+        <div class="tp-head">
+          <i data-lucide="shield-plus" class="tp-icon" aria-hidden="true"></i>
+          <h2 class="tp-title" id="tpTitle">Congrats on locking in your vacation! Now add Travel Protection for your trip!</h2>
+        </div>
+        <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong>$24.99</strong>.</p>
+        <div class="tp-choose">Select Yes or No to continue booking</div>
+
+        <div class="tp-opt tp-opt--yes" id="tpOptYes">
+          <div class="tp-opt__top">
+            <span class="tp-opt__lead"><input type="radio" name="tp" id="tpYes" value="yes"><span class="tp-opt__label">Yes, I want Travel Protection for my vacation</span></span>
+            <span class="tp-price"><strong>$24.99</strong><span>one-time, covers your whole package</span></span>
+          </div>
+          <div class="tp-reasons">
+            <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
+            <div class="tp-reason"><i data-lucide="clock" class="pf-i"></i><p><strong>Travel Delay:</strong> Unexpected delays can lead to missed hotel nights and extra costs.</p></div>
+            <div class="tp-reason"><i data-lucide="calendar-x" class="pf-i"></i><p><strong>Trip Adjustments:</strong> An unforeseen event and travel dates need to be adjusted.</p></div>
+            <div class="tp-reason"><i data-lucide="circle-x" class="pf-i"></i><p><strong>Trip Cancellations:</strong> Illness, job loss, or family emergencies can lead to non-refundable trip costs. Read <a href="../../terms-and-conditions.html">Terms and Conditions</a>.</p></div>
+          </div>
+        </div>
+
+        <div class="tp-opt tp-opt--no" id="tpOptNo">
+          <span class="tp-opt__lead"><input type="radio" name="tp" id="tpNo" value="no"><span class="tp-opt__label">No, I&rsquo;m willing to risk my vacation valued at <span id="tpRetail">$748</span>.</span></span>
+        </div>
+
+        <button type="button" class="pf-btn tp-continue" id="tpContinue" disabled>Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retention modal ("wonder why not?") shown when declining the bonus vacation -->
+  <div class="pf-modal" id="retainModal" role="dialog" aria-modal="true" aria-labelledby="retainTitle" aria-hidden="true">
+    <div class="pf-modal__card">
+      <button type="button" class="pf-modal__close" id="retainClose" aria-label="Close">&times;</button>
+      <div class="pf-modal__head">
+        <i data-lucide="sparkles" class="pf-modal__icon" aria-hidden="true"></i>
+        <h2 class="pf-modal__title" id="retainTitle">Wait! Are You Sure?</h2>
+      </div>
+      <div class="pf-modal__body">
+        <p>You&rsquo;ve secured an amazing Poconos getaway&mdash;but why stop there? Add a <strong>bonus 4-night vacation</strong> in your choice of 40 top destinations for just <strong id="retainPrice">$49</strong>. You won&rsquo;t find this deal available to the public!</p>
+        <p><strong>So, do you want to add your bonus vacation?</strong></p>
+      </div>
+      <div class="pf-modal__actions">
+        <button type="button" class="pf-btn" id="retainYes">Yes, Add My Vacation</button>
+        <button type="button" class="pf-btn pf-btn--ghost" id="retainNo">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../../terms-and-conditions.html">Terms and Conditions</a>
+      <span>|</span>
+      <a href="../../privacy-policy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script src="assets/libs/lucide/lucide.min.js"></script>
+  <script src="assets/js/flow-state.js"></script>
+  <script src="assets/js/legal-modal.js"></script>
+  <script>
+  (function () {
+    var TP_DECISION_KEY = "swiftly_tp_decision";
+
+    function swiftlyHasOfferFlowSession() {
+      try {
+        if (new URLSearchParams(window.location.search).get("session_token")) return true;
+        if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
+      } catch (e) {}
+      return false;
+    }
+
+    function storageKey(key) {
+      var offerId = "";
+      var sessionToken = "";
+      try {
+        var params = new URLSearchParams(window.location.search);
+        offerId = params.get("offer_id") || "";
+        sessionToken = params.get("session_token") || "";
+      } catch (e) {}
+      if (!offerId && window.SWIFTLY_OFFER_FLOW) offerId = window.SWIFTLY_OFFER_FLOW.offerId || "";
+      if (!sessionToken && window.SWIFTLY_OFFER_FLOW) sessionToken = window.SWIFTLY_OFFER_FLOW.sessionToken || "";
+      return [key, offerId || "preview", sessionToken || "anonymous"].join(":");
+    }
+    function readStored(key) {
+      try { return sessionStorage.getItem(storageKey(key)) || ""; } catch (e) { return ""; }
+    }
+    function writeStored(key, value) {
+      try { sessionStorage.setItem(storageKey(key), value); } catch (e) {}
+    }
+
+    function resolvePaymentMode() {
+      var configured = window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradePaymentMode;
+      return configured === "dual" ? "dual" : "single";
+    }
+
+    function setStepSlug(formEl, slug) {
+      formEl.setAttribute("data-step-slug", slug);
+      var body = document.body;
+      if (body) body.setAttribute("data-swiftly-step", slug);
+      var hidden = formEl.querySelector('input[name="stepSlug"]');
+      if (!hidden) {
+        hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "stepSlug";
+        formEl.appendChild(hidden);
+      }
+      hidden.value = slug;
+    }
+
+    var BONUS_CENTS = 4900;
+    var TP_CENTS = 2499;
+    var ofSession = swiftlyHasOfferFlowSession();
+    var paymentMode = resolvePaymentMode();
+    var s = FlowState.get();
+    var form = document.getElementById("upgradeForm");
+
+    var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
+    var confNo = prefill.confirmation_number || prefill.confirmationNumber || prefill.payment_transaction_id || s.confirmationNo;
+    if (!confNo && !ofSession) {
+      confNo = "MV" + Math.floor(100000 + Math.random() * 899999);
+      s = FlowState.set({ confirmationNo: confNo });
+    }
+
+    document.getElementById("extendPrice").textContent = FlowState.money(BONUS_CENTS);
+    document.getElementById("addBtn").textContent = "Add Vacation \u00b7 " + FlowState.money(BONUS_CENTS);
+    document.getElementById("sumName").innerHTML = s.resortName;
+    document.getElementById("sumConf").textContent = confNo || "\u2014";
+    document.getElementById("sumGuests").textContent = prefill.guestsLabel || s.guestsLabel;
+    document.getElementById("sumPkg").textContent = FlowState.money(s.priceCents);
+    document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+    // Parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day back.
+    var fmt = function (t) {
+      if (!t) return "\u2014";
+      var d;
+      if (typeof t === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t)) {
+        var p = t.split("-");
+        d = new Date(+p[0], +p[1] - 1, +p[2]);
+      } else {
+        d = new Date(t);
+      }
+      return isNaN(d.getTime()) ? "\u2014" : d.toLocaleDateString("en-US", { year: "numeric", month: "numeric", day: "numeric" });
+    };
+    var checkIn = prefill.travel_start_date || s.dates.checkIn;
+    var checkOut = prefill.travel_end_date || s.dates.checkOut;
+    document.getElementById("sumCheckIn").textContent = fmt(checkIn);
+    document.getElementById("sumCheckOut").textContent = fmt(checkOut);
+    document.getElementById("retainPrice").textContent = FlowState.money(BONUS_CENTS);
+
+    function hasBonus() { return !!FlowState.findUpsell("bonus_vacation"); }
+    function hasTP() { return !!FlowState.findUpsell("travel_protection"); }
+    function updateTotals() { document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents()); }
+    var CART_OPTS = { editable: false };
+
+    // Keep the visual Upgrades cart in sync in BOTH modes (static preview and
+    // Offer Flow session). The charge itself is still driven by the hidden
+    // fields posted to the flow; this only feeds the summary UI.
+    function syncUpsellUi(type, on, cents) {
+      if (on) {
+        if (!FlowState.findUpsell(type)) FlowState.addUpsell(type, 1, cents);
+      } else if (FlowState.findUpsell(type)) {
+        FlowState.removeUpsell(type);
+      }
+      FlowState.markDecided(type);
+      if (window.PFUpsells) PFUpsells.render("upgradeList", CART_OPTS);
+      updateTotals();
+    }
+
+    if (window.PFUpsells) { PFUpsells.render("upgradeList", CART_OPTS); }
+    updateTotals();
+
+    function tpDecisionFromSources() {
+      var fromPrefill = String(
+        prefill.travel_protection_two || prefill.travel_protection || ""
+      ).trim();
+      if (/^(yes|no)$/i.test(fromPrefill)) return fromPrefill.charAt(0).toUpperCase() + fromPrefill.slice(1).toLowerCase();
+      var fromStore = String(readStored(TP_DECISION_KEY) || "").trim();
+      if (/^(yes|no)$/i.test(fromStore)) return fromStore.charAt(0).toUpperCase() + fromStore.slice(1).toLowerCase();
+      if (!ofSession && s.tpDecision === "yes") return "Yes";
+      if (!ofSession && s.tpDecision === "no") return "No";
+      var hiddenVal = String(form.elements.travel_protection_two.value || "").trim();
+      if (/^(yes|no)$/i.test(hiddenVal)) return hiddenVal.charAt(0).toUpperCase() + hiddenVal.slice(1).toLowerCase();
+      return "";
+    }
+
+    function submitUpgrade(bonusValue) {
+      form.elements.bonus_vacation.value = bonusValue;
+      if (!form.elements.travel_protection_two.value) {
+        form.elements.travel_protection_two.value = tpDecisionFromSources() || "No";
+      }
+      setStepSlug(form, "bonus-vacation");
+      var addedBonus = bonusValue === "Yes" && !hasBonus();
+      syncUpsellUi("bonus_vacation", bonusValue === "Yes", BONUS_CENTS);
+      if (addedBonus && window.PFToast) PFToast("Bonus vacation added!");
+      if (ofSession) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(form);
+        }
+        return;
+      }
+      console.log("[static-front] bonus-vacation submit mocked", {
+        mode: paymentMode,
+        bonus_vacation: form.elements.bonus_vacation.value,
+        travel_protection_two: form.elements.travel_protection_two.value
+      });
+      setTimeout(function () {
+        window.location.href = "confirmation-upgrade.html" + window.location.search;
+      }, bonusValue === "Yes" ? 900 : 200);
+    }
+
+    function submitTravelProtection(tpValue) {
+      form.elements.travel_protection_two.value = tpValue;
+      form.elements.bonus_vacation.value = "";
+      writeStored(TP_DECISION_KEY, tpValue);
+      setStepSlug(form, "travel-protection-two");
+      var addedTp = tpValue === "Yes" && !hasTP();
+      syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
+      FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
+      if (addedTp && window.PFToast) PFToast("Travel Protection added!");
+      if (ofSession) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(form);
+        }
+        return;
+      }
+      closeTP();
+    }
+
+    var modal = document.getElementById("retainModal");
+    function openModal() { modal.classList.add("is-open"); modal.setAttribute("aria-hidden", "false"); }
+    function closeModal() { modal.classList.remove("is-open"); modal.setAttribute("aria-hidden", "true"); }
+
+    document.getElementById("addBtn").addEventListener("click", function () { submitUpgrade("Yes"); });
+    document.getElementById("skipBtn").addEventListener("click", openModal);
+    document.getElementById("retainYes").addEventListener("click", function () { closeModal(); submitUpgrade("Yes"); });
+    document.getElementById("retainNo").addEventListener("click", function () { closeModal(); submitUpgrade("No"); });
+    document.getElementById("retainClose").addEventListener("click", closeModal);
+    modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+
+    var tpModal = document.getElementById("tpModal");
+    var tpContinue = document.getElementById("tpContinue");
+    var tpYes = document.getElementById("tpYes");
+    var tpNo = document.getElementById("tpNo");
+    var tpOptYes = document.getElementById("tpOptYes");
+    var tpOptNo = document.getElementById("tpOptNo");
+    document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
+
+    function tpSelect() {
+      tpOptYes.classList.toggle("is-selected", tpYes.checked);
+      tpOptNo.classList.toggle("is-selected", tpNo.checked);
+      tpContinue.disabled = !(tpYes.checked || tpNo.checked);
+    }
+    tpYes.addEventListener("change", tpSelect);
+    tpNo.addEventListener("change", tpSelect);
+    tpOptYes.addEventListener("click", function (e) {
+      if (e.target && e.target.tagName === "A") return;
+      tpYes.checked = true; tpSelect();
+    });
+    tpOptNo.addEventListener("click", function () { tpNo.checked = true; tpSelect(); });
+
+    function closeTP() {
+      tpModal.classList.remove("is-open");
+      tpModal.setAttribute("aria-hidden", "true");
+    }
+    function openTP() {
+      tpModal.classList.add("is-open");
+      tpModal.setAttribute("aria-hidden", "false");
+    }
+
+    tpContinue.addEventListener("click", function () {
+      if (!(tpYes.checked || tpNo.checked)) return;
+      var tpValue = tpYes.checked ? "Yes" : "No";
+      form.elements.travel_protection_two.value = tpValue;
+      writeStored(TP_DECISION_KEY, tpValue);
+
+      if (paymentMode === "dual") {
+        // First payment step: charge or skip TP, then Offer Flow navigates to bonus-vacation
+        submitTravelProtection(tpValue);
+        return;
+      }
+
+      // single (default): preference only; charge happens on bonus submit.
+      // The visual cart updates in both modes so the shopper sees the add-on.
+      var addedTpSingle = tpValue === "Yes" && !hasTP();
+      syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
+      FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
+      if (addedTpSingle && window.PFToast) PFToast("Travel Protection added!");
+      closeTP();
+    });
+
+    var existingTp = tpDecisionFromSources();
+    if (existingTp === "Yes") {
+      tpYes.checked = true; tpSelect();
+      form.elements.travel_protection_two.value = "Yes";
+      syncUpsellUi("travel_protection", true, TP_CENTS);
+    } else if (existingTp === "No") {
+      tpNo.checked = true; tpSelect();
+      form.elements.travel_protection_two.value = "No";
+      syncUpsellUi("travel_protection", false, TP_CENTS);
+    } else if (!ofSession) {
+      if (hasTP()) { tpYes.checked = true; tpSelect(); }
+      else if (s.tpDecision === "no") { tpNo.checked = true; tpSelect(); }
+    }
+
+    // dual + TP already decided (e.g. returned from travel-protection-two): do not reopen modal
+    if (paymentMode === "dual" && existingTp) {
+      closeTP();
+    } else {
+      openTP();
+    }
+  })();
+  </script>
+  <script>lucide.createIcons();</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260730vg-dual" defer></script>
+</body>
+</html>

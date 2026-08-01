@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Order Details | Poconos Getaway Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="assets/css/brand.css" rel="stylesheet">
+  <style>
+    /* ---- Step 1 layout ---- */
+    .os-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; align-items: stretch; width: 100%; max-width: var(--maxw); }
+    @media (max-width: 900px) { .os-grid { grid-template-columns: 1fr; } }
+
+    .os-section + .os-section { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+    .os-form-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+
+    /* Boxed fields with label + hint inside the box (matches Figma) */
+    .os-form-grid .pf-field {
+      position: relative;
+      border: 1px solid var(--field-border); border-radius: var(--radius-sm);
+      background: var(--white); padding: 11px 14px; min-height: 56px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .os-form-grid .pf-field:focus-within { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33, 82, 114, .12); }
+    .os-form-grid .pf-field.is-invalid { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(233, 101, 74, .14); }
+    .os-form-grid .pf-field > label { font-size: 15px; font-weight: 600; color: var(--ink); margin: 0; line-height: 1.3; pointer-events: none; }
+    .os-form-grid .pf-field > label .pf-hint { display: block; font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 1px; }
+    /* label doubles as placeholder — on focus/filled it floats to a small
+       top caption (kept visible per QA) and only the hint line hides */
+    .os-form-grid .pf-field:focus-within > label,
+    .os-form-grid .pf-field.is-filled > label {
+      font-size: 11px; font-weight: 700; letter-spacing: .02em; color: var(--muted);
+    }
+    .os-form-grid .pf-field:focus-within > label { color: var(--navy); }
+    .os-form-grid .pf-field:focus-within > label .pf-hint,
+    .os-form-grid .pf-field.is-filled > label .pf-hint { display: none; }
+    /* input overlays the whole box so the empty state stays compact */
+    .os-form-grid .pf-input {
+      position: absolute; inset: 0;
+      border: none; background: transparent; border-radius: inherit;
+      padding: 11px 14px; font-size: 16px; color: var(--text);
+    }
+    /* once the label floats, typed text sits below it */
+    .os-form-grid .pf-field:focus-within .pf-input,
+    .os-form-grid .pf-field.is-filled .pf-input { padding-top: 26px; padding-bottom: 6px; }
+    .os-form-grid .pf-input:focus { border: none; box-shadow: none; }
+    .os-form-grid .pf-input.is-invalid { border: none; box-shadow: none; }
+    .os-form-grid .pf-field__error { position: absolute; left: 14px; top: 100%; margin-top: 3px; }
+    /* reserve room for the absolutely-positioned error so it never overlaps the next field */
+    .os-form-grid .pf-field.is-invalid { margin-bottom: 16px; }
+
+    .os-dates-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .os-checkinout { display: flex; gap: 12px; margin-top: 16px; }
+    .os-checkinout .pf-card { flex: 1; text-align: center; padding: 12px; box-shadow: none; }
+    .os-checkinout .lbl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .os-checkinout .val { font-size: 20px; font-weight: 800; color: var(--navy); margin-top: 4px; }
+    .os-hurry { text-align: center; font-weight: 700; color: var(--ink); margin: 20px 0 4px; }
+
+    .os-consents { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+    .pf-check.is-invalid input[type="checkbox"] { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(233, 101, 74, .14); }
+    .pf-check.is-invalid .pf-check__text { color: var(--coral); }
+    .pf-check__error { display: none; margin: -4px 0 0 32px; color: var(--coral); font-size: 12px; font-weight: 700; }
+    .pf-check__error.is-shown { display: block; }
+
+    /* summary sticky on desktop */
+    @media (min-width: 901px) { .os-summary { position: sticky; top: 20px; } }
+    .os-rating { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+    .os-rating .stars { color: #00aa6c; letter-spacing: 1px; font-size: 15px; }
+    .os-dates-mini { display: flex; flex-direction: column; gap: 4px; font-size: 14px; margin: 12px 0; color: var(--text); }
+    .os-badges { display: flex; justify-content: center; gap: 16px; margin: 4px 0; }
+    .os-badges span { width: 52px; height: 52px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--navy); font-size: 22px; border: 1px solid var(--line); }
+    .os-travel { text-align: center; font-size: 13px; color: var(--muted); }
+
+    /* ---- calendar ---- */
+    .cal { --cell: 40px; }
+    .cal-nav { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .cal-arrow { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-size: 18px; cursor: pointer; color: var(--navy); }
+    .cal-arrow:disabled { opacity: .35; cursor: default; }
+    .cal-months { display: flex; gap: 24px; }
+    @media (max-width: 620px) { .cal-months { flex-direction: column; } }
+    .cal-month { flex: 1; min-width: 0; } /* min-width:0 lets months shrink instead of overflowing the card (QA: 901-950px) */
+    .cal-monthname { text-align: center; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    .cal-week span { text-align: center; font-size: 12px; color: var(--muted); padding: 4px 0; }
+    .cal-grid { gap: 2px; }
+    .cal-day { height: var(--cell); border: none; background: none; font-family: var(--font); font-size: 14px; color: var(--text); cursor: pointer; border-radius: 8px; }
+    .cal-day.is-empty { visibility: hidden; }
+    .cal-day.is-disabled { color: #c3c9d1; cursor: default; }
+    .cal-day:not(.is-disabled):not(.is-start):not(.is-end):hover { background: rgba(33,82,114,.08); }
+    .cal-day.is-inrange { background: rgba(233,101,74,.14); border-radius: 0; }
+    .cal-day.is-start, .cal-day.is-end { background: var(--coral); color: #fff; font-weight: 700; }
+
+    /* Mobile vertical compression */
+    @media (max-width: 767px) {
+      .os-section + .os-section { margin-top: 18px; padding-top: 18px; }
+      .os-form-grid { gap: 10px; margin-top: 12px; }
+      .os-form-grid .pf-field { min-height: 52px; padding: 9px 12px; }
+      .os-consents { gap: 12px; }
+      .os-checkinout { margin-top: 12px; }
+      .os-hurry { margin: 14px 0 4px; }
+      .os-dates-mini { margin: 10px 0; }
+      .cal { --cell: 34px; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="general-information">
+
+  <!-- HEADER -->
+  <header class="pf-navbar">
+    <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
+  </header>
+
+  <!-- ALERT BAR (social-proof ticker) -->
+  <div class="alert-bar" role="status" aria-live="polite" aria-label="Live demand">
+    <div class="alert-ticker">
+      <div class="alert-item" data-key="viewing" data-min="180" data-max="240">
+        <i data-lucide="eye" class="alert-ic" aria-hidden="true"></i>
+        <span><span class="alert-num">211</span> viewing now</span>
+      </div>
+      <div class="alert-item" data-key="booked">
+        <i data-lucide="shopping-bag" class="alert-ic" aria-hidden="true"></i>
+        <span><span class="alert-num">27</span> booked today</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="pf-main">
+
+    <!-- STEPPER -->
+    <div class="pf-stepper">
+      <div class="pf-step is-active"><span class="pf-step__label">Order Details</span><span class="pf-step__bar"></span></div>
+      <div class="pf-step"><span class="pf-step__label">Payment Details</span><span class="pf-step__bar"></span></div>
+    </div>
+
+    <div class="os-grid">
+      <!-- LEFT: FORM -->
+      <form class="pf-card" id="orderForm" method="post" action="javascript:void(0);" data-step-slug="general-information" onsubmit="return false;" novalidate autocomplete="on">
+        <input type="hidden" name="travel_start_date" id="travel_start_date" value="">
+        <input type="hidden" name="travel_end_date" id="travel_end_date" value="">
+        <input type="hidden" name="know_dates" id="know_dates" value="0">
+        <input type="hidden" name="alternative_submit" id="alternative_submit" value="">
+        <input type="hidden" name="adults" id="adults" value="1">
+        <input type="hidden" name="kids" id="kids" value="0">
+        <input type="hidden" name="utm_source" id="utm_source" value="">
+        <input type="hidden" name="utm_medium" id="utm_medium" value="">
+        <input type="hidden" name="utm_campaign" id="utm_campaign" value="">
+        <input type="hidden" name="utm_term" id="utm_term" value="">
+        <input type="hidden" name="utm_content" id="utm_content" value="">
+        <div class="pf-card__pad">
+          <!-- Contact -->
+          <div class="os-section">
+            <h2 class="pf-title">Contact Information</h2>
+            <p class="pf-subtitle">Please enter valid contact information so we can confirm your vacation with the resort.</p>
+            <div class="os-form-grid">
+              <div class="pf-row">
+                <div class="pf-field">
+                  <label>First Name <span class="pf-hint">As it appears on your state issued ID</span></label>
+                  <input class="pf-input" name="fname" id="fname" type="text" autocomplete="given-name" autocapitalize="words" spellcheck="false">
+                  <span class="pf-field__error">Please enter your first name.</span>
+                </div>
+                <div class="pf-field">
+                  <label>Last Name <span class="pf-hint">As it appears on your state issued ID</span></label>
+                  <input class="pf-input" name="lname" id="lname" type="text" autocomplete="family-name" autocapitalize="words" spellcheck="false">
+                  <span class="pf-field__error">Please enter your last name.</span>
+                </div>
+              </div>
+              <div class="pf-row">
+                <div class="pf-field">
+                  <label>Valid Email <span class="pf-hint">For confirmation</span></label>
+                  <input class="pf-input" name="email" id="email" type="email" autocomplete="email" spellcheck="false">
+                  <span class="pf-field__error">Please enter a valid email.</span>
+                </div>
+                <div class="pf-field">
+                  <label>Valid Phone Number <span class="pf-hint">(555) 555-5555</span></label>
+                  <input class="pf-input" name="phone" id="phone" type="tel" autocomplete="tel" maxlength="14" inputmode="numeric">
+                  <span class="pf-field__error">Please enter a valid phone number.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preferred dates -->
+          <div class="os-section">
+            <div class="os-dates-head">
+              <h2 class="pf-title">Know Your Preferred Travel Dates?</h2>
+              <button type="button" class="os-toggle" id="datesToggle" role="switch" aria-checked="false" aria-label="Do you know your preferred travel dates?">
+                <span class="os-toggle__label">No</span>
+                <span class="os-toggle__knob"></span>
+              </button>
+            </div>
+            <div id="datesReveal" hidden>
+              <div class="cal" id="calendar" style="margin-top:16px;"></div>
+              <div class="os-checkinout">
+                <div class="pf-card"><div class="lbl">Check-In</div><div class="val" id="checkInVal">&mdash;</div></div>
+                <div class="pf-card"><div class="lbl">Check-Out</div><div class="val" id="checkOutVal">&mdash;</div></div>
+              </div>
+              <p class="os-note" style="font-size:12px;color:var(--muted);margin:10px 0 0;">Your package includes a <strong>3-night</strong> stay &mdash; pick a check-in date and we'll set your check-out automatically.</p>
+              <p class="os-hurry">Hurry, the best dates book up fast!</p>
+            </div>
+          </div>
+
+          <!-- Consents -->
+          <div class="os-section">
+            <div class="os-consents">
+              <label class="pf-check">
+                <input type="checkbox" name="marketing_consent" value="1">
+                <span class="pf-check__text">By clicking "Continue" I give my express written consent to receive promotional emails, calls - including via auto-dialer, prerecorded, or AI-generated voice - from or on behalf of Sunstate Client Services Inc. dba VacationGurus, Club Exploria, LLC dba Exploria Resorts, regardless of any Do Not Call Registry. Consent is not required to purchase. I also consent to the <a href="../terms-and-conditions.html" target="_blank">terms</a> and <a href="../privacy-policy.html" target="_blank">policies</a> which I have read and understand. My consent is not a condition of any purchase. To enter the Promotion without consenting, click <a href="javascript:void(0)" id="enterPromoLink">here</a></span>
+              </label>
+              <p class="pf-check__error" id="marketingError" role="alert">Please check the box above to give your consent and continue.</p>
+              <label class="pf-check">
+                <input type="checkbox" name="sms_consent" value="1" checked>
+                <span class="pf-check__text">Yes, I agree to receive SMS/MMS/RCS text from Sunstate Client Services Inc. dba Vacation Gurus at the number provided. Consent is not required for purchase. Message frequency varies. Msg & data rates may apply. Reply STOP to opt-out, HELP for help. See our <a href="../terms-and-conditions.html" target="_blank">Terms & Conditions</a> and <a href="../privacy-policy.html" target="_blank">Privacy Policy</a>.</span>
+              </label>
+            </div>
+            <div class="pf-hold" style="margin-top:16px;">
+              <div class="pf-hold__label">We are Holding Your Reservation for:</div>
+              <div class="pf-hold__timer" id="holdTimer">00:10:00</div>
+              <div class="pf-hold__note">This Poconos getaway is in high demand. We have reserved this package for <strong id="holdMins">10 minutes</strong>.</div>
+            </div>
+            <div class="pf-actionbar">
+              <button type="submit" class="pf-btn">Continue</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <aside class="pf-card os-summary">
+        <div class="pf-card__pad">
+          <div class="os-review-head">
+            <img class="pf-summary__img" src="assets/images/resort.webp" alt="Pocono Mountain Villas">
+            <div class="os-review-info">
+              <div class="pf-summary__name" id="sumName">Pocono Mountain Villas</div>
+              <div class="os-rating">
+                <img class="os-rating__bubbles" src="assets/images/ta-rating.webp" alt="Rated 4 out of 5" loading="lazy">
+                <span class="os-rating__reviews"><strong id="sumReviews">4,850</strong> reviews</span>
+              </div>
+              <p class="os-purchased">Over 8,239 People Have Purchased This Product</p>
+            </div>
+          </div>
+
+          <ul class="os-includes">
+            <li><i data-lucide="check-circle" class="pf-i"></i>4-Day / 3-Night Pocono Mountain Villas Resort</li>
+            <li><i data-lucide="check-circle" class="pf-i"></i>One-Bedroom Condo with Fireplace &amp; Full Kitchen</li>
+            <li><i data-lucide="check-circle" class="pf-i"></i>Sleeps up to 2 Adults + 2 Children</li>
+          </ul>
+
+          <div class="os-dates-mini" style="margin-top:16px;">
+            <div class="pf-price-line"><span id="sumStay">4-Days / 3-Nights</span><span class="pf-strike" id="sumRetail">$803</span></div>
+            <div class="pf-price-line"><span>Your Price</span><span class="pf-save" id="sumSave">Save 93%</span></div>
+            <div class="pf-price-line"><span>Booking Fee</span><span>$0.00</span></div>
+            <div class="pf-price-total"><span>Total</span><span id="sumTotal">$59</span></div>
+          </div>
+
+          <div class="os-dates-mini" id="sumDatesLines" hidden>
+            <div class="os-line"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in: <strong id="sumCheckIn">&mdash;</strong></div>
+            <div class="os-line"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out: <strong id="sumCheckOut">&mdash;</strong></div>
+          </div>
+
+          <div class="os-badges" style="margin-top:16px;">
+            <img src="assets/images/badge-01.svg" alt="Best Price Guarantee" loading="lazy">
+            <img src="assets/images/badge-02.svg" alt="100% Secure Transaction" loading="lazy">
+            <img src="assets/images/badge-03.svg" alt="12 Months to Book Dates" loading="lazy">
+          </div>
+          <p class="os-travel">Take up to 12 months to travel.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../terms-and-conditions.html">Terms &amp; Conditions</a>
+      <span>|</span>
+      <a href="../privacy-policy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script src="assets/libs/lucide/lucide.min.js"></script>
+  <script src="assets/js/flow-state.js"></script>
+  <script src="assets/js/legal-modal.js"></script>
+  <script src="assets/js/sticky-offer.js"></script>
+  <script src="assets/js/keyboard-aware.js"></script>
+  <script src="assets/js/calendar.js"></script>
+  <script>
+  (function () {
+
+  function swiftlyHasOfferFlowSession() {
+    try {
+      if (new URLSearchParams(window.location.search).get('session_token')) return true;
+      if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
+    } catch (e) {}
+    return false;
+  }
+
+    var s = FlowState.get();
+    var ofSession = swiftlyHasOfferFlowSession();
+    document.getElementById("sumName").innerHTML = s.resortName;
+    document.getElementById("sumRetail").textContent = FlowState.money(s.retailCents);
+    var sumStay = document.getElementById("sumStay"); if (sumStay) sumStay.textContent = s.stayLabel || sumStay.textContent;
+    var sumPriceEl = document.getElementById("sumPrice"); if (sumPriceEl) sumPriceEl.textContent = FlowState.money(s.priceCents);
+    document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents());
+    document.getElementById("sumReviews").textContent = (s.ratingReviews || 0).toLocaleString("en-US");
+    var sumGuests = document.getElementById("sumGuests"); if (sumGuests) sumGuests.textContent = s.guestsLabel;
+    var sumSave = document.getElementById("sumSave"); if (sumSave && s.discountPct != null) sumSave.textContent = "Save " + s.discountPct + "%";
+    document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+    var f = document.getElementById("orderForm");
+
+    // Prefill from FlowState only when Offer Flow session is absent
+    if (!ofSession) {
+      if (s.guest.firstName && f.elements.fname) f.elements.fname.value = s.guest.firstName;
+      if (s.guest.lastName && f.elements.lname) f.elements.lname.value = s.guest.lastName;
+      if (s.guest.email && f.elements.email) f.elements.email.value = s.guest.email;
+      if (s.guest.phone && f.elements.phone) f.elements.phone.value = s.guest.phone;
+      if (s.consent && f.elements.marketing_consent) f.elements.marketing_consent.checked = !!s.consent.marketing;
+      if (s.consent && f.elements.sms_consent) f.elements.sms_consent.checked = s.consent.sms !== false;
+    }
+
+    ["fname","lname","email","phone"].forEach(function (k) {
+      var el = f.elements[k]; if (!el) return;
+      function syncFilled() { var field = el.closest(".pf-field"); if (field) field.classList.toggle("is-filled", !!el.value.trim()); }
+      el.addEventListener("input", syncFilled); el.addEventListener("blur", syncFilled); syncFilled();
+    });
+
+    // Phone mask
+    f.elements.phone.addEventListener("input", function (e) {
+      var d = e.target.value.replace(/\D/g, "").slice(0, 10);
+      var out = d;
+      if (d.length > 6) out = "(" + d.slice(0,3) + ") " + d.slice(3,6) + "-" + d.slice(6);
+      else if (d.length > 3) out = "(" + d.slice(0,3) + ") " + d.slice(3);
+      else if (d.length > 0) out = "(" + d;
+      e.target.value = out;
+    });
+
+    // UTM from URL
+    try {
+      var q = new URLSearchParams(window.location.search);
+      ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"].forEach(function (k) {
+        if (q.get(k) && f.elements[k]) f.elements[k].value = q.get(k);
+      });
+    } catch (e) {}
+
+    function syncDateHiddens(range) {
+      var start = range && (range.checkIn || range.start) ? (range.checkIn || range.start) : null;
+      var end = range && (range.checkOut || range.end) ? (range.checkOut || range.end) : null;
+      var toIso = function (d) {
+        if (!d) return "";
+        var dt = (d instanceof Date) ? d : new Date(d);
+        if (isNaN(dt.getTime())) return "";
+        var m = String(dt.getMonth() + 1).padStart(2, "0");
+        var day = String(dt.getDate()).padStart(2, "0");
+        return dt.getFullYear() + "-" + m + "-" + day;
+      };
+      f.elements.travel_start_date.value = toIso(start);
+      f.elements.travel_end_date.value = toIso(end);
+      f.elements.know_dates.value = (start && end) ? "1" : "0";
+      if (!ofSession) {
+        FlowState.setIn("dates", { checkIn: start ? +new Date(start) : null, checkOut: end ? +new Date(end) : null });
+      }
+      var cin = document.getElementById("checkInVal");
+      var cout = document.getElementById("checkOutVal");
+      var sumLines = document.getElementById("sumDatesLines");
+      var sumIn = document.getElementById("sumCheckIn");
+      var sumOut = document.getElementById("sumCheckOut");
+      var fmt = function (d) { return d ? new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "\u2014"; };
+      if (cin) cin.textContent = start ? fmt(start) : "\u2014";
+      if (cout) cout.textContent = end ? fmt(end) : "\u2014";
+      if (sumIn) sumIn.textContent = start ? fmt(start) : "\u2014";
+      if (sumOut) sumOut.textContent = end ? fmt(end) : "\u2014";
+      if (sumLines) sumLines.hidden = !(start && end);
+    }
+
+    // Dates toggle + calendar (calendar.js exports PreferredDates)
+    var toggle = document.getElementById("datesToggle");
+    var reveal = document.getElementById("datesReveal");
+    if (toggle && reveal && window.PreferredDates) {
+      var cal = new PreferredDates(document.getElementById("calendar"), {
+        nights: s.nights || 3,
+        checkIn: (!ofSession && s.dates && s.dates.checkIn) ? s.dates.checkIn : null,
+        checkOut: (!ofSession && s.dates && s.dates.checkOut) ? s.dates.checkOut : null,
+        onChange: function (range) { syncDateHiddens(range); }
+      });
+      var label = toggle.querySelector(".os-toggle__label");
+      function setDatesOpen(on) {
+        toggle.setAttribute("aria-checked", on ? "true" : "false");
+        if (label) label.textContent = on ? "Yes" : "No";
+        reveal.hidden = !on;
+      }
+      setDatesOpen(!ofSession && !!(s.dates && s.dates.checkIn));
+      toggle.addEventListener("click", function () {
+        var on = toggle.getAttribute("aria-checked") !== "true";
+        setDatesOpen(on);
+        if (!on) cal.clear();
+      });
+    }
+
+    // Hold timer (UI only)
+    (function () {
+      var el = document.getElementById("holdTimer");
+      var minsEl = document.getElementById("holdMins");
+      if (!el) return;
+      var deadline = FlowState.holdDeadline();
+      if (minsEl) minsEl.textContent = String(s.holdMinutes || 10) + " minutes";
+      function tick() {
+        var left = Math.max(0, deadline - Date.now());
+        var h = Math.floor(left / 3600000);
+        var m = Math.floor((left % 3600000) / 60000);
+        var sec = Math.floor((left % 60000) / 1000);
+        el.textContent = String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0") + ":" + String(sec).padStart(2,"0");
+        if (left > 0) requestAnimationFrame(function () { setTimeout(tick, 250); });
+      }
+      tick();
+    })();
+
+    function invalidate(name, bad) {
+      var el = f.elements[name]; if (!el) return;
+      var field = el.closest(".pf-field"); if (field) field.classList.toggle("is-invalid", bad);
+      el.classList.toggle("is-invalid", bad);
+    }
+
+    function collectGuest() {
+      return {
+        firstName: (f.elements.fname.value || "").trim(),
+        lastName: (f.elements.lname.value || "").trim(),
+        email: (f.elements.email.value || "").trim(),
+        phone: (f.elements.phone.value || "").replace(/\D/g, "")
+      };
+    }
+
+    // Shared validation for Continue and "click here" (consent is checked separately).
+    function validateBase(g) {
+      var bad = false;
+      invalidate("fname", !g.firstName); bad = bad || !g.firstName;
+      invalidate("lname", !g.lastName); bad = bad || !g.lastName;
+      invalidate("email", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g.email)); bad = bad || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g.email);
+      invalidate("phone", g.phone.length < 10); bad = bad || g.phone.length < 10;
+      return !bad;
+    }
+
+    function focusFirstInvalid() {
+      var first = f.querySelector(".pf-field.is-invalid .pf-input");
+      if (first) first.focus();
+    }
+
+    function proceed(g, marketingConsented) {
+      if (ofSession) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(f);
+        }
+        return;
+      }
+
+      // Static preview fallback (no Offer Flow session)
+      FlowState.setIn("guest", g);
+      FlowState.setIn("consent", { marketing: !!marketingConsented, sms: !!f.elements.sms_consent.checked });
+      FlowState.set({ status: "billing" });
+      console.log("[static-front] general-information submit mocked");
+      window.location.href = "billing-information.html" + window.location.search;
+    }
+
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (f.elements.alternative_submit) f.elements.alternative_submit.value = "";
+      var g = collectGuest();
+      var bad = !validateBase(g);
+      var mkt = f.elements.marketing_consent;
+      var mktErr = document.getElementById("marketingError");
+      if (mkt && !mkt.checked) { bad = true; if (mktErr) mktErr.style.display = "block"; }
+      else if (mktErr) mktErr.style.display = "none";
+      if (bad) { focusFirstInvalid(); return; }
+      proceed(g, mkt && mkt.checked);
+    });
+
+    // "click here" — enter the Promotion WITHOUT marketing consent. Same required
+    // contact fields, but the consent checkbox is not mandatory: the form posts
+    // alternative_submit=1 and the backend records marketing_consent = false.
+    var promoLink = document.getElementById("enterPromoLink");
+    if (promoLink) {
+      promoLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        var g = collectGuest();
+        if (!validateBase(g)) { focusFirstInvalid(); return; }
+        var mktErr = document.getElementById("marketingError");
+        if (mktErr) mktErr.style.display = "none";
+        if (f.elements.marketing_consent) f.elements.marketing_consent.checked = false;
+        if (f.elements.alternative_submit) f.elements.alternative_submit.value = "1";
+        proceed(g, false);
+      });
+    }
+  })();
+  </script>
+  <script>lucide.createIcons();</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260730vg" defer></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+@import "../vars"
+
+@media only screen and (max-width: 767px)
+  .pb-0
+    padding-bottom: 0 !important
+  .site-alert
+    &__a
+      h2
+        font-size: 20px
+        img
+          max-width: 25px
+    &__b
+      padding-left: 10px
+      padding-right: 10px
+      h3
+        font-size: 17px
+        letter-spacing: -.5px
+      p
+        margin: 0 auto
+        font-size: 18px
+    &__c
+      padding: 10px
+  .site-alert__b--inner--line2
+    display: block
+    padding-top: 3px
+    font-size: 12px
+    line-height: 1.2em
+
+
+@media only screen and (max-width: 359px)
+  .site-alert
+    &__a
+      h2
+        font-size: 16px
+    &__b
+      h3
+        font-size: 14px
+    &__c
+      p
+        font-size: 15px

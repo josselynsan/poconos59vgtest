@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Complete Your Trip | Poconos Getaway Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="assets/css/brand.css" rel="stylesheet">
+  <style>
+    /* ===== Interstitial — "Vacation secured / complete your trip" =====
+       Reskinned from Figma into our design system (navy + coral, ty-* blocks). */
+    .sec-wrap { width: 100%; max-width: 900px; margin: 0 auto; }
+
+    .sec-intro { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .sec-h1 { font-size: 30px; font-weight: 400; color: var(--navy); line-height: 1.25; letter-spacing: -.01em; margin: 0; max-width: 720px; }
+    .sec-h1 strong { font-weight: 800; }
+    .sec-sub { font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; margin: 0; max-width: 580px; }
+    .sec-cta { margin-top: 6px; }
+    .sec-cta .pf-btn { width: auto; padding: 16px 48px; font-size: 18px; }
+
+    /* Traveler Profile "IMPORTANT" notice (replaces the sec-sub line) */
+    .sec-notice { width: 100%; max-width: 620px; margin: 0 auto; text-align: left; background: #fef7e2; border: 1px solid var(--amber-2); border-radius: var(--radius); box-shadow: var(--shadow-soft); padding: 20px 22px; }
+    .sec-notice__head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .sec-notice__badge { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--amber-1); display: flex; align-items: center; justify-content: center; }
+    .sec-notice__badge .pf-i { width: 17px; height: 17px; color: var(--coral); }
+    .sec-notice__title { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); }
+    .sec-notice__text { margin: 0; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .sec-notice__list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .sec-notice__list li { font-size: 14px; line-height: 1.6; color: var(--text); }
+    .sec-notice__list li::marker { color: var(--coral); }
+    @keyframes secNoticePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+    .sec-notice__badge { animation: secNoticePulse 1.5s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { .sec-notice__badge { animation: none; } }
+
+    /* Summary card — reuses the confirmation ty-* look */
+    .ty-card { background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-card); overflow: hidden; }
+    .sec-sumhead { background: #1c425c; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 24px; }
+    .sec-sumhead__title { color: #fff; font-size: 18px; font-weight: 800; }
+    .sec-sumhead__total { color: #fff; font-size: 16px; font-weight: 500; display: flex; align-items: baseline; gap: 8px; }
+    .sec-sumhead__total strong { font-size: 22px; font-weight: 800; }
+
+    .ty-list { display: flex; flex-direction: column; gap: 1px; background: #dfdfdf; }
+    .ty-block { background: #f9f9f9; padding: 28px 24px; display: flex; flex-direction: column; gap: 18px; }
+    .ty-block__head { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; color: var(--navy); }
+    .ty-block__head .pf-i { width: 24px; height: 24px; color: var(--navy); }
+    .ty-lines { display: flex; flex-direction: column; gap: 8px; }
+    .ty-line { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--navy); }
+    .ty-line .pf-i { width: 20px; height: 20px; flex: 0 0 auto; color: var(--navy); }
+    .ty-line .k { font-weight: 700; }
+    .ty-line .v { font-weight: 500; }
+    .ty-extra { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--navy); }
+    .ty-extra .pf-i { width: 20px; height: 20px; flex: 0 0 auto; color: var(--navy); }
+    .ty-extra .k { font-weight: 500; flex: 1 1 auto; }
+    .ty-extra .qty { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .ty-extra .v { font-weight: 800; white-space: nowrap; }
+    .ty-empty { font-size: 14px; color: var(--muted); font-style: italic; }
+
+    /* Contacts row */
+    .sec-contacts { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+    .sec-call { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; border-radius: var(--radius-pill); padding: 16px 32px; font-size: 15px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; text-decoration: none; box-shadow: var(--shadow-soft); }
+    .sec-call:hover { background: var(--navy-deep); }
+    .sec-call .pf-i { width: 20px; height: 20px; }
+    .sec-hours { font-size: 14px; color: var(--ink); line-height: 1.5; text-align: right; }
+    .sec-hours strong { font-weight: 800; }
+
+    /* Temporary card-hold disclaimer (static fine print) */
+    .sec-hold { display: flex; gap: 12px; align-items: flex-start; margin-top: 20px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+    .sec-hold .pf-i { width: 20px; height: 20px; flex: 0 0 auto; color: var(--navy); margin-top: 2px; }
+    .sec-hold p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--muted); }
+
+    @media (max-width: 767px) {
+      .sec-h1 { font-size: 22px; }
+      .sec-sub { font-size: 14px; }
+      .sec-cta .pf-btn { width: 100%; }
+      .sec-sumhead { flex-direction: column; align-items: flex-start; gap: 6px; padding: 14px 16px; }
+      .ty-block { padding: 20px 16px; gap: 14px; }
+      .ty-block__head { font-size: 16px; }
+      .sec-contacts { flex-direction: column; align-items: stretch; }
+      .sec-call { justify-content: center; }
+      .sec-hours { text-align: center; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="confirmation-upgrade">
+
+  <header class="pf-navbar">
+    <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
+  </header>
+
+  <main class="pf-main">
+    <div class="sec-wrap">
+
+      <!-- Intro + primary CTA -->
+      <div class="sec-intro">
+        <h1 class="sec-h1" id="secHeadline">Your Poconos vacation is secured.</h1>
+        <div class="sec-notice" role="note">
+          <div class="sec-notice__head">
+            <span class="sec-notice__badge"><i data-lucide="alert-triangle" class="pf-i" aria-hidden="true"></i></span>
+            <h2 class="sec-notice__title">Action Required:</h2>
+          </div>
+          <ul class="sec-notice__list">
+            <li>Your <strong>trip isn&rsquo;t finalized until your Traveler Profile is complete.</strong></li>
+            <li>Resort bookings require <strong>2 business days</strong> to process. Completing this step immediately prevents processing delays.</li>
+          </ul>
+        </div>
+        <div class="sec-cta">
+          <div id="swiftly-travelers-profile-cta" hidden style="display:none;width:100%;">
+            <a id="swiftly-travelers-profile-link" class="pf-btn" href="#" style="display:inline-flex;text-decoration:none;">Complete My Trip</a>
+          </div>
+          <a class="pf-btn" id="completeBtnFallback" href="tel:18008848787" style="display:none;">Complete My Trip</a>
+        </div>
+      </div>
+
+      <!-- Vacation summary -->
+      <div class="ty-card">
+        <div class="sec-sumhead">
+          <span class="sec-sumhead__title">Your Poconos Vacation Summary</span>
+          <span class="sec-sumhead__total">Total paid: <strong id="totalPaid">$59</strong></span>
+        </div>
+        <div class="ty-list">
+          <div class="ty-block">
+            <div class="ty-block__head"><i data-lucide="luggage" class="pf-i" aria-hidden="true"></i> Vacation package</div>
+            <div class="ty-lines">
+              <div class="ty-line"><i data-lucide="clipboard-check" class="pf-i"></i><span class="k">Receipt #</span><span class="v" id="receiptNo">&mdash;</span></div>
+              <div class="ty-line"><i data-lucide="bed-double" class="pf-i"></i><span class="k">Unit type:</span><span class="v" id="unitType">1-Bedroom Condo with Fireplace</span></div>
+              <div class="ty-line"><i data-lucide="moon" class="pf-i"></i><span class="k">Number of nights:</span><span class="v">3 Nights</span></div>
+              <div class="ty-line"><i data-lucide="users" class="pf-i"></i><span class="k">Guests:</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
+              <div class="ty-line"><i data-lucide="calendar" class="pf-i"></i><span class="k">Preferred check-in:</span><span class="v" id="checkIn">&mdash;</span></div>
+              <div class="ty-line"><i data-lucide="calendar" class="pf-i"></i><span class="k">Preferred check-out:</span><span class="v" id="checkOut">&mdash;</span></div>
+              <div class="ty-line"><i data-lucide="credit-card" class="pf-i"></i><span class="k">Package Price:</span><span class="v" id="pkgPrice">$59</span></div>
+            </div>
+          </div>
+
+          <div class="ty-block">
+            <div class="ty-block__head"><i data-lucide="sparkles" class="pf-i" aria-hidden="true"></i> Extras</div>
+            <div class="ty-lines" id="extrasList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Temporary card-hold disclaimer -->
+      <div class="sec-hold" role="note">
+        <i data-lucide="credit-card" class="pf-i" aria-hidden="true"></i>
+        <p>A temporary hold may appear on your card. This is not an additional charge &mdash; it verifies your card and will automatically adjust to your actual purchase total within 3&ndash;5 business days. Any unused portion is released back to your available balance automatically.</p>
+      </div>
+
+      <!-- Contacts -->
+      <div class="sec-contacts">
+        <a class="sec-call" href="tel:18008848787"><i data-lucide="phone" class="pf-i" aria-hidden="true"></i> Questions? Call: 1-800-884-8787</a>
+        <div class="sec-hours"><strong>Call Center Hours:</strong><br>Monday&ndash;Friday, 10 AM &ndash; 4 PM ET</div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../terms-and-conditions.html">Terms &amp; Conditions</a>
+      <span>|</span>
+      <a href="../privacy-policy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script src="assets/libs/lucide/lucide.min.js"></script>
+  <script src="assets/libs/canvas-confetti/confetti.browser.min.js"></script>
+  <script src="assets/js/celebrate.js"></script>
+  <script src="assets/js/flow-state.js"></script>
+  <script src="assets/js/legal-modal.js"></script>
+    <script>
+  (function () {
+    function swiftlyHasOfferFlowSession() {
+      try {
+        if (new URLSearchParams(window.location.search).get('session_token')) return true;
+        if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
+      } catch (e) {}
+      return false;
+    }
+
+    var ofSession = swiftlyHasOfferFlowSession();
+    var s = FlowState.get();
+    var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
+    var ui = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.ui) || {};
+
+    var confNo = prefill.confirmation_number || prefill.confirmationNumber || prefill.payment_transaction_id || s.confirmationNo;
+    if (!confNo && !ofSession) {
+      confNo = "MV" + Math.floor(100000 + Math.random() * 899999);
+      s = FlowState.set({ confirmationNo: confNo });
+    }
+
+    var receipt = document.getElementById("receiptNo");
+    if (receipt) receipt.textContent = confNo || "\u2014";
+    var sumGuests = document.getElementById("sumGuests");
+    if (sumGuests) sumGuests.textContent = prefill.guestsLabel || s.guestsLabel;
+    var totalPaid = document.getElementById("totalPaid");
+    if (totalPaid) {
+      if (prefill.total_amount || prefill.totalAmount) {
+        var amt = parseFloat(prefill.total_amount || prefill.totalAmount);
+        totalPaid.textContent = isNaN(amt) ? FlowState.money(FlowState.totalCents()) : ("$" + amt.toFixed(2));
+      } else {
+        totalPaid.textContent = FlowState.money(FlowState.totalCents());
+      }
+    }
+    var pkgPrice = document.getElementById("pkgPrice");
+    if (pkgPrice) pkgPrice.textContent = FlowState.money(s.priceCents);
+
+    document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+    // Dates + extras summary
+    try {
+      // Parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day back.
+      var fmt = function (t) {
+        if (!t) return "\u2014";
+        var d;
+        if (typeof t === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t)) {
+          var p = t.split("-");
+          d = new Date(+p[0], +p[1] - 1, +p[2]);
+        } else {
+          d = new Date(t);
+        }
+        return isNaN(d.getTime()) ? "\u2014" : d.toLocaleDateString("en-US", { year: "numeric", month: "numeric", day: "numeric" });
+      };
+      var cin = document.getElementById("checkIn");
+      var cout = document.getElementById("checkOut");
+      if (cin) cin.textContent = fmt(prefill.travel_start_date || s.dates.checkIn);
+      if (cout) cout.textContent = fmt(prefill.travel_end_date || s.dates.checkOut);
+      var extras = document.getElementById("extrasList");
+      if (extras) {
+        extras.innerHTML = "";
+        var CAT = {};
+        (FlowState.upsellCatalog || []).forEach(function (c) { CAT[c.type] = c; });
+        (s.upsells || []).forEach(function (u) {
+          var meta = CAT[u.type] || {};
+          var label = meta.label || u.type;
+          var price = FlowState.money((u.priceCents || 0) * (u.qty || 1));
+          var row = document.createElement("div");
+          row.className = "ty-line";
+          row.innerHTML = "<span class=\"k\">" + label + "</span><span class=\"v\">" + price + "</span>";
+          extras.appendChild(row);
+        });
+        if (!(s.upsells || []).length) {
+          extras.innerHTML = "<div class=\"ty-line\"><span class=\"k\">No extras added</span></div>";
+        }
+      }
+    } catch (e) {}
+
+    // CTA: Offer Flow script shows #swiftly-travelers-profile-cta when configured.
+    // Fallback phone CTA only when there is no Offer Flow session.
+    var fallback = document.getElementById("completeBtnFallback");
+    if (fallback && !ofSession) {
+      fallback.style.display = "inline-flex";
+    }
+
+    // Celebrate (visual only)
+    try {
+      if (window.PFCelebrate) window.PFCelebrate();
+      else if (window.confetti) {
+        confetti({ particleCount: 120, spread: 70, origin: { y: 0.65 }, colors: ["#215272", "#e9654a", "#ffffff"] });
+      }
+    } catch (e) {}
+  })();
+  </script>
+
+    <script>lucide.createIcons();</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260730vg" defer></script>
+</body>
+</html>
