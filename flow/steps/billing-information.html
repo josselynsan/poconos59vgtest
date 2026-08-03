@@ -65,6 +65,12 @@
     .bill-wallet__logo { width: auto; display: block; flex: 0 0 auto; }
     .bill-wallet__logo--apple { height: 20px; position: relative; top: -2px; }
     .bill-wallet__logo--google { height: 18px; }
+    
+    .pf-check.is-invalid input[type="checkbox"] { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(233, 101, 74, .14); }
+    .pf-check.is-invalid .pf-check__text { color: var(--coral); }
+    .pf-check__error { display: none; margin: 8px 0 0 32px; color: var(--coral); font-size: 12px; font-weight: 700; }
+    .pf-check__error.is-shown { display: block; }
+
     .bill-or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; margin: 18px 0; }
     .bill-or::before, .bill-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
     .bill-fields { display: flex; flex-direction: column; gap: 12px; }
@@ -220,13 +226,14 @@
         <div class="pf-card__pad">
           <h2 class="pf-title">Complete Your Billing Info</h2>
 
-          <p class="bill-eyebrow">Express checkout</p>
-          <div class="bill-wallets">
-            <button type="button" class="bill-wallet" data-wallet="apple"><span>Book with</span><img class="bill-wallet__logo bill-wallet__logo--apple" src="assets/images/apple-logo.svg" alt="Apple"><span>Pay</span></button>
-            <button type="button" class="bill-wallet" data-wallet="google"><span>Book with</span><img class="bill-wallet__logo bill-wallet__logo--google" src="assets/images/google-g.svg" alt="Google"><span>Pay</span></button>
+          <div class="swiftly-express-checkout">
+            <p class="bill-eyebrow">Express checkout</p>
+            <div class="bill-wallets">
+              <button type="button" class="bill-wallet swiftly-wallet-apple" data-wallet="apple"><span>Book with</span><img class="bill-wallet__logo bill-wallet__logo--apple" src="assets/images/apple-logo.svg" alt="Apple"><span>Pay</span></button>
+              <button type="button" class="bill-wallet swiftly-wallet-google" data-wallet="google"><span>Book with</span><img class="bill-wallet__logo bill-wallet__logo--google" src="assets/images/google-g.svg" alt="Google"><span>Pay</span></button>
+            </div>
+            <div class="bill-or">Or pay with card</div>
           </div>
-
-          <div class="bill-or">Or pay with card</div>
 
           <div class="bill-fields">
             <div class="pf-field">
@@ -289,6 +296,7 @@
           <label class="pf-check" style="margin-top:16px;display:flex;gap:10px;align-items:flex-start;">
             <input type="checkbox" name="terms_agreed" id="terms_agreed" value="1" required>
             <span class="pf-check__text">By clicking the button below, I acknowledge that I have reviewed the <a href="../privacy-policy.html" target="_blank">Privacy Statement</a> and have reviewed and accept the <a href="../terms-and-conditions.html" target="_blank">Terms and Conditions</a>.</span></label>
+          <p class="pf-check__error" id="termsError" data-error-for="terms_agreed" role="alert">Please accept the Terms and Conditions to continue.</p>
 
           <div class="pf-actionbar">
             <button type="submit" class="pf-btn" id="payBtn">Pay With Credit Card</button>
@@ -517,7 +525,19 @@
       invalidate("card_number", num.length < 15); bad = bad || num.length < 15;
       invalidate("card_exp", exp.length < 4); bad = bad || exp.length < 4;
       invalidate("card_cvc", cvc.length < 3); bad = bad || cvc.length < 3;
-      if (terms && !terms.checked) { bad = true; try { terms.focus(); } catch (err) {} }
+      if (terms && !terms.checked) {
+        bad = true;
+        var termsLbl = terms.closest(".pf-check");
+        if (termsLbl) termsLbl.classList.add("is-invalid");
+        var termsErr = document.getElementById("termsError");
+        if (termsErr) { termsErr.classList.add("is-shown"); termsErr.style.display = "block"; }
+        try { terms.focus(); } catch (err) {}
+      } else {
+        var termsLblOk = terms && terms.closest(".pf-check");
+        if (termsLblOk) termsLblOk.classList.remove("is-invalid");
+        var termsErrOk = document.getElementById("termsError");
+        if (termsErrOk) { termsErrOk.classList.remove("is-shown"); termsErrOk.style.display = ""; }
+      }
       if (bad) { var first = f.querySelector(".pf-field.is-invalid .pf-input, .pf-field.is-invalid .pf-select"); if (first) first.focus(); return; }
 
       if (swiftlyHasOfferFlowSession()) {
@@ -533,6 +553,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260801" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260803inline" defer></script>
 </body>
 </html>

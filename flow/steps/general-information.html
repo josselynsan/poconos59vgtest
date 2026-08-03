@@ -208,7 +208,7 @@
                 <input type="checkbox" name="marketing_consent" value="1">
                 <span class="pf-check__text">By clicking "Continue" I give my express written consent to receive promotional emails, calls - including via auto-dialer, prerecorded, or AI-generated voice - from or on behalf of Sunstate Client Services Inc. dba VacationGurus, Club Exploria, LLC dba Exploria Resorts, regardless of any Do Not Call Registry. Consent is not required to purchase. I also consent to the <a href="../terms-and-conditions.html" target="_blank">terms</a> and <a href="../privacy-policy.html" target="_blank">policies</a> which I have read and understand. My consent is not a condition of any purchase. To enter the Promotion without consenting, click <a href="javascript:void(0)" id="enterPromoLink">here</a></span>
               </label>
-              <p class="pf-check__error" id="marketingError" role="alert">Please check the box above to give your consent and continue.</p>
+              <p class="pf-check__error" id="marketingError" data-error-for="marketing_consent" role="alert">Please check the box above to give your consent and continue.</p>
               <label class="pf-check">
                 <input type="checkbox" name="sms_consent" value="1" checked>
                 <span class="pf-check__text">Yes, I agree to receive SMS/MMS/RCS text from Sunstate Client Services Inc. dba Vacation Gurus at the number provided. Consent is not required for purchase. Message frequency varies. Msg & data rates may apply. Reply STOP to opt-out, HELP for help. See our <a href="../terms-and-conditions.html" target="_blank">Terms & Conditions</a> and <a href="../privacy-policy.html" target="_blank">Privacy Policy</a>.</span>
@@ -473,8 +473,8 @@
       var bad = !validateBase(g);
       var mkt = f.elements.marketing_consent;
       var mktErr = document.getElementById("marketingError");
-      if (mkt && !mkt.checked) { bad = true; if (mktErr) mktErr.style.display = "block"; }
-      else if (mktErr) mktErr.style.display = "none";
+      if (mkt && !mkt.checked) { bad = true; if (mktErr) { mktErr.classList.add("is-shown"); mktErr.style.display = "block"; } }
+      else if (mktErr) { mktErr.classList.remove("is-shown"); mktErr.style.display = "none"; }
       if (bad) { focusFirstInvalid(); return; }
       proceed(g, mkt && mkt.checked);
     });
@@ -489,7 +489,7 @@
         var g = collectGuest();
         if (!validateBase(g)) { focusFirstInvalid(); return; }
         var mktErr = document.getElementById("marketingError");
-        if (mktErr) mktErr.style.display = "none";
+        if (mktErr) { mktErr.classList.remove("is-shown"); mktErr.style.display = "none"; }
         if (f.elements.marketing_consent) f.elements.marketing_consent.checked = false;
         if (f.elements.alternative_submit) f.elements.alternative_submit.value = "1";
         proceed(g, false);
@@ -498,6 +498,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260801" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260803inline" defer></script>
 </body>
 </html>
