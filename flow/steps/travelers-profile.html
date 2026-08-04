@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Traveler Profile | Traveler Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tp-teal: #0d9488;
+      --tp-teal-dark: #0f766e;
+      --tp-text: #1f2937;
+      --tp-muted: #6b7280;
+      --tp-help: #9a3412;
+      --tp-border: #e5e7eb;
+      --tp-input-bg: #f9fafb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--tp-text);
+      min-height: 100vh;
+      background: #0b1d3a url('general-information-assets/img/ty-bg.jpg') center/cover no-repeat fixed;
+      overflow-x: hidden;
+    }
+    .tp-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .tp-bg .tp-bg-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.4s ease-in-out;
+      will-change: opacity;
+    }
+    .tp-bg .tp-bg-image.is-active { opacity: 1; }
+    .tp-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(115deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.62) 46%, rgba(13, 148, 136, 0.26) 100%),
+        rgba(15, 23, 42, 0.32);
+      backdrop-filter: blur(1px);
+    }
+    .tp-bg--mobile { display: none; }
+    @media (max-width: 900px) {
+      .tp-bg--desktop { display: none; }
+      .tp-bg--mobile { display: block; }
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: auto -12rem -14rem auto;
+      width: 34rem;
+      height: 34rem;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(20,184,166,0.34), rgba(20,184,166,0));
+      filter: blur(6px);
+      pointer-events: none;
+      z-index: 0;
+      animation: tp-float 7s ease-in-out infinite alternate;
+    }
+    .tp-wrap {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      min-height: calc(100vh - 120px);
+      padding: 3rem 1.25rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 2rem;
+      align-items: center;
+      animation: tp-fade-up 560ms ease-out both;
+    }
+    @media (max-width: 900px) {
+      .tp-wrap { grid-template-columns: 1fr; }
+      .tp-hero { text-align: center; }
+    }
+    .tp-hero {
+      color: #fff;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.35);
+    }
+    .tp-hero img.logo {
+      max-height: 54px;
+      margin-bottom: 1.75rem;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.28));
+    }
+    .tp-hero h1 {
+      color: #fff; font-size: clamp(2rem, 4.5vw, 3.25rem);
+      line-height: 1.05; margin: 0 0 0.85rem; font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .tp-hero p.lead {
+      color: rgba(255,255,255,0.92);
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      margin: 0;
+      max-width: 460px;
+    }
+    @media (max-width: 900px) {
+      .tp-hero p.lead { margin: 0 auto; }
+    }
+    .tp-card {
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(255,255,255,0.65);
+      border-radius: 22px;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.34);
+      backdrop-filter: blur(10px);
+      transform: translateZ(0);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+    .tp-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 34px 92px rgba(0,0,0,0.38);
+    }
+    .tp-card h2 { font-size: 1.18rem; margin: 0 0 0.55rem; line-height: 1.35; }
+    .tp-card .intro { color: var(--tp-muted); font-size: 0.94rem; margin: 0 0 1.35rem; }
+    .tp-section-title {
+      display: flex; align-items: center; gap: 0.75rem;
+      color: var(--tp-teal); font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.04em; text-transform: uppercase; margin: 1.25rem 0 0.85rem;
+    }
+    .tp-section-title::after {
+      content: ''; flex: 1; height: 1px; background: #d1d5db;
+    }
+    .tp-row { display: grid; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .tp-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .tp-row-2 { grid-template-columns: 1fr 1fr; }
+    .tp-row-1 { grid-template-columns: 1fr; }
+    .tp-row > * {
+      min-width: 0;
+      max-width: 100%;
+    }
+    @media (max-width: 640px) {
+      .tp-row-3,
+      .tp-row-2 { grid-template-columns: 1fr; }
+    }
+    label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: #374151; }
+    input[type="text"], input[type="date"], select {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 0.72rem 0.82rem; border: 1px solid var(--tp-border);
+      border-radius: 10px; background: var(--tp-input-bg); font-size: 0.95rem;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 160ms ease;
+    }
+    /* Keep DOB control aligned inside the form grid (avoid right-column calendar overflow) */
+    .tp-dob-field {
+      width: 100%;
+      max-width: 280px;
+    }
+    .tp-dob-field input[type="date"] {
+      width: 100%;
+      max-width: 100%;
+      field-sizing: fixed;
+    }
+    input[type="text"]:hover, input[type="date"]:hover, select:hover {
+      background: #fff;
+      border-color: #99f6e4;
+    }
+    input[type="text"]:focus, input[type="date"]:focus, select:focus {
+      outline: none;
+      background: #fff;
+      border-color: var(--tp-teal);
+      box-shadow: 0 0 0 4px rgba(13,148,136,0.13);
+      transform: translateY(-1px);
+    }
+    .help { color: var(--tp-help); font-size: 0.75rem; margin-top: 0.35rem; }
+    .hint { color: var(--tp-muted); font-size: 0.75rem; margin-top: 0.25rem; }
+    .tp-help-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1rem;
+      height: 1rem;
+      margin-left: 0.25rem;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #2563eb;
+      font-size: 0.7rem;
+      font-weight: 800;
+      vertical-align: middle;
+    }
+    .tp-error {
+      background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;
+      padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem;
+    }
+    .legal { font-size: 0.7rem; color: var(--tp-muted); line-height: 1.45; margin: 1.25rem 0; }
+    .legal strong { color: var(--tp-text); }
+    .tp-submit {
+      width: 100%; border: 0; border-radius: 10px; padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, var(--tp-teal), #14b8a6);
+      color: #fff; font-weight: 800; font-size: 1rem; cursor: pointer;
+      box-shadow: 0 14px 30px rgba(13,148,136,0.28);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+    .tp-submit:hover {
+      background: linear-gradient(135deg, var(--tp-teal-dark), #0d9488);
+      box-shadow: 0 18px 38px rgba(13,148,136,0.35);
+      transform: translateY(-1px);
+    }
+    .tp-submit:active { transform: translateY(0); }
+    .tp-submit:disabled {
+      opacity: 0.65;
+      cursor: wait;
+      transform: none;
+      box-shadow: none;
+    }
+    .tp-success {
+      text-align: center;
+      padding: 0.5rem 0.25rem 0.25rem;
+    }
+    .tp-success__icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 1.1rem;
+      border-radius: 999px;
+      background: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.28);
+    }
+    .tp-success__icon svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .tp-success h2 {
+      margin: 0 0 0.55rem;
+      color: #0f172a;
+      font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    .tp-success .intro {
+      margin: 0 auto;
+      max-width: 420px;
+      color: #6b7280;
+      font-size: 0.98rem;
+      line-height: 1.45;
+      text-align: center;
+    }
+    .tp-success__divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 1.35rem 0 1.15rem;
+    }
+    .tp-success__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 1.5rem;
+      text-align: left;
+    }
+    .tp-success__traveler + .tp-success__traveler {
+      border-left: 1px solid #e5e7eb;
+      padding-left: 1.5rem;
+    }
+    .tp-success__traveler-title {
+      margin: 0 0 0.9rem;
+      color: var(--tp-teal);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .tp-success__field {
+      margin-bottom: 0.85rem;
+    }
+    .tp-success__field:last-child {
+      margin-bottom: 0;
+    }
+    .tp-success__label {
+      display: block;
+      margin-bottom: 0.2rem;
+      color: #9ca3af;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .tp-success__value {
+      color: #1f2937;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    @media (max-width: 640px) {
+      .tp-success__grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+      .tp-success__traveler + .tp-success__traveler {
+        border-left: 0;
+        border-top: 1px solid #e5e7eb;
+        padding-left: 0;
+        padding-top: 1.15rem;
+      }
+    }
+    #traveler2-fields.is-hidden { display: none; }
+
+    #tp-form-view.is-hidden { display: none; }
+    #tp-success-view[hidden] { display: none !important; }
+    #tp-success-view:not([hidden]) { display: block; }
+    .site-footer {
+      position: relative;
+      z-index: 1;
+      background-color: #080808;
+      color: #ffffff;
+      padding: 48px 1.25rem;
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .site-footer .container { max-width: 1100px; margin: 0 auto; }
+    .site-footer p { margin: 0 0 1rem; }
+    .site-footer a { color: inherit; text-decoration: underline; }
+    .site-footer img { max-width: 100%; height: auto; }
+    .text-block-5 { color: inherit !important; }
+    .tp-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    .tp-modal.is-open { display: block; }
+    .tp-modal-dialog { max-width: 1100px; margin: 0 auto; }
+    .tp-modal-content {
+      background: #fff;
+      color: #1f2937;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+    }
+    .tp-modal-header,
+    .tp-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .tp-modal-footer {
+      justify-content: flex-end;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 0;
+    }
+    .tp-modal-title { margin: 0; font-size: 1.25rem; }
+    .tp-modal-body { max-height: 70vh; overflow-y: auto; padding: 1.5rem; text-align: left; }
+    .tp-modal-close {
+      border: 0;
+      background: transparent;
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      color: #111827;
+    }
+    .tp-modal-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      background: #6b7280;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    @keyframes tp-fade-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes tp-float {
+      from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.78; }
+      to { transform: translate3d(-2rem, -1.5rem, 0) scale(1.08); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="step-page" data-swiftly-step="travelers-profile">
+    <div class="tp-bg tp-bg--desktop" aria-hidden="true">
+          <img class="tp-bg-image is-active" src="general-information-assets/img/travelers-profile/gallery/1.webp" alt="" fetchpriority="high">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/2.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/3.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/4.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/5.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/6.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/7.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/8.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/9.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/10.webp" alt="" loading="lazy">
+      </div>
+  <div class="tp-bg tp-bg--mobile" aria-hidden="true">
+          <img class="tp-bg-image is-active" src="general-information-assets/img/travelers-profile/gallery/mobile1.webp" alt="" fetchpriority="high">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile2.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile3.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile4.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile5.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile6.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile7.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile8.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile9.webp" alt="" loading="lazy">
+          <img class="tp-bg-image" src="general-information-assets/img/travelers-profile/gallery/mobile10.webp" alt="" loading="lazy">
+      </div>
+    <div class="tp-wrap">
+    <div class="tp-hero">
+      <img class="logo" src="general-information-assets/img/logos/site-logo.png" alt="VacationVIP.com">
+      <h1>To Finalize Your Vacation Details</h1>
+      <p class="lead">Complete Your Traveler Profile Now</p>
+    </div>
+
+    <div class="tp-card">
+        <div id="tp-success-view" class="tp-success" hidden>
+          <div class="tp-success__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2>Your vacation profile is complete.</h2>
+          <p class="intro">We'll be in touch with next steps to schedule your stay.</p>
+          <div class="tp-success__divider"></div>
+          <div class="tp-success__grid">
+            <div class="tp-success__traveler">
+              <h3 class="tp-success__traveler-title">Traveler 1</h3>
+              <div class="tp-success__field">
+                <span class="tp-success__label">Name</span>
+                <div class="tp-success__value" data-tp-success="t1_name">&mdash;</div>
+              </div>
+              <div class="tp-success__field">
+                <span class="tp-success__label">Date of Birth</span>
+                <div class="tp-success__value" data-tp-success="t1_dob">&mdash;</div>
+              </div>
+              <div class="tp-success__field">
+                <span class="tp-success__label">Address</span>
+                <div class="tp-success__value" data-tp-success="t1_address">&mdash;</div>
+              </div>
+            </div>
+            <div class="tp-success__traveler">
+              <h3 class="tp-success__traveler-title">Traveler 2</h3>
+              <div class="tp-success__field" data-tp-alone-hide>
+                <span class="tp-success__label">Name</span>
+                <div class="tp-success__value" data-tp-success="t2_name">&mdash;</div>
+              </div>
+              <div class="tp-success__field" data-tp-alone-hide>
+                <span class="tp-success__label">Date of Birth</span>
+                <div class="tp-success__value" data-tp-success="t2_dob">&mdash;</div>
+              </div>
+              <div class="tp-success__field" data-tp-alone-hide>
+                <span class="tp-success__label">Address</span>
+                <div class="tp-success__value" data-tp-success="t2_address">&mdash;</div>
+              </div>
+              <div class="tp-success__field" data-tp-alone-hide>
+                <span class="tp-success__label">Relationship</span>
+                <div class="tp-success__value" data-tp-success="relationship">&mdash;</div>
+              </div>
+              <div class="tp-success__field" data-tp-alone-only hidden>
+                <span class="tp-success__label">Status</span>
+                <div class="tp-success__value">Traveling alone</div>
+              </div>
+            </div>
+          </div>
+          <div id="tp-success-continue-wrap" hidden style="margin-top:1.25rem;text-align:center;">
+            <button type="button" class="tp-submit primary-btn" id="tp-success-continue">Continue</button>
+          </div>
+        </div>
+
+        <div id="tp-form-view">
+              <h2>Please fill in your Name, Address &amp; DOB exactly as it appears on your drivers license.</h2>
+        <p class="intro">To finalize your reservation, you must complete your Traveler Profile as the next step. Reservations cannot be booked with the resort until this step is complete.</p>
+
+        
+        <form method="post" action="javascript:void(0);" id="travelersProfileForm"
+              data-step-slug="travelers-profile"
+              data-offer-flow-stay-on-success
+              onsubmit="return false;" novalidate>
+          <div class="tp-section-title">Traveler 1</div>
+          <div class="tp-row tp-row-2">
+            <div>
+              <label for="t1_first_name">First Name</label>
+              <input type="text" id="t1_first_name" name="t1_first_name" required placeholder="First name"
+                     value="">
+            </div>
+            <div>
+              <label for="t1_last_name">Last Name</label>
+              <input type="text" id="t1_last_name" name="t1_last_name" required placeholder="Last name"
+                     value="">
+            </div>
+          </div>
+          <div class="tp-row tp-row-1">
+            <div class="tp-dob-field">
+              <label for="t1_date_of_birth">Date of Birth</label>
+              <input type="date" id="t1_date_of_birth" name="t1_date_of_birth" required
+                     value="">
+              <div class="hint"><span class="tp-help-icon">?</span> Travel partners require this information to help with your bookings. This allows them to process your reservation faster and more efficiently.</div>
+            </div>
+          </div>
+          <div class="tp-row tp-row-1">
+            <div>
+              <label for="t1_street_address">Street Address</label>
+              <input type="text" id="t1_street_address" name="t1_street_address" required placeholder="Street address"
+                     value="">
+              <div class="help">Must match your Drivers License — used to verify your reservation at check-in.</div>
+            </div>
+          </div>
+          <div class="tp-row tp-row-3">
+            <div>
+              <label for="t1_city">City</label>
+              <input type="text" id="t1_city" name="t1_city" required placeholder="City"
+                     value="">
+            </div>
+            <div>
+              <label for="t1_state">Billing State</label>
+              <select id="t1_state" name="t1_state" required>
+                <option value="">State</option>
+                                  <option value="AL" >Alabama</option>
+                                  <option value="AK" >Alaska</option>
+                                  <option value="AZ" >Arizona</option>
+                                  <option value="AR" >Arkansas</option>
+                                  <option value="CA" >California</option>
+                                  <option value="CO" >Colorado</option>
+                                  <option value="CT" >Connecticut</option>
+                                  <option value="DE" >Delaware</option>
+                                  <option value="FL" selected>Florida</option>
+                                  <option value="GA" >Georgia</option>
+                                  <option value="HI" >Hawaii</option>
+                                  <option value="ID" >Idaho</option>
+                                  <option value="IL" >Illinois</option>
+                                  <option value="IN" >Indiana</option>
+                                  <option value="IA" >Iowa</option>
+                                  <option value="KS" >Kansas</option>
+                                  <option value="KY" >Kentucky</option>
+                                  <option value="LA" >Louisiana</option>
+                                  <option value="ME" >Maine</option>
+                                  <option value="MD" >Maryland</option>
+                                  <option value="MA" >Massachusetts</option>
+                                  <option value="MI" >Michigan</option>
+                                  <option value="MN" >Minnesota</option>
+                                  <option value="MS" >Mississippi</option>
+                                  <option value="MO" >Missouri</option>
+                                  <option value="MT" >Montana</option>
+                                  <option value="NE" >Nebraska</option>
+                                  <option value="NV" >Nevada</option>
+                                  <option value="NH" >New Hampshire</option>
+                                  <option value="NJ" >New Jersey</option>
+                                  <option value="NM" >New Mexico</option>
+                                  <option value="NY" >New York</option>
+                                  <option value="NC" >North Carolina</option>
+                                  <option value="ND" >North Dakota</option>
+                                  <option value="OH" >Ohio</option>
+                                  <option value="OK" >Oklahoma</option>
+                                  <option value="OR" >Oregon</option>
+                                  <option value="PA" >Pennsylvania</option>
+                                  <option value="RI" >Rhode Island</option>
+                                  <option value="SC" >South Carolina</option>
+                                  <option value="SD" >South Dakota</option>
+                                  <option value="TN" >Tennessee</option>
+                                  <option value="TX" >Texas</option>
+                                  <option value="UT" >Utah</option>
+                                  <option value="VT" >Vermont</option>
+                                  <option value="VA" >Virginia</option>
+                                  <option value="WA" >Washington</option>
+                                  <option value="WV" >West Virginia</option>
+                                  <option value="WI" >Wisconsin</option>
+                                  <option value="WY" >Wyoming</option>
+                                  <option value="DC" >District of Columbia</option>
+                              </select>
+            </div>
+            <div>
+              <label for="t1_zip">ZIP Code</label>
+              <input type="text" id="t1_zip" name="t1_zip" required placeholder="ZIP"
+                     value="">
+            </div>
+          </div>
+
+          <div class="tp-section-title">Traveler 2</div>
+          <div class="tp-row tp-row-1">
+            <div>
+              <label for="relationship">Relationship to Your Second Traveler</label>
+              <select id="relationship" name="relationship" required>
+                <option value="">Select relationship</option>
+                                  <option value="legally_married_spouse" >Legally Married Spouse</option>
+                                  <option value="cohabitating_partner" >Cohabitating Partner</option>
+                                  <option value="friend" >Friend</option>
+                                  <option value="family_member" >Family Member</option>
+                                  <option value="traveling_alone" >I&#039;m traveling alone</option>
+                              </select>
+            </div>
+          </div>
+
+          <div id="traveler2-fields" class="">
+            <div class="tp-row tp-row-2">
+              <div>
+                <label for="t2_first_name">First Name</label>
+                <input type="text" id="t2_first_name" name="t2_first_name" placeholder="First name"
+                       value="">
+              </div>
+              <div>
+                <label for="t2_last_name">Last Name</label>
+                <input type="text" id="t2_last_name" name="t2_last_name" placeholder="Last name"
+                       value="">
+              </div>
+            </div>
+            <div class="tp-row tp-row-1">
+              <div class="tp-dob-field">
+                <label for="t2_date_of_birth">Date of Birth</label>
+                <input type="date" id="t2_date_of_birth" name="t2_date_of_birth"
+                       value="">
+                <div class="hint"><span class="tp-help-icon">?</span> Travel partners require this information to help with your bookings. This allows them to process your reservation faster and more efficiently.</div>
+              </div>
+            </div>
+            <div class="tp-row tp-row-1">
+              <div>
+                <label for="t2_street_address">Street Address</label>
+                <input type="text" id="t2_street_address" name="t2_street_address" placeholder="Street address"
+                       value="">
+                <div class="help">Must match your Drivers License — used to verify your reservation at check-in.</div>
+              </div>
+            </div>
+            <div class="tp-row tp-row-3">
+              <div>
+                <label for="t2_city">City</label>
+                <input type="text" id="t2_city" name="t2_city" placeholder="City"
+                       value="">
+              </div>
+              <div>
+                <label for="t2_state">State</label>
+                <select id="t2_state" name="t2_state">
+                  <option value="">State</option>
+                                      <option value="AL" >Alabama</option>
+                                      <option value="AK" >Alaska</option>
+                                      <option value="AZ" >Arizona</option>
+                                      <option value="AR" >Arkansas</option>
+                                      <option value="CA" >California</option>
+                                      <option value="CO" >Colorado</option>
+                                      <option value="CT" >Connecticut</option>
+                                      <option value="DE" >Delaware</option>
+                                      <option value="FL" >Florida</option>
+                                      <option value="GA" >Georgia</option>
+                                      <option value="HI" >Hawaii</option>
+                                      <option value="ID" >Idaho</option>
+                                      <option value="IL" >Illinois</option>
+                                      <option value="IN" >Indiana</option>
+                                      <option value="IA" >Iowa</option>
+                                      <option value="KS" >Kansas</option>
+                                      <option value="KY" >Kentucky</option>
+                                      <option value="LA" >Louisiana</option>
+                                      <option value="ME" >Maine</option>
+                                      <option value="MD" >Maryland</option>
+                                      <option value="MA" >Massachusetts</option>
+                                      <option value="MI" >Michigan</option>
+                                      <option value="MN" >Minnesota</option>
+                                      <option value="MS" >Mississippi</option>
+                                      <option value="MO" >Missouri</option>
+                                      <option value="MT" >Montana</option>
+                                      <option value="NE" >Nebraska</option>
+                                      <option value="NV" >Nevada</option>
+                                      <option value="NH" >New Hampshire</option>
+                                      <option value="NJ" >New Jersey</option>
+                                      <option value="NM" >New Mexico</option>
+                                      <option value="NY" >New York</option>
+                                      <option value="NC" >North Carolina</option>
+                                      <option value="ND" >North Dakota</option>
+                                      <option value="OH" >Ohio</option>
+                                      <option value="OK" >Oklahoma</option>
+                                      <option value="OR" >Oregon</option>
+                                      <option value="PA" >Pennsylvania</option>
+                                      <option value="RI" >Rhode Island</option>
+                                      <option value="SC" >South Carolina</option>
+                                      <option value="SD" >South Dakota</option>
+                                      <option value="TN" >Tennessee</option>
+                                      <option value="TX" >Texas</option>
+                                      <option value="UT" >Utah</option>
+                                      <option value="VT" >Vermont</option>
+                                      <option value="VA" >Virginia</option>
+                                      <option value="WA" >Washington</option>
+                                      <option value="WV" >West Virginia</option>
+                                      <option value="WI" >Wisconsin</option>
+                                      <option value="WY" >Wyoming</option>
+                                      <option value="DC" >District of Columbia</option>
+                                  </select>
+              </div>
+              <div>
+                <label for="t2_zip">ZIP Code</label>
+                <input type="text" id="t2_zip" name="t2_zip" placeholder="ZIP"
+                       value="">
+              </div>
+            </div>
+          </div>
+
+          <p class="legal">
+            By submitting this form, I/we give express written consent to Club Exploria, LLC, Sunstate Client Services, Inc.,
+            and each of their respective affiliates (collectively “Company”) to obtain my/our personal credit information and
+            credit profile from a credit reporting agency. <strong>This will not affect your credit score.</strong>
+            I/We authorize Company to use this information solely to prequalify for discounted travel promotions on behalf of Company.
+          </p>
+
+          <button type="submit" class="tp-submit primary-btn" id="travelersProfileSubmit">
+            Submit &amp; Continue
+          </button>
+        </form>
+        </div><!-- #tp-form-view -->
+          </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-logo" style="width: 150px; margin: 0 auto 30px; text-align: center;">
+        <img src="general-information-assets/img/logos/footer-logo.png"
+             srcset="general-information-assets/img/logos/footer-logo.png 1x, general-information-assets/img/logos/footer-logo@2x.png 2x, general-information-assets/img/logos/footer-logo@3x.png 3x"
+             alt="VacationVIP.com" class="img-responsive logo-align-center">
+      </div>
+      <div>
+        <p>          Static preview footer paragraph one.        </p>
+        <p>          Static preview footer paragraph two.        </p>
+
+                  <div>
+            <a href="https://www.bbb.org/us/fl/belle-isle/profile/vacation-certificates-and-vouchers/vacationvip-com-0733-235962636/#sealclick" target="_blank" rel="nofollow" style="display: inline-block;background-color:white;border-radius: 8px;margin-bottom: 30px;">
+              <img src="https://seal-centralflorida.bbb.org/seals/blue-seal-250-52-bbb-235962636.png" style="border: 0;" alt="VacationVIP.com BBB Business Review" />
+            </a>
+          </div>
+        
+        <p>          THIS ADVERTISING MATERIAL IS BEING USED FOR THE PURPOSE OF SOLICITING THE SALE OF TIMESHARE INTERESTS.        </p>
+        <p>          Copyright &copy; 2026 | All Rights Reserved.        </p>
+
+        <img src="general-information-assets/img/icons/eho-icon.png" srcset="general-information-assets/img/icons/eho-icon.png 1x, general-information-assets/img/icons/eho-icon@2x.png 2x" alt="">
+      </div>
+    </div>
+  </footer>
+
+  <div class="tp-modal" id="tcModal" aria-hidden="true">
+    <div class="tp-modal-dialog">
+      <div class="tp-modal-content">
+        <div class="tp-modal-header">
+          <h1 class="tp-modal-title">Terms &amp; Conditions</h1>
+          <button type="button" class="tp-modal-close" data-tp-modal-close aria-label="Close">&times;</button>
+        </div>
+        <div class="tp-modal-body">
+                      <p><strong>Terms and Conditions</strong></p><p>Static front preview of Terms and Conditions.</p>                  </div>
+        <div class="tp-modal-footer">
+          <button type="button" class="tp-modal-btn" data-tp-modal-close>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-modal" id="ppModal" aria-hidden="true">
+    <div class="tp-modal-dialog">
+      <div class="tp-modal-content">
+        <div class="tp-modal-header">
+          <h1 class="tp-modal-title">Privacy Policy</h1>
+          <button type="button" class="tp-modal-close" data-tp-modal-close aria-label="Close">&times;</button>
+        </div>
+        <div class="tp-modal-body">
+                      <p><strong>Privacy Policy</strong></p><p>Static front preview of Privacy Policy.</p>                  </div>
+        <div class="tp-modal-footer">
+          <button type="button" class="tp-modal-btn" data-tp-modal-close>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var groups = document.querySelectorAll('.tp-bg');
+      if (!groups.length) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var indices = [];
+      groups.forEach(function () { indices.push(0); });
+      setInterval(function () {
+        groups.forEach(function (group, gi) {
+          var imgs = group.querySelectorAll('.tp-bg-image');
+          if (imgs.length < 2) return;
+          imgs[indices[gi]].classList.remove('is-active');
+          indices[gi] = (indices[gi] + 1) % imgs.length;
+          imgs[indices[gi]].classList.add('is-active');
+        });
+      }, 5000);
+    })();
+
+    (function () {
+      var rel = document.getElementById('relationship');
+      var block = document.getElementById('traveler2-fields');
+      if (!rel || !block) return;
+      function sync() {
+        var alone = rel.value === 'traveling_alone';
+        block.classList.toggle('is-hidden', alone);
+        ['t2_first_name','t2_last_name','t2_date_of_birth','t2_street_address','t2_city','t2_state','t2_zip'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.required = !alone;
+        });
+      }
+      rel.addEventListener('change', sync);
+      sync();
+    })();
+
+    (function () {
+      function closeModal(modal) {
+        if (!modal) return;
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      document.querySelectorAll('[data-tp-modal-target]').forEach(function (trigger) {
+        trigger.addEventListener('click', function (event) {
+          event.preventDefault();
+          var modal = document.querySelector(trigger.getAttribute('data-tp-modal-target'));
+          if (!modal) return;
+          modal.classList.add('is-open');
+          modal.setAttribute('aria-hidden', 'false');
+        });
+      });
+
+      document.querySelectorAll('[data-tp-modal-close]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+          closeModal(trigger.closest('.tp-modal'));
+        });
+      });
+
+      document.querySelectorAll('.tp-modal').forEach(function (modal) {
+        modal.addEventListener('click', function (event) {
+          if (event.target === modal) closeModal(modal);
+        });
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        document.querySelectorAll('.tp-modal.is-open').forEach(closeModal);
+      });
+    })();
+  </script>
+<script>
+/**
+ * Travelers Profile: on successful submit, hide the form and show the in-page summary
+ * (classic travelers_profile.php behavior). Works with Offer Flow via
+ * data-offer-flow-stay-on-success + SwiftlyOfferFlowHooks.onStepSuccess.
+ */
+(function () {
+  var form = document.getElementById('travelersProfileForm');
+  if (!form) return;
+
+  function val(name) {
+    var el = form.elements[name];
+    return el && el.value != null ? String(el.value).trim() : '';
+  }
+  function joinNonEmpty(parts, sep) {
+    return parts.filter(function (p) { return p && String(p).trim() !== ''; }).join(sep || ' ');
+  }
+  function formatDob(raw) {
+    if (!raw) return '—';
+    var m = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return raw;
+    try {
+      var d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    } catch (e) {
+      return raw;
+    }
+  }
+  function selectLabel(name) {
+    var el = form.elements[name];
+    if (!el || el.selectedIndex < 0) return val(name);
+    var opt = el.options[el.selectedIndex];
+    return (opt && opt.text ? String(opt.text).trim() : val(name)) || '—';
+  }
+  function setText(key, text) {
+    var node = document.querySelector('[data-tp-success="' + key + '"]');
+    if (node) node.textContent = text && String(text).trim() ? text : '—';
+  }
+
+  function showSuccessSummary(nextStepUrl) {
+    var formView = document.getElementById('tp-form-view');
+    var successView = document.getElementById('tp-success-view');
+    if (!successView) return;
+
+    var alone = val('relationship') === 'traveling_alone';
+    setText('t1_name', joinNonEmpty([val('t1_first_name'), val('t1_last_name')]));
+    setText('t1_dob', formatDob(val('t1_date_of_birth')));
+    setText(
+      't1_address',
+      joinNonEmpty(
+        [
+          val('t1_street_address'),
+          joinNonEmpty([val('t1_city'), val('t1_state'), val('t1_zip')], ', ')
+        ],
+        ', '
+      )
+    );
+
+    document.querySelectorAll('[data-tp-alone-hide]').forEach(function (el) {
+      el.hidden = alone;
+    });
+    document.querySelectorAll('[data-tp-alone-only]').forEach(function (el) {
+      el.hidden = !alone;
+    });
+
+    if (!alone) {
+      setText('t2_name', joinNonEmpty([val('t2_first_name'), val('t2_last_name')]));
+      setText('t2_dob', formatDob(val('t2_date_of_birth')));
+      setText(
+        't2_address',
+        joinNonEmpty(
+          [
+            val('t2_street_address'),
+            joinNonEmpty([val('t2_city'), val('t2_state'), val('t2_zip')], ', ')
+          ],
+          ', '
+        )
+      );
+      setText('relationship', selectLabel('relationship'));
+    }
+
+    if (formView) formView.classList.add('is-hidden');
+    successView.hidden = false;
+    try {
+      successView.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    } catch (e) {}
+
+    var contWrap = document.getElementById('tp-success-continue-wrap');
+    var contBtn = document.getElementById('tp-success-continue');
+    if (contWrap && contBtn && nextStepUrl) {
+      contWrap.hidden = false;
+      contBtn.onclick = function () {
+        window.location.href = nextStepUrl;
+      };
+    } else if (contWrap) {
+      contWrap.hidden = true;
+    }
+  }
+
+  window.SwiftlyOfferFlowHooks = window.SwiftlyOfferFlowHooks || {};
+  window.SwiftlyOfferFlowHooks.onStepSuccess = function (json, submittedForm) {
+    if (!submittedForm || submittedForm.id !== 'travelersProfileForm') return false;
+    var url = json && json.nextStepUrl ? String(json.nextStepUrl) : '';
+    showSuccessSummary(url);
+    return true; // stay on page — do not redirect / alert
+  };
+
+  form.addEventListener('swiftly:offer-flow-step-success', function (ev) {
+    var json = (ev && ev.detail && ev.detail.json) || {};
+    showSuccessSummary(json.nextStepUrl ? String(json.nextStepUrl) : '');
+  });
+
+  // Static preview (no Offer Flow session): show summary instead of alert.
+  try {
+    if (!new URLSearchParams(window.location.search).get('session_token')) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        showSuccessSummary('');
+      });
+      console.log('[static-front] travelers profile preview ready (summary on submit)');
+    } else {
+      console.log('[offer-flow] travelers-profile will show in-page summary on success');
+    }
+  } catch (e) {}
+})();
+</script>
+  <script src="/js/swiftly-offer-flow.js?v=20260804tpsuccess" defer></script>
+</body>
+</html>

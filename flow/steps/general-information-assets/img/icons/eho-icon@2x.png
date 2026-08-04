@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<base href="/forbidden/" target="_blank">
+
+	<title>Oops! This offer is no longer available for purchase.</title>
+
+	<meta name="robots" content="noindex, nofollow">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" href="css/main.min.css">
+</head>
+
+<body>
+
+	<div class="page404-bg">
+		<div class="page404-container">
+
+			<div class="page404-wrapper">
+				<div class="inner">
+					<h1>Oops!</h1>
+					<h2>This offer is no longer available for purchase.</h2>
+					<p>However, if you wish to book your travel dates on a package you previously purchased, please call our reservations department.</p>
+
+									</div>
+				<!-- /.inner -->
+			</div>
+			<!-- /.page404-wrapper -->
+		</div>
+		<!-- /.page404-container -->
+	</div>
+	<!-- /.page404-bg -->
+
+</body>
+
+</html>
