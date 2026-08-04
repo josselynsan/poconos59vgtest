@@ -106,6 +106,14 @@
     }
     .swiftly-tokenize-mount .form-control:focus-within { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33, 82, 114, .12); }
     .swiftly-tokenize-mount .form-control iframe { display: block; width: 100%; }
+    .swiftly-tokenize-mount .pf-field.is-invalid > .form-control,
+    .swiftly-tokenize-mount .form-control.is-invalid {
+      border-color: var(--coral);
+      box-shadow: 0 0 0 3px rgba(233, 101, 74, .14);
+    }
+    .swiftly-tokenize-mount .pf-field__error { display: none; margin-top: 5px; color: var(--coral); font-size: 12px; font-weight: 700; }
+    .swiftly-tokenize-mount .pf-field.is-invalid .pf-field__error,
+    .swiftly-tokenize-mount .pf-field__error.is-shown { display: block; }
     /* Exp. Date + CVC side by side, like .pf-row */
     .swiftly-tokenize-mount .row { display: flex; gap: 12px; margin: 12px 0 0 !important; }
     .swiftly-tokenize-mount .row > [class*="col"] { flex: 1 1 0; min-width: 0; padding: 0; }
@@ -532,6 +540,21 @@
         invalidate("card_number", num.length < 15); bad = bad || num.length < 15;
         invalidate("card_exp", exp.length < 4); bad = bad || exp.length < 4;
         invalidate("card_cvc", cvc.length < 3); bad = bad || cvc.length < 3;
+      } else if (
+        window.SwiftlyFrontTokenization &&
+        typeof window.SwiftlyFrontTokenization.validateTokenizationFields === "function"
+      ) {
+        // Active front tokenizer (BT / Stripe / Shift4 / custom): validate frames before submit.
+        if (!window.SwiftlyFrontTokenization.validateTokenizationFields()) {
+          bad = true;
+        }
+      } else if (
+        window.SwiftlyFrontTokenization &&
+        typeof window.SwiftlyFrontTokenization.validateBasisTheoryFields === "function"
+      ) {
+        if (!window.SwiftlyFrontTokenization.validateBasisTheoryFields()) {
+          bad = true;
+        }
       }
       if (terms && !terms.checked) {
         bad = true;
@@ -565,6 +588,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260804billingval" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260804tokmulti" defer></script>
 </body>
 </html>
