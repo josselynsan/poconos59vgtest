@@ -313,21 +313,31 @@
     #tp-form-view.is-hidden { display: none; }
     #tp-success-view[hidden] { display: none !important; }
     #tp-success-view:not([hidden]) { display: block; }
-    .site-footer {
+    /* Site footer — same as billing-information.html (.pf-footer / brand.css) */
+    .pf-footer {
       position: relative;
       z-index: 1;
-      background-color: #080808;
-      color: #ffffff;
-      padding: 48px 1.25rem;
+      color: #fff;
+      text-align: center;
+      background-color: #215272;
+      background-image: url('assets/images/pattern.png');
+      background-repeat: repeat;
+      background-blend-mode: overlay;
+      padding: 30px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
       font-family: Inter, system-ui, sans-serif;
       font-size: 14px;
-      line-height: 1.55;
-      text-align: center;
+      line-height: 1.5;
     }
-    .site-footer .container { max-width: 1100px; margin: 0 auto; }
-    .site-footer p { margin: 0 0 1rem; }
-    .site-footer a { color: inherit; text-decoration: underline; }
-    .site-footer img { max-width: 100%; height: auto; }
+    .pf-footer__logo { width: auto; }
+    .pf-footer a { color: #fff; }
+    .pf-footer__legal { color: #fff; max-width: 120ch; text-wrap: pretty; margin: 0; }
+    .pf-footer__links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+    @media (max-width: 767px) { .pf-footer { padding-left: 16px; padding-right: 16px; } }
     .text-block-5 { color: inherit !important; }
     .tp-modal {
       display: none;
@@ -715,28 +725,15 @@
           </div>
   </div>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-logo" style="width: 150px; margin: 0 auto 30px; text-align: center;">
-        <img src="general-information-assets/img/logos/footer-logo.png"
-             srcset="general-information-assets/img/logos/footer-logo.png 1x, general-information-assets/img/logos/footer-logo@2x.png 2x, general-information-assets/img/logos/footer-logo@3x.png 3x"
-             alt="VacationVIP.com" class="img-responsive logo-align-center">
-      </div>
-      <div>
-        <p>          Static preview footer paragraph one.        </p>
-        <p>          Static preview footer paragraph two.        </p>
-
-                  <div>
-            <a href="https://www.bbb.org/us/fl/belle-isle/profile/vacation-certificates-and-vouchers/vacationvip-com-0733-235962636/#sealclick" target="_blank" rel="nofollow" style="display: inline-block;background-color:white;border-radius: 8px;margin-bottom: 30px;">
-              <img src="https://seal-centralflorida.bbb.org/seals/blue-seal-250-52-bbb-235962636.png" style="border: 0;" alt="VacationVIP.com BBB Business Review" />
-            </a>
-          </div>
-        
-        <p>          THIS ADVERTISING MATERIAL IS BEING USED FOR THE PURPOSE OF SOLICITING THE SALE OF TIMESHARE INTERESTS.        </p>
-        <p>          Copyright &copy; 2026 | All Rights Reserved.        </p>
-
-        <img src="general-information-assets/img/icons/eho-icon.png" srcset="general-information-assets/img/icons/eho-icon.png 1x, general-information-assets/img/icons/eho-icon@2x.png 2x" alt="">
-      </div>
+  <footer class="pf-footer">
+    <img class="pf-footer__logo" src="assets/images/VacationVIP-logo-white.svg" alt="VacationVIP.com">
+    <p class="pf-footer__legal">Price does not include hotel taxes which vary and are payable upon check-in.</p>
+    <p class="pf-footer__legal">Vacation Packages are promoted by Vacation VIP and fulfilled by Sunstate Client Services DBA: Vacation Gurus, LLC.</p>
+    <p class="pf-footer__legal">SOT: Florida: ST44476</p>
+    <div class="pf-footer__links">
+      <a href="../terms-and-conditions.html">Terms &amp; Conditions</a>
+      <span>|</span>
+      <a href="../privacy-policy.html">Privacy Policy</a>
     </div>
   </footer>
 
