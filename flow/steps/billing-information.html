@@ -515,6 +515,9 @@
       e.preventDefault();
       // Own this submit so Offer Flow bootstrap cannot bypass client validation.
       e.stopImmediatePropagation();
+      // Sync lock: blocks double-click before async submitForm disables the Pay button
+      // (tokenization runs first and used to leave the button clickable).
+      if (f.__billingSubmitting) return;
       var name = (f.elements.cardholder_name.value || "").trim();
       var num = (f.elements.card_number.value || "").replace(/\s/g, "");
       var exp = (f.elements.card_exp.value || "").replace(/\D/g, "");
@@ -577,7 +580,17 @@
 
       if (swiftlyHasOfferFlowSession()) {
         if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
-          window.SwiftlyOfferFlow.submitForm(f);
+          f.__billingSubmitting = true;
+          var payBtn = document.getElementById("payBtn");
+          if (payBtn) {
+            if (!payBtn.dataset.originalText) payBtn.dataset.originalText = payBtn.textContent || "";
+            payBtn.disabled = true;
+            payBtn.textContent = "Processing\u2026";
+          }
+          Promise.resolve(window.SwiftlyOfferFlow.submitForm(f)).finally(function () {
+            f.__billingSubmitting = false;
+            // submitForm restores Pay button text/disabled in its own finally
+          });
         }
         return;
       }
@@ -588,6 +601,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260804tokmulti" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260804paylock" defer></script>
 </body>
 </html>
