@@ -2,10 +2,15 @@
    Legal modal viewer (QA: footer T&C / Privacy links should open
    a modal instead of leaving the checkout).
    Intercepts clicks on links to the legal pages and shows them in
-   an in-page overlay. The copy is inlined below -- lifted verbatim
-   from terms-and-conditions.html / privacy-policy.html, with those
-   pages' own styles scoped under .legal-overlay -- so the modal is
-   real DOM rather than an <iframe>.
+   an in-page overlay.
+
+   Content source (Offer Flow):
+   - window.SWIFTLY_OFFER_FLOW.terms_conditions / .privacy_policy
+     injected from offers.* (admin → Configure Offer Settings →
+     Offer Common Data). Empty fields show a “not configured” message.
+   - Static front preview without offer_id falls back to DOCS below
+     (legacy copy from terms-and-conditions.html / privacy-policy.html).
+
    Links keep their real href, so no-JS and middle-click still work.
    ============================================================ */
 (function () {
@@ -44,6 +49,45 @@
     ".legal-overlay .legal-main { padding: 8px 4px 24px; }" +
     "@media (max-width:600px){.legal-overlay{padding:10px;}.legal-overlay__card{height:calc(100dvh - 20px);}.legal-overlay__body{padding:0 12px;}}";
 
+  var EMPTY = {
+    terms:
+      '<main class="legal-main"><h1>Terms &amp; Conditions</h1>' +
+      '<p>Terms and Conditions have not been configured for this offer.</p></main>',
+    privacy:
+      '<main class="legal-main"><h1>Privacy Policy</h1>' +
+      '<p>Privacy Policy has not been configured for this offer.</p></main>'
+  };
+
+  function wrapLegalHtml(html) {
+    var t = String(html || "").trim();
+    if (!t) return t;
+    if (/class\s*=\s*["'][^"']*legal-main/i.test(t) || /<main[\s>]/i.test(t)) {
+      return t;
+    }
+    return '<main class="legal-main">' + t + "</main>";
+  }
+
+  /**
+   * Prefer offers.terms_conditions / privacy_policy injected on
+   * window.SWIFTLY_OFFER_FLOW. When those keys are present (Offer Flow serve),
+   * empty content shows EMPTY.* — not the hardcoded DOCS fallback.
+   * Static front preview without offer_id keeps DOCS.
+   */
+  function resolveDoc(kind) {
+    var meta = DOCS[kind];
+    if (!meta) return null;
+    var flow = window.SWIFTLY_OFFER_FLOW || {};
+    var key = kind === "terms" ? "terms_conditions" : "privacy_policy";
+    if (Object.prototype.hasOwnProperty.call(flow, key)) {
+      var fromOffer = flow[key] == null ? "" : String(flow[key]).trim();
+      return {
+        title: meta.title,
+        html: fromOffer ? wrapLegalHtml(fromOffer) : EMPTY[kind]
+      };
+    }
+    return meta;
+  }
+
   var style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
@@ -64,18 +108,19 @@
   var body = overlay.querySelector(".legal-overlay__body");
   var title = overlay.querySelector(".legal-overlay__title");
   var rendered = null;
+  var renderedHtml = null;
 
   function open(kind) {
-    var doc = DOCS[kind];
+    var doc = resolveDoc(kind);
     if (!doc) return;
     title.textContent = doc.title;
-    if (rendered !== kind) {
+    if (rendered !== kind || renderedHtml !== doc.html) {
       body.innerHTML = doc.html;
-      // the standalone pages stamp the year with their own inline script
       body.querySelectorAll("[data-year]").forEach(function (el) {
         el.textContent = new Date().getFullYear();
       });
       rendered = kind;
+      renderedHtml = doc.html;
     }
     body.scrollTop = 0;
     overlay.classList.add("is-open");

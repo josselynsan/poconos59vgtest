@@ -494,6 +494,7 @@
         
         <form method="post" action="javascript:void(0);" id="travelersProfileForm"
               data-step-slug="travelers-profile"
+              data-offer-flow-ignore
               data-offer-flow-stay-on-success
               onsubmit="return false;" novalidate>
           <div class="tp-section-title">Traveler 1</div>
@@ -840,14 +841,17 @@
   </script>
 <script>
 /**
- * Travelers Profile: on successful submit, hide the form and show the in-page summary
- * (classic travelers_profile.php behavior). Works with Offer Flow via
- * data-offer-flow-stay-on-success + SwiftlyOfferFlowHooks.onStepSuccess.
+ * Travelers Profile owns submit so success always shows the in-page summary.
+ * (Prod may still serve an older /js/swiftly-offer-flow.js that alerts on
+ * json.completed — "Thank you! Your flow is complete." — instead of the summary.)
  */
 (function () {
   var form = document.getElementById('travelersProfileForm');
   if (!form) return;
 
+  function qs(name) {
+    try { return new URLSearchParams(window.location.search).get(name); } catch (e) { return null; }
+  }
   function val(name) {
     var el = form.elements[name];
     return el && el.value != null ? String(el.value).trim() : '';
@@ -857,7 +861,7 @@
   }
   function formatDob(raw) {
     if (!raw) return '—';
-    var m = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var m = String(raw).match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);
     if (!m) return raw;
     try {
       var d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
@@ -875,6 +879,19 @@
   function setText(key, text) {
     var node = document.querySelector('[data-tp-success="' + key + '"]');
     if (node) node.textContent = text && String(text).trim() ? text : '—';
+  }
+  function formToObject(f) {
+    var data = {};
+    var fd = new FormData(f);
+    fd.forEach(function (value, key) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        if (!Array.isArray(data[key])) data[key] = [data[key]];
+        data[key].push(value);
+      } else {
+        data[key] = value;
+      }
+    });
+    return data;
   }
 
   function showSuccessSummary(nextStepUrl) {
@@ -937,38 +954,95 @@
     }
   }
 
+  // Keep hooks for newer swiftly-offer-flow.js if something still calls submitForm.
   window.SwiftlyOfferFlowHooks = window.SwiftlyOfferFlowHooks || {};
   window.SwiftlyOfferFlowHooks.onStepSuccess = function (json, submittedForm) {
     if (!submittedForm || submittedForm.id !== 'travelersProfileForm') return false;
-    var url = json && json.nextStepUrl ? String(json.nextStepUrl) : '';
-    showSuccessSummary(url);
-    return true; // stay on page — do not redirect / alert
+    showSuccessSummary(json && json.nextStepUrl ? String(json.nextStepUrl) : '');
+    return true;
   };
-
   form.addEventListener('swiftly:offer-flow-step-success', function (ev) {
     var json = (ev && ev.detail && ev.detail.json) || {};
     showSuccessSummary(json.nextStepUrl ? String(json.nextStepUrl) : '');
   });
 
-  // Static preview (no Offer Flow session): show summary instead of alert.
-  try {
-    if (!new URLSearchParams(window.location.search).get('session_token')) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
-        }
-        showSuccessSummary('');
-      });
-      console.log('[static-front] travelers profile preview ready (summary on submit)');
+  function setSubmitting(on) {
+    var btn = document.getElementById('travelersProfileSubmit');
+    if (!btn) return;
+    if (on) {
+      if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent || '';
+      btn.disabled = true;
+      btn.textContent = 'Processing…';
     } else {
-      console.log('[offer-flow] travelers-profile will show in-page summary on success');
+      btn.disabled = false;
+      if (btn.dataset.originalText) btn.textContent = btn.dataset.originalText;
     }
-  } catch (e) {}
+  }
+
+  async function submitToOfferFlow() {
+    var offerId = qs('offer_id');
+    var sessionToken = qs('session_token');
+    var stepSlug = form.getAttribute('data-step-slug') || 'travelers-profile';
+    if (!offerId || !sessionToken) {
+      showSuccessSummary('');
+      return;
+    }
+
+    var fields = formToObject(form);
+    fields.offer_id = offerId;
+    fields.session_token = sessionToken;
+    fields.stepSlug = stepSlug;
+
+    setSubmitting(true);
+    try {
+      var res = await fetch('/api/offer-flow/submit-step', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(fields),
+        credentials: 'same-origin'
+      });
+      var json = await res.json().catch(function () {
+        return { success: false, error: 'Invalid JSON response' };
+      });
+      console.log('[travelers-profile] submit-step response', json);
+
+      if (json && (json.success || json.completed || json.nextStepUrl)) {
+        showSuccessSummary(json.nextStepUrl ? String(json.nextStepUrl) : '');
+        return;
+      }
+
+      var msg = (json && json.error) || 'Could not save traveler profile.';
+      if (json && Array.isArray(json.validationErrors) && json.validationErrors.length) {
+        msg = json.validationErrors
+          .map(function (e) { return (e && e.message) || ''; })
+          .filter(Boolean)
+          .join('\\n') || msg;
+      }
+      alert(msg);
+    } catch (err) {
+      alert((err && err.message) || 'Could not save traveler profile.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (form.__tpSubmitting) return;
+    if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    form.__tpSubmitting = true;
+    Promise.resolve(submitToOfferFlow()).finally(function () {
+      form.__tpSubmitting = false;
+    });
+  }, true);
+
+  console.log('[travelers-profile] in-page summary submit handler ready');
 })();
 </script>
-  <script src="/js/swiftly-offer-flow.js?v=20260804tpsuccess" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260804histtrap" defer></script>
 </body>
 </html>
