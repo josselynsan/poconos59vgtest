@@ -222,7 +222,7 @@
 
     <div class="os-grid">
       <!-- LEFT: BILLING -->
-      <form class="pf-card" id="billingForm" method="post" action="javascript:void(0);" data-step-slug="billing-information" onsubmit="return false;" novalidate>
+      <form class="pf-card" id="billingForm" method="post" action="javascript:void(0);" data-step-slug="billing-information" data-offer-flow-ignore onsubmit="return false;" novalidate>
         <div class="pf-card__pad">
           <h2 class="pf-title">Complete Your Billing Info</h2>
 
@@ -505,6 +505,8 @@
 
     f.addEventListener("submit", function (e) {
       e.preventDefault();
+      // Own this submit so Offer Flow bootstrap cannot bypass client validation.
+      e.stopImmediatePropagation();
       var name = (f.elements.cardholder_name.value || "").trim();
       var num = (f.elements.card_number.value || "").replace(/\s/g, "");
       var exp = (f.elements.card_exp.value || "").replace(/\D/g, "");
@@ -522,9 +524,15 @@
       invalidate("billing_city", !city); bad = bad || !city;
       invalidate("billing_state", !st); bad = bad || !st;
       invalidate("billing_zip", zip.length < 5); bad = bad || zip.length < 5;
-      invalidate("card_number", num.length < 15); bad = bad || num.length < 15;
-      invalidate("card_exp", exp.length < 4); bad = bad || exp.length < 4;
-      invalidate("card_cvc", cvc.length < 3); bad = bad || cvc.length < 3;
+      // Native card inputs may be hidden when Basis Theory mounts; only require
+      // them when they are still visible/usable for this checkout.
+      var cardNumEl = f.elements.card_number;
+      var nativeCardVisible = !!(cardNumEl && cardNumEl.offsetParent !== null);
+      if (nativeCardVisible) {
+        invalidate("card_number", num.length < 15); bad = bad || num.length < 15;
+        invalidate("card_exp", exp.length < 4); bad = bad || exp.length < 4;
+        invalidate("card_cvc", cvc.length < 3); bad = bad || cvc.length < 3;
+      }
       if (terms && !terms.checked) {
         bad = true;
         var termsLbl = terms.closest(".pf-check");
@@ -538,7 +546,11 @@
         var termsErrOk = document.getElementById("termsError");
         if (termsErrOk) { termsErrOk.classList.remove("is-shown"); termsErrOk.style.display = ""; }
       }
-      if (bad) { var first = f.querySelector(".pf-field.is-invalid .pf-input, .pf-field.is-invalid .pf-select"); if (first) first.focus(); return; }
+      if (bad) {
+        var first = f.querySelector(".pf-field.is-invalid .pf-input, .pf-field.is-invalid .pf-select");
+        if (first) first.focus();
+        return;
+      }
 
       if (swiftlyHasOfferFlowSession()) {
         if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
@@ -553,6 +565,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260803inline" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260804billingval" defer></script>
 </body>
 </html>

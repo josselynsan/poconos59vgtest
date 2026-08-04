@@ -136,7 +136,7 @@
 
     <div class="os-grid">
       <!-- LEFT: FORM -->
-      <form class="pf-card" id="orderForm" method="post" action="javascript:void(0);" data-step-slug="general-information" onsubmit="return false;" novalidate autocomplete="on">
+      <form class="pf-card" id="orderForm" method="post" action="javascript:void(0);" data-step-slug="general-information" data-offer-flow-ignore onsubmit="return false;" novalidate autocomplete="on">
         <input type="hidden" name="travel_start_date" id="travel_start_date" value="">
         <input type="hidden" name="travel_end_date" id="travel_end_date" value="">
         <input type="hidden" name="know_dates" id="know_dates" value="0">
@@ -468,6 +468,7 @@
 
     f.addEventListener("submit", function (e) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       if (f.elements.alternative_submit) f.elements.alternative_submit.value = "";
       var g = collectGuest();
       var bad = !validateBase(g);
@@ -498,6 +499,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260803inline" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260804billingval" defer></script>
 </body>
 </html>
