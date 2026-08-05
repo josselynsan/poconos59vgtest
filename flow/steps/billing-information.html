@@ -123,6 +123,44 @@
        doesn't leave a stray flex gap in .bill-fields. */
     .bill-fields .pf-row:has(> .pf-field[style*="display: none"]) { display: none; }
 
+    /* ---- Shift4 i4Go (same .swiftly-tokenize-mount host as BT) ----
+       BT styles force .form-control { min-height:46px !important }, which
+       collapses the i4Go iframe host. Override only for Shift4. */
+    .swiftly-tokenize-mount[data-tok-provider="shift4"] { margin: 4px 0 0; }
+    .swiftly-tokenize-mount[data-tok-provider="shift4"] #card-element.form-control,
+    .swiftly-tokenize-mount[data-tok-provider="shift4"] #card-element {
+      min-height: 420px !important;
+      height: auto !important;
+      padding: 0 !important;
+      display: block;
+      overflow: hidden;
+    }
+    .swiftly-tokenize-mount[data-tok-provider="shift4"] #shift4-i4go-form,
+    .swiftly-tokenize-mount[data-tok-provider="shift4"] #i4goFrame {
+      width: 100%;
+      min-height: 400px;
+      height: 400px;
+    }
+    .swiftly-tokenize-mount[data-tok-provider="shift4"] iframe {
+      width: 100% !important;
+      min-height: 400px;
+      border: 0;
+    }
+
+    /* Shift4 i4Go: Pay CTA is replaced by iframe "Secure My Payment Information" */
+    form.shift4-i4go-form #payBtn,
+    form.shift4-i4go-form button.swiftly-shift4-pay-hidden,
+    #payBtn.swiftly-shift4-pay-hidden {
+      display: none !important;
+    }
+    /* Empty action bar after Pay is hidden — collapse mobile fixed thumb-zone strip */
+    @media (max-width: 900px) {
+      form.shift4-i4go-form .pf-actionbar.swiftly-shift4-pay-hidden,
+      .pf-actionbar.swiftly-shift4-pay-hidden {
+        display: none !important;
+      }
+    }
+
     .bill-safe { text-align: center; margin-top: 18px; }
     .bill-safe__title { font-weight: 800; color: var(--ink); margin-bottom: 10px; }
     .bill-safe__icons { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; }
@@ -601,6 +639,6 @@
   })();
   </script>
   <script>lucide.createIcons();</script>
-  <script src="/js/swiftly-offer-flow.js?v=20260804histtrap" defer></script>
+  <script src="/js/swiftly-offer-flow.js?v=20260805shift4payhide" defer></script>
 </body>
 </html>
