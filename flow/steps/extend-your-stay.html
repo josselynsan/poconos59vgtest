@@ -314,8 +314,23 @@
       hidden.value = slug;
     }
 
-    var EXTEND_CENTS = 1900;
-    var TP_CENTS = 2499;
+    function swiftlyUpgradeCents(key, fallbackCents) {
+      try {
+        var list = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
+        for (var i = 0; i < list.length; i++) {
+          var row = list[i];
+          if (!row) continue;
+          var k = String(row.key || row.slug || "").trim();
+          if (k === key && row.value != null && !isNaN(Number(row.value))) {
+            return Math.round(Number(row.value) * 100);
+          }
+        }
+      } catch (e) {}
+      return fallbackCents;
+    }
+
+    var EXTEND_CENTS = swiftlyUpgradeCents("extend_stay", 1900);
+    var TP_CENTS = swiftlyUpgradeCents("travel_protection", 2499);
     var ofSession = swiftlyHasOfferFlowSession();
     var paymentMode = resolvePaymentMode();
     var s = FlowState.get();

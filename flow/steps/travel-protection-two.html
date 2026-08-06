@@ -148,7 +148,22 @@
     var ofSession = swiftlyHasOfferFlowSession();
     var form = document.getElementById("tpForm");
     var s = FlowState.get();
-    var TP_CENTS = 2499;
+    function swiftlyUpgradeCents(key, fallbackCents) {
+      try {
+        var list = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
+        for (var i = 0; i < list.length; i++) {
+          var row = list[i];
+          if (!row) continue;
+          var k = String(row.key || row.slug || "").trim();
+          if (k === key && row.value != null && !isNaN(Number(row.value))) {
+            return Math.round(Number(row.value) * 100);
+          }
+        }
+      } catch (e) {}
+      return fallbackCents;
+    }
+
+    var TP_CENTS = swiftlyUpgradeCents("travel_protection", 2499);
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
     document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
 
