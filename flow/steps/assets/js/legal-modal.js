@@ -16,7 +16,27 @@
 (function () {
   "use strict";
 
-  var LEGAL = /(terms-and-conditions|privacy-policy)\.html/;
+  var LEGAL = /(terms-and-conditions|privacy-policy)\.html|\/checkout\/(tc|pp)\/?([?#]|$)|(^|[\/?#])(tc|pp)([?#]|$)/i;
+
+  function isLegalHref(href) {
+    var h = String(href || "");
+    if (LEGAL.test(h)) return true;
+    try {
+      var u = new URL(h, window.location.href);
+      var p = u.pathname.replace(/\/+$/, "");
+      return /\/(terms-and-conditions|privacy-policy)\.html$/i.test(p)
+        || /\/checkout\/(tc|pp)$/i.test(p)
+        || /^\/(tc|pp)$/i.test(p);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function legalKindFromHref(href) {
+    var h = String(href || "");
+    if (/privacy-policy|\/pp([?#]|$)|(^|[\/?])pp([?#]|$)/i.test(h)) return "privacy";
+    return "terms";
+  }
 
   /* Copy lifted from the standalone legal pages. Keep in sync if those change. */
   var DOCS = {
@@ -165,35 +185,38 @@
   // session_token so middle-click / Open in new tab still gets injected copy.
   function withOfferQuery(href) {
     try {
-      var u = new URL(href, window.location.href);
+      var kind = legalKindFromHref(href);
+      var u = new URL(kind === "privacy" ? "/checkout/pp" : "/checkout/tc", window.location.origin);
       var cur = new URLSearchParams(window.location.search || "");
       ["offer_id", "session_token"].forEach(function (k) {
-        if (!u.searchParams.get(k) && cur.get(k)) u.searchParams.set(k, cur.get(k));
+        if (cur.get(k)) u.searchParams.set(k, cur.get(k));
       });
-      // Prefer public checkout URL when base is /flow/steps/
-      if (/\/(terms-and-conditions|privacy-policy)\.html$/i.test(u.pathname)) {
-        u.pathname = "/checkout/" + u.pathname.split("/").pop();
-      }
+      try {
+        var from = new URL(href, window.location.href);
+        from.searchParams.forEach(function (v, k) {
+          if (!u.searchParams.get(k)) u.searchParams.set(k, v);
+        });
+      } catch (e2) {}
       return u.pathname + (u.search ? u.search : "") + (u.hash || "");
     } catch (err) {
       return href;
     }
   }
-  document.querySelectorAll('a[href*="terms-and-conditions.html"], a[href*="privacy-policy.html"]').forEach(function (a) {
+  document.querySelectorAll('a[href*="terms-and-conditions"], a[href*="privacy-policy"], a[href*="/checkout/tc"], a[href*="/checkout/pp"], a[href="/checkout/tc"], a[href="/checkout/pp"]').forEach(function (a) {
     var href = a.getAttribute("href") || "";
-    if (!LEGAL.test(href)) return;
+    if (!isLegalHref(href)) return;
     a.setAttribute("href", withOfferQuery(href));
   });
 
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href]");
-    if (!a || !LEGAL.test(a.getAttribute("href") || "")) return;
+    if (!a || !isLegalHref(a.getAttribute("href") || "")) return;
     // Respect explicit new-tab / modified clicks so the full legal page can open.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1 || a.target === "_blank") {
       return;
     }
     e.preventDefault();
     // route through the hash so the URL reflects the open popup
-    location.hash = a.getAttribute("href").indexOf("terms-and-conditions") !== -1 ? "terms" : "privacy";
+    location.hash = legalKindFromHref(a.getAttribute("href") || "") === "privacy" ? "privacy" : "terms";
   });
 })();
