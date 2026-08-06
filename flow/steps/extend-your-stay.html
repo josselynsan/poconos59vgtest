@@ -7,16 +7,14 @@
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="assets/css/brand.css?v=20260801" rel="stylesheet">
+  <link href="assets/css/brand.css?v=20260806" rel="stylesheet">
   <style>
     .up-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: stretch; width: 100%; max-width: var(--maxw); }
     @media (max-width: 900px) { .up-grid { grid-template-columns: 1fr; } }
-    /* Both columns share the row height; the summary card fills its stretched column. */
     .up-summary { display: flex; flex-direction: column; }
     .up-summary > .pf-card { flex: 1 1 auto; }
     @media (min-width: 901px) { .up-summary { position: sticky; top: 20px; } }
 
-    /* left offer module — consistent step-to-step layout */
     .tk-headline { font-size: 30px; font-weight: 800; color: var(--ink); margin: 0 0 20px; line-height: 1.1; }
     .tk-lead { font-size: 22px; font-weight: 700; color: var(--ink); margin: 0 0 10px; }
     .tk-desc { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 24px; }
@@ -33,9 +31,6 @@
     .tk-card__copy { font-size: 13px; color: var(--muted); line-height: 1.4; margin: 0; }
     .tk-card__copy strong { color: var(--coral); }
 
-    /* Action row uses the shared .pf-actionbar (static desktop, fixed thumb-zone bar on mobile). */
-
-    /* summary — guest-reviews head matches steps 1 & 2 (styles shared from brand.css) */
     .os-rating { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
     .up-list { margin: 16px 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
     .up-list .row { display: flex; justify-content: space-between; gap: 8px; }
@@ -44,8 +39,62 @@
     .up-upgrades-title { font-weight: 800; color: var(--ink); margin: 14px 0 8px; }
     .up-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 900; color: var(--ink); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; }
 
-    /* Mobile vertical compression */
+    /* Travel Protection popup */
+    .tp-card { max-width: 720px; padding: 0; gap: 0; display: flex; flex-direction: column; align-items: stretch; text-align: left; overflow: hidden; }
+    .tp-banner { display: flex; align-items: center; justify-content: center; gap: 9px; background: var(--navy); color: #fff; font-size: 16px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 12px 16px; }
+    .tp-banner .pf-i { width: 20px; height: 20px; color: #fff; }
+    .tp-body { padding: 32px 40px; display: flex; flex-direction: column; gap: 22px; }
+    .tp-head { display: flex; gap: 16px; align-items: flex-start; }
+    .tp-icon { width: 44px; height: 44px; color: var(--navy); flex: 0 0 auto; }
+    .tp-title { font-size: 24px; font-weight: 800; color: var(--ink); margin: 0; line-height: 1.2; }
+    .tp-sub { font-size: 16px; line-height: 1.5; color: var(--text); margin: 0; }
+    .tp-sub strong { color: var(--ink); }
+    .tp-choose { font-size: 18px; font-weight: 800; color: var(--ink); }
+    .tp-opt { border-radius: 12px; padding: 20px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
+    .tp-opt--yes { background: #e5f5ff; }
+    .tp-opt--no { background: #f7f7f7; }
+    .tp-opt.is-selected { border-color: var(--navy); }
+    .tp-opt__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .tp-opt__lead { display: flex; align-items: center; gap: 10px; }
+    .tp-opt__label { font-size: 16px; font-weight: 600; color: var(--ink); }
+    .tp-opt input[type=radio] { width: 20px; height: 20px; accent-color: var(--navy); flex: 0 0 auto; margin: 0; cursor: pointer; }
+    .tp-price { background: rgba(0, 0, 0, .08); border-radius: 6px; padding: 6px 10px; text-align: center; line-height: 1.15; flex: 0 0 auto; }
+    .tp-price strong { display: block; font-size: 16px; color: var(--ink); }
+    .tp-price span { font-size: 12px; color: var(--text); }
+    .tp-reasons { padding-left: 30px; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .tp-reasons__title { font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #205272; margin: 0; }
+    .tp-reason { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #333; }
+    .tp-reason .pf-i { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 1px; color: #555; }
+    .tp-reason p { margin: 0; line-height: 1.35; }
+    .tp-reason strong { color: #1a1a1a; }
+    .tp-reason a { color: #0037eb; text-decoration: underline; }
+    .tp-continue { align-self: flex-start; width: auto; padding-left: 44px; padding-right: 44px; }
+    .tp-continue:disabled { background: #b2b2b2; cursor: not-allowed; box-shadow: none; }
+    @media (max-width: 560px) {
+      .tp-opt__top { flex-direction: column; align-items: stretch; gap: 8px; }
+      .tp-price { display: flex; align-items: baseline; gap: 6px; width: 100%; background: transparent; padding: 0; text-align: left; }
+      .tp-price strong { display: inline; }
+      .tp-continue { align-self: stretch; }
+    }
+
     @media (max-width: 767px) {
+      .tp-banner { font-size: 14px; letter-spacing: .04em; padding: 10px 14px; }
+      .tp-banner .pf-i { width: 17px; height: 17px; }
+      .tp-body { padding: 20px 16px; gap: 14px; }
+      .tp-head { gap: 12px; }
+      .tp-icon { width: 30px; height: 30px; }
+      .tp-title { font-size: 18px; line-height: 1.25; }
+      .tp-sub { font-size: 13.5px; line-height: 1.4; }
+      .tp-choose { font-size: 15px; }
+      .tp-opt { padding: 14px; border-radius: 10px; }
+      .tp-opt__label { font-size: 14px; }
+      .tp-price strong { font-size: 14px; }
+      .tp-price span { font-size: 11px; }
+      .tp-reasons { padding-left: 4px; margin-top: 12px; gap: 8px; }
+      .tp-reasons__title { font-size: 12px; }
+      .tp-reason { font-size: 12.5px; }
+      .tp-reason .pf-i { width: 16px; height: 16px; }
+
       .tk-headline { font-size: 22px; margin: 0 0 12px; }
       .tk-lead { font-size: 17px; margin: 0 0 8px; }
       .tk-desc { font-size: 14px; margin: 0 0 14px; }
@@ -57,6 +106,22 @@
       .up-list { margin: 12px 0; }
       .up-total { font-size: 18px; padding-top: 10px; }
     }
+
+    @media (max-height: 700px) {
+      .tp-banner { font-size: 12px; padding: 8px 12px; }
+      .tp-banner .pf-i { width: 15px; height: 15px; }
+      .tp-body { padding: 14px 14px; gap: 10px; }
+      .tp-icon { width: 24px; height: 24px; }
+      .tp-title { font-size: 16px; }
+      .tp-sub { font-size: 12.5px; line-height: 1.35; }
+      .tp-choose { font-size: 14px; }
+      .tp-opt { padding: 10px 12px; }
+      .tp-opt__label { font-size: 13px; }
+      .tp-reasons { margin-top: 8px; gap: 6px; }
+      .tp-reason { font-size: 12px; }
+      .tp-reason p { line-height: 1.3; }
+      .tp-continue { padding-top: 11px; padding-bottom: 11px; font-size: 14px; }
+    }
   </style>
 </head>
 <body class="step-page" data-swiftly-step="extend-your-stay">
@@ -67,7 +132,6 @@
 
   <main class="pf-main">
     <div class="up-grid">
-      <!-- LEFT: OFFER (mirrors step 4 module) -->
       <section class="pf-card">
         <div class="pf-card__pad">
           <h1 class="tk-headline">Extend your stay</h1>
@@ -86,13 +150,13 @@
 
           <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="extend-your-stay" onsubmit="return false;">
             <input type="hidden" name="extend_your_stay" id="extend_your_stay" value="">
+            <input type="hidden" name="travel_protection_two" id="travel_protection_two" value="">
             <button type="button" class="pf-btn cont" id="addBtn">Yes, Add 4th Night</button>
             <button type="button" class="pf-btn pf-btn--ghost skip" id="skipBtn">Skip</button>
           </form>
         </div>
       </section>
 
-      <!-- RIGHT: PACKAGE SUMMARY -->
       <aside class="up-summary">
         <div class="pf-card">
           <div class="pf-card__pad">
@@ -130,10 +194,42 @@
     </div>
   </main>
 
-  <!-- Purchase-confirmed toaster mount -->
   <div class="pf-toast-wrap" id="toastWrap" aria-live="polite"></div>
 
-  <!-- Retention modal ("wonder why not?") shown when declining the 4th night -->
+  <!-- Travel Protection popup — opens after payment (source step 03) -->
+  <div class="pf-modal" id="tpModal" role="dialog" aria-modal="true" aria-labelledby="tpTitle" aria-hidden="true">
+    <div class="pf-modal__card tp-card">
+      <div class="tp-banner"><i data-lucide="shield-check" class="pf-i" aria-hidden="true"></i> Highly Recommended</div>
+      <div class="tp-body">
+        <div class="tp-head">
+          <i data-lucide="shield-plus" class="tp-icon" aria-hidden="true"></i>
+          <h2 class="tp-title" id="tpTitle">Congrats on locking in your vacation! Now add Travel Protection for your trip!</h2>
+        </div>
+        <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong>$24.99</strong>.</p>
+        <div class="tp-choose">Select Yes or No to continue booking</div>
+
+        <div class="tp-opt tp-opt--yes" id="tpOptYes">
+          <div class="tp-opt__top">
+            <span class="tp-opt__lead"><input type="radio" name="tp" id="tpYes" value="yes"><span class="tp-opt__label">Yes, I want Travel Protection for my vacation</span></span>
+            <span class="tp-price"><strong>$24.99</strong><span>one-time, covers your whole package</span></span>
+          </div>
+          <div class="tp-reasons">
+            <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
+            <div class="tp-reason"><i data-lucide="clock" class="pf-i"></i><p><strong>Travel Delay:</strong> Unexpected delays can lead to missed hotel nights and extra costs.</p></div>
+            <div class="tp-reason"><i data-lucide="calendar-x" class="pf-i"></i><p><strong>Trip Adjustments:</strong> An unforeseen event and travel dates need to be adjusted.</p></div>
+            <div class="tp-reason"><i data-lucide="circle-x" class="pf-i"></i><p><strong>Trip Cancellations:</strong> Illness, job loss, or family emergencies can lead to non-refundable trip costs. Read <a href="../../terms-and-conditions.html">Terms and Conditions</a>.</p></div>
+          </div>
+        </div>
+
+        <div class="tp-opt tp-opt--no" id="tpOptNo">
+          <span class="tp-opt__lead"><input type="radio" name="tp" id="tpNo" value="no"><span class="tp-opt__label">No, I&rsquo;m willing to risk my vacation valued at <span id="tpRetail">$748</span>.</span></span>
+        </div>
+
+        <button type="button" class="pf-btn tp-continue" id="tpContinue" disabled>Continue</button>
+      </div>
+    </div>
+  </div>
+
   <div class="pf-modal" id="retainModal" role="dialog" aria-modal="true" aria-labelledby="retainTitle" aria-hidden="true">
     <div class="pf-modal__card">
       <button type="button" class="pf-modal__close" id="retainClose" aria-label="Close">&times;</button>
@@ -165,11 +261,12 @@
   </footer>
 
   <script src="assets/libs/lucide/lucide.min.js"></script>
-  <script src="assets/js/flow-state.js?v=20260801"></script>
+  <script src="assets/js/flow-state.js?v=20260806"></script>
   <script src="/flow/steps/assets/js/legal-modal.js?v=20260804legalabs"></script>
   <script>
   (function () {
     var EXTEND_DECISION_KEY = "swiftly_extend_decision";
+    var TP_DECISION_KEY = "swiftly_tp_decision";
 
     function swiftlyHasOfferFlowSession() {
       try {
@@ -198,6 +295,11 @@
       try { sessionStorage.setItem(storageKey(key), value); } catch (e) {}
     }
 
+    function resolvePaymentMode() {
+      var configured = window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradePaymentMode;
+      return configured === "dual" ? "dual" : "single";
+    }
+
     function setStepSlug(formEl, slug) {
       formEl.setAttribute("data-step-slug", slug);
       var body = document.body;
@@ -212,8 +314,10 @@
       hidden.value = slug;
     }
 
-    var EXTEND_CENTS = 1900; // $19 4th-night upgrade (flat rate — no discount)
+    var EXTEND_CENTS = 1900;
+    var TP_CENTS = 2499;
     var ofSession = swiftlyHasOfferFlowSession();
+    var paymentMode = resolvePaymentMode();
     var s = FlowState.get();
     var form = document.getElementById("upgradeForm");
 
@@ -232,7 +336,6 @@
     document.getElementById("sumPkg").textContent = FlowState.money(s.priceCents);
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
-    // Parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day back.
     var fmt = function (t) {
       if (!t) return "\u2014";
       var d;
@@ -249,14 +352,13 @@
     document.getElementById("sumCheckIn").textContent = fmt(checkIn);
     document.getElementById("sumCheckOut").textContent = fmt(checkOut);
     document.getElementById("retainPrice").textContent = FlowState.money(EXTEND_CENTS);
+    document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
 
     function hasExtend() { return !!FlowState.findUpsell("extend_stay"); }
+    function hasTP() { return !!FlowState.findUpsell("travel_protection"); }
     function updateTotals() { document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents()); }
     var CART_OPTS = { editable: false };
 
-    // Keep the visual Upgrades cart in sync in BOTH modes (static preview and
-    // Offer Flow session). The charge itself is still driven by the hidden
-    // field posted to the flow; this only feeds the summary UI.
     function syncUpsellUi(type, on, cents) {
       if (on) {
         if (!FlowState.findUpsell(type)) FlowState.addUpsell(type, 1, cents);
@@ -271,19 +373,33 @@
     if (window.PFUpsells) { PFUpsells.render("upgradeList", CART_OPTS); }
     updateTotals();
 
-    function extendDecisionFromSources() {
-      var fromPrefill = String(prefill.extend_your_stay || "").trim();
-      if (/^(yes|no)$/i.test(fromPrefill)) return fromPrefill.charAt(0).toUpperCase() + fromPrefill.slice(1).toLowerCase();
-      var fromStore = String(readStored(EXTEND_DECISION_KEY) || "").trim();
-      if (/^(yes|no)$/i.test(fromStore)) return fromStore.charAt(0).toUpperCase() + fromStore.slice(1).toLowerCase();
-      var hiddenVal = String(form.elements.extend_your_stay.value || "").trim();
-      if (/^(yes|no)$/i.test(hiddenVal)) return hiddenVal.charAt(0).toUpperCase() + hiddenVal.slice(1).toLowerCase();
+    function normalizeYesNo(raw) {
+      var v = String(raw || "").trim();
+      if (/^(yes|no)$/i.test(v)) return v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
       return "";
+    }
+
+    function extendDecisionFromSources() {
+      return normalizeYesNo(prefill.extend_your_stay)
+        || normalizeYesNo(readStored(EXTEND_DECISION_KEY))
+        || normalizeYesNo(form.elements.extend_your_stay.value);
+    }
+
+    function tpDecisionFromSources() {
+      return normalizeYesNo(prefill.travel_protection_two || prefill.travel_protection)
+        || normalizeYesNo(readStored(TP_DECISION_KEY))
+        || (!ofSession && s.tpDecision === "yes" ? "Yes" : "")
+        || (!ofSession && s.tpDecision === "no" ? "No" : "")
+        || normalizeYesNo(form.elements.travel_protection_two.value);
     }
 
     function submitUpgrade(extendValue) {
       form.elements.extend_your_stay.value = extendValue;
       writeStored(EXTEND_DECISION_KEY, extendValue);
+      // Carry TP preference for later bonus/auth steps (single mode).
+      if (!form.elements.travel_protection_two.value) {
+        form.elements.travel_protection_two.value = tpDecisionFromSources() || "";
+      }
       setStepSlug(form, "extend-your-stay");
       var addedExtend = extendValue === "Yes" && !hasExtend();
       syncUpsellUi("extend_stay", extendValue === "Yes", EXTEND_CENTS);
@@ -295,14 +411,32 @@
         return;
       }
       console.log("[static-front] extend-your-stay submit mocked", {
-        extend_your_stay: form.elements.extend_your_stay.value
+        extend_your_stay: form.elements.extend_your_stay.value,
+        travel_protection_two: form.elements.travel_protection_two.value
       });
       setTimeout(function () {
         window.location.href = "bonus-vacation.html" + window.location.search;
       }, extendValue === "Yes" ? 900 : 200);
     }
 
-    // Retention modal controls
+    function submitTravelProtection(tpValue) {
+      form.elements.travel_protection_two.value = tpValue;
+      form.elements.extend_your_stay.value = "";
+      writeStored(TP_DECISION_KEY, tpValue);
+      setStepSlug(form, "travel-protection-two");
+      var addedTp = tpValue === "Yes" && !hasTP();
+      syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
+      FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
+      if (addedTp && window.PFToast) PFToast("Travel Protection added!");
+      if (ofSession) {
+        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+          window.SwiftlyOfferFlow.submitForm(form);
+        }
+        return;
+      }
+      closeTP();
+    }
+
     var modal = document.getElementById("retainModal");
     function openModal() { modal.classList.add("is-open"); modal.setAttribute("aria-hidden", "false"); }
     function closeModal() { modal.classList.remove("is-open"); modal.setAttribute("aria-hidden", "true"); }
@@ -311,18 +445,85 @@
     document.getElementById("skipBtn").addEventListener("click", openModal);
     document.getElementById("retainYes").addEventListener("click", function () { closeModal(); submitUpgrade("Yes"); });
     document.getElementById("retainNo").addEventListener("click", function () { closeModal(); submitUpgrade("No"); });
-    document.getElementById("retainClose").addEventListener("click", closeModal); // X just dismisses; it must not advance the flow
-    // Click outside the card just dismisses the popup (stay on the page).
+    document.getElementById("retainClose").addEventListener("click", closeModal);
     modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
 
-    // Reflect a prior decision in the summary cart so state stays consistent.
-    var existing = extendDecisionFromSources();
-    if (existing === "Yes") {
+    var tpModal = document.getElementById("tpModal");
+    var tpContinue = document.getElementById("tpContinue");
+    var tpYes = document.getElementById("tpYes");
+    var tpNo = document.getElementById("tpNo");
+    var tpOptYes = document.getElementById("tpOptYes");
+    var tpOptNo = document.getElementById("tpOptNo");
+
+    function tpSelect() {
+      tpOptYes.classList.toggle("is-selected", tpYes.checked);
+      tpOptNo.classList.toggle("is-selected", tpNo.checked);
+      tpContinue.disabled = !(tpYes.checked || tpNo.checked);
+    }
+    tpYes.addEventListener("change", tpSelect);
+    tpNo.addEventListener("change", tpSelect);
+    tpOptYes.addEventListener("click", function (e) {
+      if (e.target && e.target.tagName === "A") return;
+      tpYes.checked = true; tpSelect();
+    });
+    tpOptNo.addEventListener("click", function () { tpNo.checked = true; tpSelect(); });
+
+    function closeTP() {
+      tpModal.classList.remove("is-open");
+      tpModal.setAttribute("aria-hidden", "true");
+    }
+    function openTP() {
+      tpModal.classList.add("is-open");
+      tpModal.setAttribute("aria-hidden", "false");
+    }
+
+    tpContinue.addEventListener("click", function () {
+      if (!(tpYes.checked || tpNo.checked)) return;
+      var tpValue = tpYes.checked ? "Yes" : "No";
+      form.elements.travel_protection_two.value = tpValue;
+      writeStored(TP_DECISION_KEY, tpValue);
+
+      if (paymentMode === "dual") {
+        submitTravelProtection(tpValue);
+        return;
+      }
+
+      // single (default): preference only; charge later with bonus-vacation submit.
+      var addedTpSingle = tpValue === "Yes" && !hasTP();
+      syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
+      FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
+      if (addedTpSingle && window.PFToast) PFToast("Travel Protection added!");
+      closeTP();
+    });
+
+    var existingExtend = extendDecisionFromSources();
+    if (existingExtend === "Yes") {
       form.elements.extend_your_stay.value = "Yes";
       syncUpsellUi("extend_stay", true, EXTEND_CENTS);
-    } else if (existing === "No") {
+    } else if (existingExtend === "No") {
       form.elements.extend_your_stay.value = "No";
       syncUpsellUi("extend_stay", false, EXTEND_CENTS);
+    }
+
+    var existingTp = tpDecisionFromSources();
+    if (existingTp === "Yes") {
+      tpYes.checked = true; tpSelect();
+      form.elements.travel_protection_two.value = "Yes";
+      syncUpsellUi("travel_protection", true, TP_CENTS);
+    } else if (existingTp === "No") {
+      tpNo.checked = true; tpSelect();
+      form.elements.travel_protection_two.value = "No";
+      syncUpsellUi("travel_protection", false, TP_CENTS);
+    } else if (!ofSession) {
+      if (hasTP()) { tpYes.checked = true; tpSelect(); }
+      else if (s.tpDecision === "no") { tpNo.checked = true; tpSelect(); }
+    }
+
+    // Source UX: open TP on every visit until decided (dual already decided → stay closed).
+    if (existingTp) {
+      closeTP();
+    } else {
+      openTP();
     }
   })();
   </script>

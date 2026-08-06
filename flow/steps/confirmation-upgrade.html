@@ -231,20 +231,33 @@
       if (cout) cout.textContent = fmt(prefill.travel_end_date || s.dates.checkOut);
       var extras = document.getElementById("extrasList");
       if (extras) {
-        extras.innerHTML = "";
+        // Same extras row markup/icons as payment-flow 04-secured.html
         var CAT = {};
         (FlowState.upsellCatalog || []).forEach(function (c) { CAT[c.type] = c; });
-        (s.upsells || []).forEach(function (u) {
-          var meta = CAT[u.type] || {};
-          var label = meta.label || u.type;
-          var price = FlowState.money((u.priceCents || 0) * (u.qty || 1));
-          var row = document.createElement("div");
-          row.className = "ty-line";
-          row.innerHTML = "<span class=\"k\">" + label + "</span><span class=\"v\">" + price + "</span>";
-          extras.appendChild(row);
-        });
-        if (!(s.upsells || []).length) {
-          extras.innerHTML = "<div class=\"ty-line\"><span class=\"k\">No extras added</span></div>";
+        var LABELS = {
+          bonus_vacation: "Bonus vacation",
+          travel_protection: "Travel protection",
+          extend_stay: "Extend stay"
+        };
+        var ICONS = {
+          bonus_vacation: "palmtree",
+          travel_protection: "shield-check",
+          extend_stay: "plane"
+        };
+        var ups = s.upsells || [];
+        if (ups.length) {
+          extras.innerHTML = ups.map(function (u) {
+            var label = LABELS[u.type] || (CAT[u.type] && CAT[u.type].label) || u.type;
+            var icon = ICONS[u.type] || (CAT[u.type] && CAT[u.type].icon) || "bookmark";
+            var qty = (u.qty && u.qty > 1) ? '<span class="qty">(' + u.qty + " pc)</span>" : "";
+            var price = FlowState.money((u.priceCents || 0) * (u.qty || 1));
+            return '<div class="ty-extra"><i data-lucide="' + icon + '" class="pf-i"></i>'
+              + '<span class="k">' + label + " " + qty + "</span>"
+              + '<span class="v">' + price + "</span></div>";
+          }).join("");
+          if (window.lucide && typeof lucide.createIcons === "function") lucide.createIcons();
+        } else {
+          extras.innerHTML = '<p class="ty-empty">No add-ons purchased.</p>';
         }
       }
     } catch (e) {}

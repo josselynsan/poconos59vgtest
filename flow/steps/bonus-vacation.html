@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="assets/css/brand.css?v=20260801" rel="stylesheet">
+  <link href="assets/css/brand.css?v=20260806" rel="stylesheet">
   <style>
     .up-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: stretch; width: 100%; max-width: var(--maxw); }
     @media (max-width: 900px) { .up-grid { grid-template-columns: 1fr; } }
@@ -272,7 +272,7 @@
   </footer>
 
   <script src="assets/libs/lucide/lucide.min.js"></script>
-  <script src="assets/js/flow-state.js?v=20260801"></script>
+  <script src="assets/js/flow-state.js?v=20260806"></script>
   <script src="/flow/steps/assets/js/legal-modal.js?v=20260804legalabs"></script>
   <script>
   (function () {
@@ -519,8 +519,9 @@
       else if (s.tpDecision === "no") { tpNo.checked = true; tpSelect(); }
     }
 
-    // dual + TP already decided (e.g. returned from travel-protection-two): do not reopen modal
-    if (paymentMode === "dual" && existingTp) {
+    // Source UX (04-bonus): TP was already offered on Extend Stay. Only reopen
+    // the modal here if the guest somehow arrived without a decision yet.
+    if (existingTp) {
       closeTP();
     } else {
       openTP();
