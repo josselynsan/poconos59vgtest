@@ -146,8 +146,8 @@
       <!-- LEFT: OFFER (mirrors step 4 module) -->
       <section class="pf-card">
         <div class="pf-card__pad">
-          <h1 class="tk-headline">A Bonus 4-Night Getaway for only <span id="extendPrice">$49</span></h1>
-          <p class="dest-intro">Enjoy 4 nights in your choice of 40 exciting destinations such as Cancun, Orlando, Vegas, Caribbean and more! This exclusive offer provides quality lodging for just $49. <strong>You won&rsquo;t find this deal available to the public!</strong></p>
+          <h1 class="tk-headline">A Bonus 4-Night Getaway for only <span id="extendPrice">—</span></h1>
+          <p class="dest-intro">Enjoy 4 nights in your choice of 40 exciting destinations such as Cancun, Orlando, Vegas, Caribbean and more! This exclusive offer provides quality lodging for just <span id="bonusCopyPrice">—</span>. <strong>You won&rsquo;t find this deal available to the public!</strong></p>
 
           <div class="dest-gallery">
             <div class="dest-tile"><img src="assets/images/dest-canada.webp" alt="Canada" loading="lazy"><span class="dest-tile__label">Canada</span></div>
@@ -159,7 +159,7 @@
           <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="bonus-vacation" onsubmit="return false;">
             <input type="hidden" name="travel_protection_two" id="travel_protection_two" value="">
             <input type="hidden" name="bonus_vacation" id="bonus_vacation" value="">
-            <button type="button" class="pf-btn cont" id="addBtn">Add Vacation &middot; $49</button>
+            <button type="button" class="pf-btn cont" id="addBtn">Add Vacation</button>
             <button type="button" class="pf-btn pf-btn--ghost skip" id="skipBtn">No thanks</button>
           </form>
         </div>
@@ -215,13 +215,13 @@
           <i data-lucide="shield-plus" class="tp-icon" aria-hidden="true"></i>
           <h2 class="tp-title" id="tpTitle">Congrats on locking in your vacation! Now add Travel Protection for your trip!</h2>
         </div>
-        <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong>$24.99</strong>.</p>
+        <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong id="tpPriceCopy">—</strong>.</p>
         <div class="tp-choose">Select Yes or No to continue booking</div>
 
         <div class="tp-opt tp-opt--yes" id="tpOptYes">
           <div class="tp-opt__top">
             <span class="tp-opt__lead"><input type="radio" name="tp" id="tpYes" value="yes"><span class="tp-opt__label">Yes, I want Travel Protection for my vacation</span></span>
-            <span class="tp-price"><strong>$24.99</strong><span>one-time, covers your whole package</span></span>
+            <span class="tp-price"><strong id="tpPrice">—</strong><span>one-time, covers your whole package</span></span>
           </div>
           <div class="tp-reasons">
             <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
@@ -249,7 +249,7 @@
         <h2 class="pf-modal__title" id="retainTitle">Wait! Are You Sure?</h2>
       </div>
       <div class="pf-modal__body">
-        <p>You&rsquo;ve secured an amazing Poconos getaway&mdash;but why stop there? Add a <strong>bonus 4-night vacation</strong> in your choice of 40 top destinations for just <strong id="retainPrice">$49</strong>. You won&rsquo;t find this deal available to the public!</p>
+        <p>You&rsquo;ve secured an amazing Poconos getaway&mdash;but why stop there? Add a <strong>bonus 4-night vacation</strong> in your choice of 40 top destinations for just <strong id="retainPrice">—</strong>. You won&rsquo;t find this deal available to the public!</p>
         <p><strong>So, do you want to add your bonus vacation?</strong></p>
       </div>
       <div class="pf-modal__actions">
@@ -272,7 +272,7 @@
   </footer>
 
   <script src="assets/libs/lucide/lucide.min.js"></script>
-  <script src="assets/js/flow-state.js?v=20260806retail"></script>
+  <script src="assets/js/flow-state.js?v=20260806upg1"></script>
   <script src="/flow/steps/assets/js/legal-modal.js?v=20260804legalabs"></script>
   <script>
   (function () {
@@ -324,23 +324,12 @@
       hidden.value = slug;
     }
 
-    function swiftlyUpgradeCents(key, fallbackCents) {
-      try {
-        var list = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
-        for (var i = 0; i < list.length; i++) {
-          var row = list[i];
-          if (!row) continue;
-          var k = String(row.key || row.slug || "").trim();
-          if (k === key && row.value != null && !isNaN(Number(row.value))) {
-            return Math.round(Number(row.value) * 100);
-          }
-        }
-      } catch (e) {}
-      return fallbackCents;
-    }
-
-    var BONUS_CENTS = swiftlyUpgradeCents("bonus_vacation", 4900);
-    var TP_CENTS = swiftlyUpgradeCents("travel_protection", 2499);
+    var BONUS_CENTS = (window.FlowState && FlowState.upgradeCents)
+      ? FlowState.upgradeCents("bonus_vacation", 4900)
+      : 4900;
+    var TP_CENTS = (window.FlowState && FlowState.upgradeCents)
+      ? FlowState.upgradeCents("travel_protection", 2499)
+      : 2499;
     var ofSession = swiftlyHasOfferFlowSession();
     var paymentMode = resolvePaymentMode();
     var s = FlowState.get();
@@ -355,6 +344,12 @@
 
     document.getElementById("extendPrice").textContent = FlowState.money(BONUS_CENTS);
     document.getElementById("addBtn").textContent = "Add Vacation \u00b7 " + FlowState.money(BONUS_CENTS);
+    var bonusCopyPrice = document.getElementById("bonusCopyPrice");
+    if (bonusCopyPrice) bonusCopyPrice.textContent = FlowState.money(BONUS_CENTS);
+    var tpPrice = document.getElementById("tpPrice");
+    if (tpPrice) tpPrice.textContent = FlowState.money(TP_CENTS);
+    var tpPriceCopy = document.getElementById("tpPriceCopy");
+    if (tpPriceCopy) tpPriceCopy.textContent = FlowState.money(TP_CENTS);
     document.getElementById("sumName").innerHTML = s.resortName;
     document.getElementById("sumConf").textContent = confNo || "\u2014";
     document.getElementById("sumGuests").textContent = prefill.guestsLabel || s.guestsLabel;

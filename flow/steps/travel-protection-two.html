@@ -63,13 +63,13 @@
               <i data-lucide="shield-plus" class="tp-icon" aria-hidden="true"></i>
               <h1 class="tp-title" id="tpTitle">Congrats on locking in your vacation! Now add Travel Protection for your trip!</h1>
             </div>
-            <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong>$24.99</strong>.</p>
+            <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong id="tpPriceCopy">—</strong>.</p>
             <div class="tp-choose">Select Yes or No to continue booking</div>
 
             <div class="tp-opt tp-opt--yes" id="tpOptYes">
               <div class="tp-opt__top">
                 <span class="tp-opt__lead"><input type="radio" name="tp" id="tpYes" value="yes"><span class="tp-opt__label">Yes, I want Travel Protection for my vacation</span></span>
-                <span class="tp-price"><strong>$24.99</strong><span>one-time, covers your whole package</span></span>
+                <span class="tp-price"><strong id="tpPrice">—</strong><span>one-time, covers your whole package</span></span>
               </div>
               <div class="tp-reasons">
                 <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
@@ -105,7 +105,7 @@
   </footer>
 
   <script src="assets/libs/lucide/lucide.min.js"></script>
-  <script src="assets/js/flow-state.js?v=20260806retail"></script>
+  <script src="assets/js/flow-state.js?v=20260806upg1"></script>
   <script>
   (function () {
     var TP_DECISION_KEY = "swiftly_tp_decision";
@@ -148,22 +148,16 @@
     var ofSession = swiftlyHasOfferFlowSession();
     var form = document.getElementById("tpForm");
     var s = FlowState.get();
-    function swiftlyUpgradeCents(key, fallbackCents) {
-      try {
-        var list = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
-        for (var i = 0; i < list.length; i++) {
-          var row = list[i];
-          if (!row) continue;
-          var k = String(row.key || row.slug || "").trim();
-          if (k === key && row.value != null && !isNaN(Number(row.value))) {
-            return Math.round(Number(row.value) * 100);
-          }
-        }
-      } catch (e) {}
-      return fallbackCents;
-    }
-
-    var TP_CENTS = swiftlyUpgradeCents("travel_protection", 2499);
+    var TP_CENTS = (window.FlowState && FlowState.upgradeCents)
+      ? FlowState.upgradeCents("travel_protection", 2499)
+      : 2499;
+    (function applyTpPrices() {
+      var money = (window.FlowState && FlowState.money) ? function (c) { return FlowState.money(c); } : function (c) { return "$" + (c / 100).toFixed(2); };
+      var tpPrice = document.getElementById("tpPrice");
+      if (tpPrice) tpPrice.textContent = money(TP_CENTS);
+      var tpPriceCopy = document.getElementById("tpPriceCopy");
+      if (tpPriceCopy) tpPriceCopy.textContent = money(TP_CENTS);
+    })();
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
     document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
 

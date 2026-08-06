@@ -179,6 +179,60 @@
     { type: "extend_stay", label: "Extend stay", icon: "plane", priceCents: 1900, perQty: false },
     { type: "bonus_vacation", label: "Bonus vacation", icon: "palmtree", priceCents: 4900, perQty: false }
   ];
+
+  // Alias keys that may appear in offers.upgrades_display_json.
+  var UPGRADE_KEY_ALIASES = {
+    travel_protection: ["travel_protection", "travel-protection", "travel_protection_two", "travel-protection-two"],
+    extend_stay: ["extend_stay", "extend-stay", "extend_your_stay", "extend-your-stay"],
+    bonus_vacation: ["bonus_vacation", "bonus-vacation"]
+  };
+
+  function normalizeUpgradeKey(key) {
+    return String(key || "").trim().toLowerCase().replace(/-/g, "_");
+  }
+
+  /** Dollars from SWIFTLY_OFFER_FLOW.upgradesDisplay → cents (fallback if missing). */
+  FlowState.upgradeCents = function (key, fallbackCents) {
+    var wanted = normalizeUpgradeKey(key);
+    var aliases = UPGRADE_KEY_ALIASES[wanted] || [wanted];
+    try {
+      var list = (global.SWIFTLY_OFFER_FLOW && global.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
+      for (var i = 0; i < list.length; i++) {
+        var row = list[i];
+        if (!row) continue;
+        var k = normalizeUpgradeKey(row.key || row.slug);
+        var matched = false;
+        for (var a = 0; a < aliases.length; a++) {
+          if (k === normalizeUpgradeKey(aliases[a])) { matched = true; break; }
+        }
+        if (!matched && k !== wanted) continue;
+        if (row.value != null && !isNaN(Number(row.value))) {
+          return Math.round(Number(row.value) * 100);
+        }
+      }
+    } catch (e) {}
+    return fallbackCents;
+  };
+
+  // Apply admin Offer Upgrades data over catalog defaults (display + addUpsell fallback).
+  (function applyUpgradesDisplayToCatalog() {
+    for (var i = 0; i < UPSELL_CATALOG.length; i++) {
+      var item = UPSELL_CATALOG[i];
+      item.priceCents = FlowState.upgradeCents(item.type, item.priceCents);
+    }
+    // Refresh stale localStorage upsell prices so a prior $19 session doesn't stick.
+    var ups = (FlowState.get().upsells || []);
+    var dirty = false;
+    for (var u = 0; u < ups.length; u++) {
+      var def = UPSELL_CATALOG.find(function (c) { return c.type === ups[u].type; });
+      if (def && ups[u].priceCents !== def.priceCents) {
+        ups[u].priceCents = def.priceCents;
+        dirty = true;
+      }
+    }
+    if (dirty) FlowState.save();
+  })();
+
   FlowState.upsellCatalog = UPSELL_CATALOG;
 
 

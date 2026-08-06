@@ -144,7 +144,7 @@
             <div class="tk-card__body">
               <div class="tk-card__name">4th Night</div>
               <div class="tk-card__tag">Exclusive online-only rate</div>
-              <p class="tk-card__copy"><strong>Just <span id="extendPrice">$19</span> for an extra night</strong> &mdash; this is your exclusive online price, you won&rsquo;t see it again. Extend your escape and settle in.</p>
+              <p class="tk-card__copy"><strong>Just <span id="extendPrice">—</span> for an extra night</strong> &mdash; this is your exclusive online price, you won&rsquo;t see it again. Extend your escape and settle in.</p>
             </div>
           </div>
 
@@ -205,13 +205,13 @@
           <i data-lucide="shield-plus" class="tp-icon" aria-hidden="true"></i>
           <h2 class="tp-title" id="tpTitle">Congrats on locking in your vacation! Now add Travel Protection for your trip!</h2>
         </div>
-        <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong>$24.99</strong>.</p>
+        <p class="tp-sub">Hotel delays? Sudden illness? Getaway cancellations? No worries! Add Travel Protection and keep your trip stress-free for just <strong id="tpPriceCopy">—</strong>.</p>
         <div class="tp-choose">Select Yes or No to continue booking</div>
 
         <div class="tp-opt tp-opt--yes" id="tpOptYes">
           <div class="tp-opt__top">
             <span class="tp-opt__lead"><input type="radio" name="tp" id="tpYes" value="yes"><span class="tp-opt__label">Yes, I want Travel Protection for my vacation</span></span>
-            <span class="tp-price"><strong>$24.99</strong><span>one-time, covers your whole package</span></span>
+            <span class="tp-price"><strong id="tpPrice">—</strong><span>one-time, covers your whole package</span></span>
           </div>
           <div class="tp-reasons">
             <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
@@ -238,7 +238,7 @@
         <h2 class="pf-modal__title" id="retainTitle">Wait! Are You Sure?</h2>
       </div>
       <div class="pf-modal__body">
-        <p>You&rsquo;ve secured an amazing 4-Day/3-Night stay at Pocono Mountain Villas&mdash;but why stop there? Add a 4th night for just <strong id="retainPrice">$19</strong> and make your Poconos getaway even more unforgettable!</p>
+        <p>You&rsquo;ve secured an amazing 4-Day/3-Night stay at Pocono Mountain Villas&mdash;but why stop there? Add a 4th night for just <strong id="retainPrice">—</strong> and make your Poconos getaway even more unforgettable!</p>
         <p><strong>So, do you want to add an exclusive 4th night?</strong></p>
       </div>
       <div class="pf-modal__actions">
@@ -261,7 +261,7 @@
   </footer>
 
   <script src="assets/libs/lucide/lucide.min.js"></script>
-  <script src="assets/js/flow-state.js?v=20260806retail"></script>
+  <script src="assets/js/flow-state.js?v=20260806upg1"></script>
   <script src="/flow/steps/assets/js/legal-modal.js?v=20260804legalabs"></script>
   <script>
   (function () {
@@ -314,23 +314,12 @@
       hidden.value = slug;
     }
 
-    function swiftlyUpgradeCents(key, fallbackCents) {
-      try {
-        var list = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
-        for (var i = 0; i < list.length; i++) {
-          var row = list[i];
-          if (!row) continue;
-          var k = String(row.key || row.slug || "").trim();
-          if (k === key && row.value != null && !isNaN(Number(row.value))) {
-            return Math.round(Number(row.value) * 100);
-          }
-        }
-      } catch (e) {}
-      return fallbackCents;
-    }
-
-    var EXTEND_CENTS = swiftlyUpgradeCents("extend_stay", 1900);
-    var TP_CENTS = swiftlyUpgradeCents("travel_protection", 2499);
+    var EXTEND_CENTS = (window.FlowState && FlowState.upgradeCents)
+      ? FlowState.upgradeCents("extend_stay", 1900)
+      : 1900;
+    var TP_CENTS = (window.FlowState && FlowState.upgradeCents)
+      ? FlowState.upgradeCents("travel_protection", 2499)
+      : 2499;
     var ofSession = swiftlyHasOfferFlowSession();
     var paymentMode = resolvePaymentMode();
     var s = FlowState.get();
@@ -344,6 +333,10 @@
     }
 
     document.getElementById("extendPrice").textContent = FlowState.money(EXTEND_CENTS);
+    var tpPrice = document.getElementById("tpPrice");
+    if (tpPrice) tpPrice.textContent = FlowState.money(TP_CENTS);
+    var tpPriceCopy = document.getElementById("tpPriceCopy");
+    if (tpPriceCopy) tpPriceCopy.textContent = FlowState.money(TP_CENTS);
     document.getElementById("addBtn").textContent = "Yes, Add 4th Night";
     document.getElementById("sumName").innerHTML = s.resortName;
     document.getElementById("sumConf").textContent = confNo || "\u2014";
