@@ -55,14 +55,38 @@
     return out;
   }
 
+  // Offer admin → package_summary_json injected as SWIFTLY_OFFER_FLOW.packageSummary
+  function packageSummaryOverrides() {
+    var out = {};
+    try {
+      var flow = global.SWIFTLY_OFFER_FLOW || {};
+      var pkg = flow.packageSummary || flow.package_summary_json || {};
+      if (!pkg || typeof pkg !== "object") return out;
+      var strKeys = ["resortName", "stayLabel", "roomLabel", "perLabel", "guestsLabel", "packageId"];
+      for (var i = 0; i < strKeys.length; i++) {
+        var sk = strKeys[i];
+        if (pkg[sk] != null && String(pkg[sk]).trim() !== "") out[sk] = String(pkg[sk]);
+      }
+      var numKeys = ["bookingFeeCents", "discountPct", "ratingReviews", "holdMinutes", "priceCents", "retailCents", "nights"];
+      for (var j = 0; j < numKeys.length; j++) {
+        var nk = numKeys[j];
+        if (pkg[nk] === null || pkg[nk] === undefined || pkg[nk] === "") continue;
+        var n = Number(pkg[nk]);
+        if (!isNaN(n)) out[nk] = n;
+      }
+    } catch (e) {}
+    return out;
+  }
+
   function load() {
     var saved = {};
     try {
       var raw = global.localStorage.getItem(STORAGE_KEY);
       if (raw) saved = JSON.parse(raw) || {};
     } catch (e) {}
-    // merge order: defaults <- saved <- query overrides
-    var state = Object.assign({}, DEFAULTS, saved, readQueryOverrides());
+    // merge order: defaults <- localStorage <- offer packageSummary <- query
+    // packageSummary wins over stale pf_order so admin Package Summary is authoritative.
+    var state = Object.assign({}, DEFAULTS, saved, packageSummaryOverrides(), readQueryOverrides());
     // deep-ish restore for nested objects
     state.guest = Object.assign({}, DEFAULTS.guest, saved.guest);
     state.consent = Object.assign({}, DEFAULTS.consent, saved.consent);
