@@ -161,9 +161,37 @@
   overlay.addEventListener("click", function (e) { if (e.target === overlay) requestClose(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && overlay.classList.contains("is-open")) requestClose(); });
 
+  // Keep full-page hrefs on the same Offer Flow host with current offer_id /
+  // session_token so middle-click / Open in new tab still gets injected copy.
+  function withOfferQuery(href) {
+    try {
+      var u = new URL(href, window.location.href);
+      var cur = new URLSearchParams(window.location.search || "");
+      ["offer_id", "session_token"].forEach(function (k) {
+        if (!u.searchParams.get(k) && cur.get(k)) u.searchParams.set(k, cur.get(k));
+      });
+      // Prefer public checkout URL when base is /flow/steps/
+      if (/\/(terms-and-conditions|privacy-policy)\.html$/i.test(u.pathname)) {
+        u.pathname = "/checkout/" + u.pathname.split("/").pop();
+      }
+      return u.pathname + (u.search ? u.search : "") + (u.hash || "");
+    } catch (err) {
+      return href;
+    }
+  }
+  document.querySelectorAll('a[href*="terms-and-conditions.html"], a[href*="privacy-policy.html"]').forEach(function (a) {
+    var href = a.getAttribute("href") || "";
+    if (!LEGAL.test(href)) return;
+    a.setAttribute("href", withOfferQuery(href));
+  });
+
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href]");
     if (!a || !LEGAL.test(a.getAttribute("href") || "")) return;
+    // Respect explicit new-tab / modified clicks so the full legal page can open.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1 || a.target === "_blank") {
+      return;
+    }
     e.preventDefault();
     // route through the hash so the URL reflects the open popup
     location.hash = a.getAttribute("href").indexOf("terms-and-conditions") !== -1 ? "terms" : "privacy";
