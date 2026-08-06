@@ -211,12 +211,13 @@
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href]");
     if (!a || !isLegalHref(a.getAttribute("href") || "")) return;
-    // Respect explicit new-tab / modified clicks so the full legal page can open.
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1 || a.target === "_blank") {
+    // Modifier / middle-click → full legal page (/checkout/tc|/pp) with offer query.
+    // Normal left click (including links that had target=_blank) → in-page modal.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) {
       return;
     }
     e.preventDefault();
-    // route through the hash so the URL reflects the open popup
+    e.stopPropagation();
     location.hash = legalKindFromHref(a.getAttribute("href") || "") === "privacy" ? "privacy" : "terms";
   });
 })();
