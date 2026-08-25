@@ -148,7 +148,7 @@
             </div>
           </div>
 
-          <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="extend-your-stay" onsubmit="return false;">
+          <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="extend-your-stay" data-offer-flow-ignore onsubmit="return false;">
             <input type="hidden" name="extend_your_stay" id="extend_your_stay" value="">
             <input type="hidden" name="travel_protection_two" id="travel_protection_two" value="">
             <!-- Charged by auth_incremental: FieldMapper prefers front amount over merchant input_default -->
@@ -180,9 +180,9 @@
 
             <div class="up-list">
               <div class="row"><span class="k"><i data-lucide="badge-check" class="pf-i"></i>Confirmation #</span><span class="v" id="sumConf">&mdash;</span></div>
-              <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
+              <!-- <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
               <div class="row"><span class="k"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in</span><span class="v" id="sumCheckIn">&mdash;</span></div>
-              <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div> -->
               <div class="row"><span class="k"><i data-lucide="banknote" class="pf-i"></i>Booking Fee</span><span class="v">$0</span></div>
               <div class="row"><span class="k"><i data-lucide="package" class="pf-i"></i>Package Price</span><span class="v" id="sumPkg">$59</span></div>
             </div>
@@ -317,13 +317,6 @@
       hidden.value = slug;
     }
 
-    var EXTEND_CENTS = extendCents();
-    var TP_CENTS = tpCents();
-    var ofSession = swiftlyHasOfferFlowSession();
-    var paymentMode = resolvePaymentMode();
-    var s = FlowState.get();
-    var form = document.getElementById("upgradeForm");
-
     function extendCents() {
       return (window.FlowState && FlowState.upgradeCents)
         ? FlowState.upgradeCents("extend_stay", 1900)
@@ -337,6 +330,17 @@
     function dollarsFromCents(cents) {
       return (Math.round(cents) / 100).toFixed(2);
     }
+    function setText(id, text) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    var EXTEND_CENTS = extendCents();
+    var TP_CENTS = tpCents();
+    var ofSession = swiftlyHasOfferFlowSession();
+    var paymentMode = resolvePaymentMode();
+    var s = FlowState.get();
+    var form = document.getElementById("upgradeForm");
 
     var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
     var confNo = prefill.confirmation_number || prefill.confirmationNumber || prefill.payment_transaction_id || s.confirmationNo;
@@ -345,10 +349,11 @@
       s = FlowState.set({ confirmationNo: confNo });
     }
 
-    document.getElementById("sumName").innerHTML = s.resortName;
-    document.getElementById("sumConf").textContent = confNo || "\u2014";
-    document.getElementById("sumGuests").textContent = prefill.guestsLabel || s.guestsLabel;
-    document.getElementById("sumPkg").textContent = FlowState.money(s.priceCents);
+    var sumName = document.getElementById("sumName");
+    if (sumName) sumName.innerHTML = s.resortName;
+    setText("sumConf", confNo || "\u2014");
+    setText("sumGuests", prefill.guestsLabel || s.guestsLabel);
+    setText("sumPkg", FlowState.money(s.priceCents));
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
     var fmt = function (t) {
@@ -364,13 +369,15 @@
     };
     var checkIn = prefill.travel_start_date || s.dates.checkIn;
     var checkOut = prefill.travel_end_date || s.dates.checkOut;
-    document.getElementById("sumCheckIn").textContent = fmt(checkIn);
-    document.getElementById("sumCheckOut").textContent = fmt(checkOut);
-    document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
+    setText("sumCheckIn", fmt(checkIn));
+    setText("sumCheckOut", fmt(checkOut));
+    setText("tpRetail", FlowState.money(s.retailCents || 74800));
 
     function hasExtend() { return !!FlowState.findUpsell("extend_stay"); }
     function hasTP() { return !!FlowState.findUpsell("travel_protection"); }
-    function updateTotals() { document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents()); }
+    function updateTotals() {
+      setText("sumTotal", FlowState.money(FlowState.totalCents()));
+    }
     var CART_OPTS = { editable: false };
 
     function syncUpsellUi(type, on, cents) {
@@ -395,13 +402,12 @@
       if (FlowState.refreshUpgradePrices) FlowState.refreshUpgradePrices();
       EXTEND_CENTS = extendCents();
       TP_CENTS = tpCents();
-      document.getElementById("extendPrice").textContent = FlowState.money(EXTEND_CENTS);
-      var tpPrice = document.getElementById("tpPrice");
-      if (tpPrice) tpPrice.textContent = FlowState.money(TP_CENTS);
-      var tpPriceCopy = document.getElementById("tpPriceCopy");
-      if (tpPriceCopy) tpPriceCopy.textContent = FlowState.money(TP_CENTS);
-      document.getElementById("addBtn").textContent = "Yes, Add 4th Night";
-      document.getElementById("retainPrice").textContent = FlowState.money(EXTEND_CENTS);
+      setText("extendPrice", FlowState.money(EXTEND_CENTS));
+      setText("tpPrice", FlowState.money(TP_CENTS));
+      setText("tpPriceCopy", FlowState.money(TP_CENTS));
+      var addBtn = document.getElementById("addBtn");
+      if (addBtn) addBtn.textContent = "Yes, Add 4th Night";
+      setText("retainPrice", FlowState.money(EXTEND_CENTS));
       if (window.PFUpsells) PFUpsells.render("upgradeList", CART_OPTS);
       updateTotals();
     }
@@ -444,10 +450,9 @@
       var addedExtend = extendValue === "Yes" && !hasExtend();
       syncUpsellUi("extend_stay", extendValue === "Yes", EXTEND_CENTS);
       if (addedExtend && window.PFToast) PFToast("4th night added!");
-      if (ofSession) {
-        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
-          window.SwiftlyOfferFlow.submitForm(form);
-        }
+      // Offer Flow owns navigation only when its runtime is actually present.
+      if (ofSession && window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+        window.SwiftlyOfferFlow.submitForm(form);
         return;
       }
       console.log("[static-front] extend-your-stay submit mocked", {
@@ -470,10 +475,8 @@
       syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
       FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
       if (addedTp && window.PFToast) PFToast("Travel Protection added!");
-      if (ofSession) {
-        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
-          window.SwiftlyOfferFlow.submitForm(form);
-        }
+      if (ofSession && window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+        window.SwiftlyOfferFlow.submitForm(form);
         return;
       }
       closeTP();

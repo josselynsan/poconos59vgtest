@@ -189,9 +189,9 @@
 
             <div class="up-list">
               <div class="row"><span class="k"><i data-lucide="badge-check" class="pf-i"></i>Confirmation #</span><span class="v" id="sumConf">&mdash;</span></div>
-              <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
+              <!-- <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
               <div class="row"><span class="k"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in</span><span class="v" id="sumCheckIn">&mdash;</span></div>
-              <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div>
+              <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div> -->
               <div class="row"><span class="k"><i data-lucide="banknote" class="pf-i"></i>Booking Fee</span><span class="v">$0</span></div>
               <div class="row"><span class="k"><i data-lucide="package" class="pf-i"></i>Package Price</span><span class="v" id="sumPkg">$59</span></div>
             </div>
@@ -354,11 +354,16 @@
     function dollarsFromCents(cents) {
       return (Math.round(cents) / 100).toFixed(2);
     }
+    function setText(id, text) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
 
-    document.getElementById("sumName").innerHTML = s.resortName;
-    document.getElementById("sumConf").textContent = confNo || "\u2014";
-    document.getElementById("sumGuests").textContent = prefill.guestsLabel || s.guestsLabel;
-    document.getElementById("sumPkg").textContent = FlowState.money(s.priceCents);
+    var sumName = document.getElementById("sumName");
+    if (sumName) sumName.innerHTML = s.resortName;
+    setText("sumConf", confNo || "\u2014");
+    setText("sumGuests", prefill.guestsLabel || s.guestsLabel);
+    setText("sumPkg", FlowState.money(s.priceCents));
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
     // Parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day back.
@@ -375,12 +380,12 @@
     };
     var checkIn = prefill.travel_start_date || s.dates.checkIn;
     var checkOut = prefill.travel_end_date || s.dates.checkOut;
-    document.getElementById("sumCheckIn").textContent = fmt(checkIn);
-    document.getElementById("sumCheckOut").textContent = fmt(checkOut);
+    setText("sumCheckIn", fmt(checkIn));
+    setText("sumCheckOut", fmt(checkOut));
 
     function hasBonus() { return !!FlowState.findUpsell("bonus_vacation"); }
     function hasTP() { return !!FlowState.findUpsell("travel_protection"); }
-    function updateTotals() { document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents()); }
+    function updateTotals() { setText("sumTotal", FlowState.money(FlowState.totalCents())); }
     var CART_OPTS = { editable: false };
 
     // Keep the visual Upgrades cart in sync in BOTH modes (static preview and

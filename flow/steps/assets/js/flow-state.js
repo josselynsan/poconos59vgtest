@@ -30,7 +30,7 @@
     perLabel: "Per Family of Four",
     // CR-08: single source of truth for guest wording — must match the
     // landing page for the traffic source (overridable via ?guests=...)
-    guestsLabel: "2 Adults, 2 Children",
+    // guestsLabel: "2 Adults, 2 Children",
     // guest + dates get filled in as the user progresses
     guest: { firstName: "", lastName: "", email: "", phone: "" },
     consent: { marketing: false, sms: true },
