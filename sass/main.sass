@@ -2,6 +2,12 @@
 @import "libs"
 @import "vars"
 
+:root
+  --navy: #215272
+  --ink: #071330
+  --text: #1c2733
+  --muted: #667085
+
 *::-webkit-input-placeholder
   color: #7b7b7b
   opacity: 1
@@ -1138,34 +1144,46 @@ s
       margin-bottom: 0
 
 
-// Site Footer
-.site-footer
-  padding: 45px 0
-  background-color: #3D3B3B
-  color: $white
-  font-family: $fontB
+// Site Footer (matches flow checkout .pf-footer)
+.pf-footer
+  color: #fff
   text-align: center
+  background-color: #215272
+  background-image: url(../flow/steps/assets/images/pattern.png)
+  background-repeat: repeat
+  background-blend-mode: overlay
+  padding: 30px 32px
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  gap: 16px
+  font-size: 14px
+  line-height: 1.5
+  font-family: $fontA
 
-  p
-    margin: 0 auto 15px
-    font-weight: 400
-    font-size: 13px
-    line-height: 1.692em
-
-    &:last-child
-      margin-bottom: 0
+  &__logo
+    width: auto
 
   a
-    color: #8BA6FF
+    color: #fff
     text-decoration: underline
 
     &:hover
-      color: $accent
+      color: #fff
 
-.footer-logo      
-  margin-bottom: 15px
-  img
-    margin: 0 auto
+  &__legal
+    color: #fff
+    max-width: 120ch
+    text-wrap: pretty
+    margin: 0
+
+  &__links
+    display: flex
+    flex-wrap: wrap
+    gap: 10px
+    justify-content: center
+    align-items: center
 
 // ToolTips
 .tooltip-inner

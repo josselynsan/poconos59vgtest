@@ -6,13 +6,26 @@
   <title>Traveler Profile | Traveler Profile</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180"
+  href="https://getaways.vacationvip.com/common/img/logos/vvip/favicon/apple-touch-icon.avif">
+<link rel="icon" type="image/png" sizes="32x32"
+  href="https://getaways.vacationvip.com/common/img/logos/vvip/favicon/favicon-32x32.avif">
+<link rel="icon" type="image/png" sizes="16x16"
+  href="https://getaways.vacationvip.com/common/img/logos/vvip/favicon/favicon-16x16.avif">
+<link rel="shortcut icon" href="https://getaways.vacationvip.com/common/img/logos/vvip/favicon/favicon.ico">
+
+<link rel="mask-icon" href="https://getaways.vacationvip.com/common/img/logos/vvip/favicon/safari-pinned-tab.svg"
+  color="#1dadbd">
+  
   <style>
     :root {
       --tp-teal: #0d9488;
       --tp-teal-dark: #0f766e;
       --tp-text: #1f2937;
       --tp-muted: #6b7280;
-      --tp-help: #9a3412;
+      --tp-help: #8a6040;
       --tp-border: #e5e7eb;
       --tp-input-bg: #f9fafb;
     }
@@ -45,9 +58,12 @@
     .tp-bg::after {
       content: '';
       position: absolute; inset: 0;
-      background:
-        linear-gradient(115deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.62) 46%, rgba(13, 148, 136, 0.26) 100%),
-        rgba(15, 23, 42, 0.32);
+      background:linear-gradient(
+    180deg,
+    rgba(11, 29, 58, 0.15) 0%,
+    rgba(11, 29, 58, 0.55) 60%,
+    rgba(11, 29, 58, 0.92) 100%
+  );
       backdrop-filter: blur(1px);
     }
     .tp-bg--mobile { display: none; }
@@ -88,7 +104,7 @@
       text-shadow: 0 2px 24px rgba(0,0,0,0.35);
     }
     .tp-hero img.logo {
-      max-height: 54px;
+      max-height: 72px;
       margin-bottom: 1.75rem;
       filter: drop-shadow(0 10px 24px rgba(0,0,0,0.28));
     }
@@ -107,7 +123,7 @@
       .tp-hero p.lead { margin: 0 auto; }
     }
     .tp-card {
-      background: rgba(255,255,255,0.97);
+      background: rgba(240,242,245,0.96);
       border: 1px solid rgba(255,255,255,0.65);
       border-radius: 22px;
       padding: clamp(1.25rem, 3vw, 2rem);
@@ -120,12 +136,12 @@
       transform: translateY(-2px);
       box-shadow: 0 34px 92px rgba(0,0,0,0.38);
     }
-    .tp-card h2 { font-size: 1.18rem; margin: 0 0 0.55rem; line-height: 1.35; }
-    .tp-card .intro { color: var(--tp-muted); font-size: 0.94rem; margin: 0 0 1.35rem; }
+    .tp-card h2 { font-size: 1.18rem; margin: 0 0 0.55rem; line-height: 1.35; text-align: center; }
+    .tp-card .intro { color: var(--tp-muted); font-size: 0.94rem; margin: 0 0 1.35rem; text-align: center;}
     .tp-section-title {
       display: flex; align-items: center; gap: 0.75rem;
-      color: var(--tp-teal); font-weight: 700; font-size: 0.85rem;
-      letter-spacing: 0.04em; text-transform: uppercase; margin: 1.25rem 0 0.85rem;
+      color: #1a8a8a; font-weight: 700; font-size: 0.6875rem;
+      letter-spacing: 0.25rem; text-transform: uppercase; margin: 1.25rem 0 0.85rem;
     }
     .tp-section-title::after {
       content: ''; flex: 1; height: 1px; background: #d1d5db;
@@ -141,6 +157,9 @@
     @media (max-width: 640px) {
       .tp-row-3,
       .tp-row-2 { grid-template-columns: 1fr; }
+      .tp-wrap { padding-left: 0; padding-right: 0; padding-bottom: 0; gap: 5rem; }
+      .tp-hero { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .tp-card { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
     }
     label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: #374151; }
     input[type="text"], input[type="date"], select {
@@ -155,12 +174,40 @@
     /* Keep DOB control aligned inside the form grid (avoid right-column calendar overflow) */
     .tp-dob-field {
       width: 100%;
-      max-width: 280px;
+      min-width: 0;
+      max-width: 100%;
     }
+    .tp-dob-label { display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.35rem; }
+    .tp-dob-label label { margin-bottom: 0; }
+    .tp-dob-label .hint.tp-tooltip { margin-top: 0; line-height: 0; }
     .tp-dob-field input[type="date"] {
       width: 100%;
       max-width: 100%;
+      display: block;
+      min-width: 0;
+      box-sizing: border-box;
+      line-height: normal;
+      -webkit-appearance: none;
+      appearance: none;
       field-sizing: fixed;
+    }
+    /* iOS Safari: the date value is centered and its shadow wrapper has an intrinsic width */
+    .tp-dob-field input[type="date"]::-webkit-date-and-time-value {
+      text-align: left;
+      min-height: 1.15em;
+    }
+    .tp-dob-field input[type="date"]::-webkit-datetime-edit {
+      display: block;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      padding: 0;
+      line-height: normal;
+    }
+    .tp-dob-field input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+    .tp-dob-field input[type="date"]::-webkit-calendar-picker-indicator {
+      padding: 0;
+      margin: 0;
     }
     input[type="text"]:hover, input[type="date"]:hover, select:hover {
       background: #fff;
@@ -173,8 +220,48 @@
       box-shadow: 0 0 0 4px rgba(13,148,136,0.13);
       transform: translateY(-1px);
     }
-    .help { color: var(--tp-help); font-size: 0.75rem; margin-top: 0.35rem; }
+    .help { color: var(--tp-help); font-size: 0.75rem; margin-top: 0.35rem; font-style: italic; }
     .hint { color: var(--tp-muted); font-size: 0.75rem; margin-top: 0.25rem; }
+    .tp-tooltip { position: relative; display: inline-block; }
+    .tp-tooltip .tp-help-icon { margin-left: 0; cursor: help; }
+    .tp-tooltip__text {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 8px);
+      width: 260px;
+      max-width: calc(100vw - 2rem);
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #fff;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.25);
+      display: none;
+      z-index: 20;
+      pointer-events: none;
+    }
+    @keyframes tp-tooltip-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .tp-tooltip__text::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      right: 6px;
+      border: 6px solid transparent;
+      border-top-color: #0f172a;
+    }
+    @media (max-width: 640px) {
+      .tp-tooltip__text { right: auto; left: -1.25rem; width: 240px; }
+      .tp-tooltip__text::after { right: auto; left: calc(1.25rem + 2px); }
+    }
+    .tp-tooltip:hover .tp-tooltip__text,
+    .tp-tooltip:focus-within .tp-tooltip__text {
+      display: block;
+      animation: tp-tooltip-in 150ms ease;
+    }
     .tp-help-icon {
       display: inline-flex;
       align-items: center;
@@ -183,8 +270,8 @@
       height: 1rem;
       margin-left: 0.25rem;
       border-radius: 999px;
-      background: #dbeafe;
-      color: #2563eb;
+      background: #1a8a8a;
+      color: #fff;
       font-size: 0.7rem;
       font-weight: 800;
       vertical-align: middle;
@@ -251,6 +338,42 @@
       line-height: 1.45;
       text-align: center;
     }
+    .tp-success__icon { display: none; }
+    .tp-success__congrats {
+      display: block;
+      font-size: 1.15em;
+      line-height: 1.2;
+    }
+    .tp-success__call {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .tp-success__call-btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      border: 0;
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, var(--tp-teal), #14b8a6);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: center;
+      box-shadow: 0 14px 30px rgba(13,148,136,0.28);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .tp-success__call-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 34px rgba(13,148,136,0.34); color: #fff; }
+    .tp-success__hours {
+      margin: 0.9rem 0 0;
+      color: #0f172a;
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+    .tp-success__hours strong { font-weight: 700; }
     .tp-success__divider {
       height: 1px;
       background: #e5e7eb;
@@ -439,8 +562,8 @@
               <path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <h2>Your vacation profile is complete.</h2>
-          <p class="intro">We'll be in touch with next steps to schedule your stay.</p>
+          <h2><span class="tp-success__congrats">Congratulations!</span>Your vacation profile is complete.</h2>
+          <p class="intro">We'll be contacting you within the next 72 business hours or call our reservation center today to book your travel dates.</p>
           <div class="tp-success__divider"></div>
           <div class="tp-success__grid">
             <div class="tp-success__traveler">
@@ -485,6 +608,13 @@
           <div id="tp-success-continue-wrap" hidden style="margin-top:1.25rem;text-align:center;">
             <button type="button" class="tp-submit primary-btn" id="tp-success-continue">Continue</button>
           </div>
+          <div class="tp-success__call">
+            <a class="tp-success__call-btn" href="tel:8653023407">Call Now: 865-302-3407</a>
+            <p class="tp-success__hours">
+              <strong>Reservation Department Hours:</strong><br>
+              Monday&ndash;Friday, 10 AM &ndash; 4 PM ET
+            </p>
+          </div>
         </div>
 
         <div id="tp-form-view">
@@ -498,7 +628,7 @@
               data-offer-flow-stay-on-success
               onsubmit="return false;" novalidate>
           <div class="tp-section-title">Traveler 1</div>
-          <div class="tp-row tp-row-2">
+          <div class="tp-row tp-row-3">
             <div>
               <label for="t1_first_name">First Name</label>
               <input type="text" id="t1_first_name" name="t1_first_name" required placeholder="First name"
@@ -509,13 +639,10 @@
               <input type="text" id="t1_last_name" name="t1_last_name" required placeholder="Last name"
                      value="">
             </div>
-          </div>
-          <div class="tp-row tp-row-1">
             <div class="tp-dob-field">
-              <label for="t1_date_of_birth">Date of Birth</label>
+              <div class="tp-dob-label"><label for="t1_date_of_birth">Date of Birth</label><div class="hint tp-tooltip"><span class="tp-help-icon" tabindex="0" role="button" aria-label="Why we need this">?</span><span class="tp-tooltip__text" role="tooltip">Travel partners require this information to help with your bookings. This allows them to process your reservation faster and more efficiently.</span></div></div>
               <input type="date" id="t1_date_of_birth" name="t1_date_of_birth" required
                      value="">
-              <div class="hint"><span class="tp-help-icon">?</span> Travel partners require this information to help with your bookings. This allows them to process your reservation faster and more efficiently.</div>
             </div>
           </div>
           <div class="tp-row tp-row-1">
@@ -612,7 +739,7 @@
           </div>
 
           <div id="traveler2-fields" class="">
-            <div class="tp-row tp-row-2">
+            <div class="tp-row tp-row-3">
               <div>
                 <label for="t2_first_name">First Name</label>
                 <input type="text" id="t2_first_name" name="t2_first_name" placeholder="First name"
@@ -623,13 +750,10 @@
                 <input type="text" id="t2_last_name" name="t2_last_name" placeholder="Last name"
                        value="">
               </div>
-            </div>
-            <div class="tp-row tp-row-1">
               <div class="tp-dob-field">
-                <label for="t2_date_of_birth">Date of Birth</label>
+               <div class="tp-dob-label"><label for="t2_date_of_birth">Date of Birth</label><div class="hint tp-tooltip"><span class="tp-help-icon" tabindex="0" role="button" aria-label="Why we need this">?</span><span class="tp-tooltip__text" role="tooltip">Travel partners require this information to help with your bookings. This allows them to process your reservation faster and more efficiently.</span></div></div>
                 <input type="date" id="t2_date_of_birth" name="t2_date_of_birth"
                        value="">
-                <div class="hint"><span class="tp-help-icon">?</span> Travel partners require this information to help with your bookings. This allows them to process your reservation faster and more efficiently.</div>
               </div>
             </div>
             <div class="tp-row tp-row-1">

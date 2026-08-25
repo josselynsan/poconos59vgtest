@@ -191,12 +191,22 @@
     return String(key || "").trim().toLowerCase().replace(/-/g, "_");
   }
 
+  function upgradesDisplayList() {
+    try {
+      var flow = global.SWIFTLY_OFFER_FLOW || {};
+      var list = flow.upgradesDisplay || flow.upgrades_display || flow.upgrades_display_json || [];
+      return Array.isArray(list) ? list : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
   /** Dollars from SWIFTLY_OFFER_FLOW.upgradesDisplay → cents (fallback if missing). */
   FlowState.upgradeCents = function (key, fallbackCents) {
     var wanted = normalizeUpgradeKey(key);
     var aliases = UPGRADE_KEY_ALIASES[wanted] || [wanted];
     try {
-      var list = (global.SWIFTLY_OFFER_FLOW && global.SWIFTLY_OFFER_FLOW.upgradesDisplay) || [];
+      var list = upgradesDisplayList();
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
         if (!row) continue;
@@ -214,13 +224,12 @@
     return fallbackCents;
   };
 
-  // Apply admin Offer Upgrades data over catalog defaults (display + addUpsell fallback).
-  (function applyUpgradesDisplayToCatalog() {
+  /** Re-apply Offer Upgrades Data over catalog + stale localStorage upsell prices. */
+  FlowState.refreshUpgradePrices = function () {
     for (var i = 0; i < UPSELL_CATALOG.length; i++) {
       var item = UPSELL_CATALOG[i];
       item.priceCents = FlowState.upgradeCents(item.type, item.priceCents);
     }
-    // Refresh stale localStorage upsell prices so a prior $19 session doesn't stick.
     var ups = (FlowState.get().upsells || []);
     var dirty = false;
     for (var u = 0; u < ups.length; u++) {
@@ -231,7 +240,54 @@
       }
     }
     if (dirty) FlowState.save();
-  })();
+    return UPSELL_CATALOG;
+  };
+
+  /**
+   * Run cb once upgradesDisplay is available (or after a short wait / DOM ready).
+   * Prefer Offer Upgrades Data whenever it lands after the first paint.
+   */
+  FlowState.onUpgradesReady = function (cb) {
+    if (typeof cb !== "function") return;
+    var done = false;
+    function fire() {
+      if (done) return;
+      done = true;
+      try {
+        FlowState.refreshUpgradePrices();
+        cb(upgradesDisplayList());
+      } catch (e) {}
+    }
+    if (upgradesDisplayList().length) {
+      fire();
+      return;
+    }
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries += 1;
+      if (upgradesDisplayList().length || tries >= 40) {
+        clearInterval(timer);
+        fire();
+      }
+    }, 50);
+    if (global.document) {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+          if (upgradesDisplayList().length) {
+            clearInterval(timer);
+            fire();
+          }
+        });
+      }
+    }
+    global.addEventListener("swiftly:offer-flow-ready", function () {
+      clearInterval(timer);
+      fire();
+    });
+  };
+
+  // Apply immediately if SWIFTLY_OFFER_FLOW is already in <head>; re-check via onUpgradesReady later.
+  FlowState.refreshUpgradePrices();
 
   FlowState.upsellCatalog = UPSELL_CATALOG;
 
