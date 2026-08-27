@@ -27,6 +27,7 @@
     .sec-wrap { width: 100%; max-width: 900px; margin: 0 auto; }
 
     .sec-intro { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .sec-guest-name { font-size: 22px; font-weight: 800; color: var(--navy); line-height: 1.3; margin: 0; max-width: 720px; }
     .sec-h1 { font-size: 30px; font-weight: 400; color: var(--navy); line-height: 1.25; letter-spacing: -.01em; margin: 0; max-width: 720px; }
     .sec-h1 strong { font-weight: 800; }
     .sec-sub { font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; margin: 0; max-width: 580px; }
@@ -107,6 +108,7 @@
 
       <!-- Intro + primary CTA -->
       <div class="sec-intro">
+        <p class="sec-guest-name" id="guestName" hidden></p>
         <h1 class="sec-h1" id="secHeadline">Your Poconos vacation is secured.</h1>
         <div class="sec-notice" role="note">
           <div class="sec-notice__head">
@@ -133,14 +135,6 @@
           <span class="sec-sumhead__total">Total paid: <strong id="totalPaid">$59</strong></span>
         </div>
         <div class="ty-list">
-          <div class="ty-block">
-            <div class="ty-block__head"><i data-lucide="user-round" class="pf-i" aria-hidden="true"></i> Your details</div>
-            <div class="ty-lines">
-              <div class="ty-line"><i data-lucide="user" class="pf-i"></i><span class="k">Name:</span><span class="v" id="guestName">&mdash;</span></div>
-              <div class="ty-line"><i data-lucide="mail" class="pf-i"></i><span class="k">Email:</span><span class="v" id="guestEmail">&mdash;</span></div>
-            </div>
-          </div>
-
           <div class="ty-block">
             <div class="ty-block__head"><i data-lucide="luggage" class="pf-i" aria-hidden="true"></i> Vacation package</div>
             <div class="ty-lines">
@@ -230,16 +224,16 @@
     var pkgPrice = document.getElementById("pkgPrice");
     if (pkgPrice) pkgPrice.textContent = FlowState.money(s.priceCents);
 
-    // Lead capture — Name + Email from customers.* (Offer Flow prefill), then FlowState.
+    // Guest full name above headline — Offer Flow prefill / FlowState.
     var g = s.guest || {};
     var first = prefill.fname || prefill.firstName || prefill.first_name || g.firstName || "";
     var last = prefill.lname || prefill.lastName || prefill.last_name || g.lastName || "";
-    var email = prefill.email || g.email || "";
     var fullName = (String(first) + " " + String(last)).trim();
-    var guestName = document.getElementById("guestName");
-    if (guestName) guestName.textContent = fullName || "\u2014";
-    var guestEmail = document.getElementById("guestEmail");
-    if (guestEmail) guestEmail.textContent = email || "\u2014";
+    var guestNameEl = document.getElementById("guestName");
+    if (guestNameEl && fullName) {
+      guestNameEl.textContent = fullName;
+      guestNameEl.hidden = false;
+    }
 
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
