@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Bonus Vacation Offer | Poconos Getaway Checkout</title>
+  <title>Dining Certificate Offer | Poconos Getaway Checkout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -23,11 +23,11 @@
     .tk-desc strong { color: var(--coral); }
     .tk-save { font-size: 20px; font-weight: 800; color: var(--ink); margin: 0 0 16px; }
 
-    /* Bonus-vacation intro + destination gallery */
+    /* Dining Certificate intro + restaurant gallery */
     .dest-intro { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 24px; }
     .dest-intro strong { color: var(--ink); }
     .dest-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .dest-tile { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; }
+    .dest-tile { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #1a2f3d; }
     .dest-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .dest-tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.8)); }
     .dest-tile__label { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 1; text-align: center; color: #fff; font-weight: 800; font-size: 18px; letter-spacing: .03em; text-transform: uppercase; padding: 0 8px; }
@@ -75,7 +75,6 @@
     .tp-reason a { color: #0037eb; text-decoration: underline; }
     .tp-continue { align-self: flex-start; width: auto; padding-left: 44px; padding-right: 44px; }
     .tp-continue:disabled { background: #b2b2b2; cursor: not-allowed; box-shadow: none; }
-
     @media (max-width: 560px) {
       /* Stack the label and price, but render the price as a clean inline line
          (not a floating chip) so it doesn't look detached / "hanging". */
@@ -135,7 +134,7 @@
     }
   </style>
 </head>
-<body class="step-page" data-swiftly-step="bonus-vacation">
+<body class="step-page" data-swiftly-step="dining-certificate">
 
   <header class="pf-navbar">
     <img class="pf-navbar__logo" src="assets/images/vacationvip-color.png" alt="VacationVIP">
@@ -146,23 +145,20 @@
       <!-- LEFT: OFFER (mirrors step 4 module) -->
       <section class="pf-card">
         <div class="pf-card__pad">
-          <h1 class="tk-headline">A Bonus 4-Night Getaway for only <span id="extendPrice">—</span></h1>
-          <p class="dest-intro">Enjoy 4 nights in your choice of 40 exciting destinations such as Cancun, Orlando, Vegas, Caribbean and more! This exclusive offer provides quality lodging for just <span id="bonusCopyPrice">—</span>. <strong>You won&rsquo;t find this deal available to the public!</strong></p>
+          <h1 class="tk-headline">Upgrade Your Stay with $100 Dining Certificate &mdash; only <span id="diningPrice">$18.00</span>!</h1>
+          <p class="dest-intro">Get $100 in restaurant savings for just $18.00. Enjoy delicious meals at over 18,000 top restaurants nationwide, as well as select online gourmet shops. <strong>Grab yours today and upgrade your dining experience during your stay!</strong></p>
 
           <div class="dest-gallery">
-            <div class="dest-tile"><img src="assets/images/dest-canada.webp" alt="Canada" loading="lazy"><span class="dest-tile__label">Canada</span></div>
-            <div class="dest-tile"><img src="assets/images/dest-mexican-riviera.webp" alt="Mexican Riviera" loading="lazy"><span class="dest-tile__label">Mexican Riviera</span></div>
-            <div class="dest-tile"><img src="assets/images/dest-orlando.webp" alt="Orlando" loading="lazy"><span class="dest-tile__label">Orlando</span></div>
-            <div class="dest-tile"><img src="assets/images/dest-caribbean.webp" alt="Caribbean" loading="lazy"><span class="dest-tile__label">Caribbean</span></div>
+            <div class="dest-tile"><img src="assets/images/dining-local-favorites.webp" alt="Italian and pizzeria" loading="lazy"><span class="dest-tile__label">Local favorites</span></div>
+            <div class="dest-tile"><img src="assets/images/dining-sit-down.webp" alt="Seafood and steak" loading="lazy"><span class="dest-tile__label">Sit-down dining</span></div>
+            <div class="dest-tile"><img src="assets/images/dining-casual-upscale.webp" alt="Asian and sushi" loading="lazy"><span class="dest-tile__label">Casual and upscale</span></div>
+            <div class="dest-tile"><img src="assets/images/dining-gourmet-shops.webp" alt="Cafes and desserts" loading="lazy"><span class="dest-tile__label">Plus gourmet shops</span></div>
           </div>
 
-          <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="bonus-vacation" onsubmit="return false;">
+          <form class="pf-actionbar" id="upgradeForm" method="post" action="javascript:void(0);" data-step-slug="dining-certificate" onsubmit="return false;">
             <input type="hidden" name="travel_protection_two" id="travel_protection_two" value="">
-            <input type="hidden" name="bonus_vacation" id="bonus_vacation" value="">
-            <!-- Charged by auth_incremental: FieldMapper prefers front amount over merchant input_default -->
-            <input type="hidden" name="amount" id="amount" value="">
-            <input type="hidden" name="total" id="total" value="">
-            <button type="button" class="pf-btn cont" id="addBtn">Add Vacation</button>
+            <input type="hidden" name="dining_certificate" id="dining_certificate" value="">
+            <button type="button" class="pf-btn cont" id="addBtn">ADD DINING CERTIFICATE &middot; $18.00</button>
             <button type="button" class="pf-btn pf-btn--ghost skip" id="skipBtn">No thanks</button>
           </form>
         </div>
@@ -189,8 +185,7 @@
 
             <div class="up-list">
               <div class="row"><span class="k"><i data-lucide="badge-check" class="pf-i"></i>Confirmation #</span><span class="v" id="sumConf">&mdash;</span></div>
-              <!-- <div class="row"><span class="k"><i data-lucide="users" class="pf-i"></i>Guests</span><span class="v" id="sumGuests">2 Adults, 2 Children</span></div>
-              <div class="row"><span class="k"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in</span><span class="v" id="sumCheckIn">&mdash;</span></div>
+              <!-- <div class="row"><span class="k"><i data-lucide="calendar-check" class="pf-i"></i>Preferred check-in</span><span class="v" id="sumCheckIn">&mdash;</span></div>
               <div class="row"><span class="k"><i data-lucide="calendar-x" class="pf-i"></i>Preferred check-out</span><span class="v" id="sumCheckOut">&mdash;</span></div> -->
               <div class="row"><span class="k"><i data-lucide="banknote" class="pf-i"></i>Booking Fee</span><span class="v">$0</span></div>
               <div class="row"><span class="k"><i data-lucide="package" class="pf-i"></i>Package Price</span><span class="v" id="sumPkg">$59</span></div>
@@ -230,12 +225,12 @@
             <p class="tp-reasons__title">3 Reasons You Might Need Travel Protection:</p>
             <div class="tp-reason"><i data-lucide="clock" class="pf-i"></i><p><strong>Travel Delay:</strong> Unexpected delays can lead to missed hotel nights and extra costs.</p></div>
             <div class="tp-reason"><i data-lucide="calendar-x" class="pf-i"></i><p><strong>Trip Adjustments:</strong> An unforeseen event and travel dates need to be adjusted.</p></div>
-            <div class="tp-reason"><i data-lucide="circle-x" class="pf-i"></i><p><strong>Trip Cancellations:</strong> Illness, job loss, or family emergencies can lead to non-refundable trip costs.</p></div>
+            <div class="tp-reason"><i data-lucide="circle-x" class="pf-i"></i><p><strong>Trip Cancellations:</strong> Illness, job loss, or family emergencies can lead to non-refundable trip costs. Read <a href="/checkout/tc">Terms and Conditions</a>.</p></div>
           </div>
         </div>
 
         <div class="tp-opt tp-opt--no" id="tpOptNo">
-          <span class="tp-opt__lead"><input type="radio" name="tp" id="tpNo" value="no"><span class="tp-opt__label">No, I&rsquo;m willing to risk my vacation valued at <span id="tpRetail">$748</span>.</span></span>
+          <span class="tp-opt__lead"><input type="radio" name="tp" id="tpNo" value="no"><span class="tp-opt__label">No, I&rsquo;m willing to risk my vacation valued at <span id="tpRetail">$1,079</span>.</span></span>
         </div>
 
         <button type="button" class="pf-btn tp-continue" id="tpContinue" disabled>Continue</button>
@@ -243,7 +238,7 @@
     </div>
   </div>
 
-  <!-- Retention modal ("wonder why not?") shown when declining the bonus vacation -->
+  <!-- Retention modal ("wonder why not?") shown when declining Dining Certificate -->
   <div class="pf-modal" id="retainModal" role="dialog" aria-modal="true" aria-labelledby="retainTitle" aria-hidden="true">
     <div class="pf-modal__card">
       <button type="button" class="pf-modal__close" id="retainClose" aria-label="Close">&times;</button>
@@ -252,11 +247,11 @@
         <h2 class="pf-modal__title" id="retainTitle">Wait! Are You Sure?</h2>
       </div>
       <div class="pf-modal__body">
-        <p>You&rsquo;ve secured an amazing Poconos getaway&mdash;but why stop there? Add a <strong>bonus 4-night vacation</strong> in your choice of 40 top destinations for just <strong id="retainPrice">—</strong>. You won&rsquo;t find this deal available to the public!</p>
-        <p><strong>So, do you want to add your bonus vacation?</strong></p>
+        <p>You&rsquo;ve secured an amazing Poconos getaway&mdash;but why stop there? Upgrade your stay with <strong>$100 Dining Certificate</strong> for just <strong id="retainPrice">$18.00</strong>. Enjoy delicious meals at over 18,000 top restaurants nationwide!</p>
+        <p><strong>So, do you want to add a Dining Certificate?</strong></p>
       </div>
       <div class="pf-modal__actions">
-        <button type="button" class="pf-btn" id="retainYes">Yes, Add My Vacation</button>
+        <button type="button" class="pf-btn" id="retainYes">Yes, Add Dining Certificate</button>
         <button type="button" class="pf-btn pf-btn--ghost" id="retainNo">Skip</button>
       </div>
     </div>
@@ -275,19 +270,21 @@
   </footer>
 
   <script src="assets/libs/lucide/lucide.min.js"></script>
-  <script src="assets/js/flow-state.js?v=20260824upgready"></script>
-  <script src="/flow/steps/assets/js/legal-modal.js?v=20260806modal2"></script>
+  <script src="assets/js/flow-state.js?v=20260824diningcert"></script>
+  <script src="assets/js/legal-modal.js?v=20260824d"></script>
   <script>
   (function () {
     var TP_DECISION_KEY = "swiftly_tp_decision";
-
-    function swiftlyHasOfferFlowSession() {
-      try {
-        if (new URLSearchParams(window.location.search).get("session_token")) return true;
-        if (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.sessionToken) return true;
-      } catch (e) {}
-      return false;
-    }
+    var DINING_CENTS = FlowState.upgradeCents("dining_certificate", 1800);
+    var TP_CENTS = FlowState.upgradeCents("travel_protection", 2499);
+    var UPSELL_TYPE = "dining_certificate";
+    var s = FlowState.get();
+    var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
+    var ofSession = (FlowState.hasOfferFlowSession && FlowState.hasOfferFlowSession()) || false;
+    var paymentMode = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradePaymentMode) === "dual"
+      ? "dual"
+      : "single";
+    var form = document.getElementById("upgradeForm");
 
     function storageKey(key) {
       var offerId = "";
@@ -308,65 +305,27 @@
       try { sessionStorage.setItem(storageKey(key), value); } catch (e) {}
     }
 
-    function resolvePaymentMode() {
-      var configured = window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.upgradePaymentMode;
-      return configured === "dual" ? "dual" : "single";
-    }
-
-    function setStepSlug(formEl, slug) {
-      formEl.setAttribute("data-step-slug", slug);
-      var body = document.body;
-      if (body) body.setAttribute("data-swiftly-step", slug);
-      var hidden = formEl.querySelector('input[name="stepSlug"]');
-      if (!hidden) {
-        hidden = document.createElement("input");
-        hidden.type = "hidden";
-        hidden.name = "stepSlug";
-        formEl.appendChild(hidden);
-      }
-      hidden.value = slug;
-    }
-
-    function bonusCents() {
-      return (window.FlowState && FlowState.upgradeCents)
-        ? FlowState.upgradeCents("bonus_vacation", 4900)
-        : 4900;
-    }
-    function tpCents() {
-      return (window.FlowState && FlowState.upgradeCents)
-        ? FlowState.upgradeCents("travel_protection", 2499)
-        : 2499;
-    }
-    var BONUS_CENTS = bonusCents();
-    var TP_CENTS = tpCents();
-    var ofSession = swiftlyHasOfferFlowSession();
-    var paymentMode = resolvePaymentMode();
-    var s = FlowState.get();
-    var form = document.getElementById("upgradeForm");
-
-    var prefill = (window.SWIFTLY_OFFER_FLOW && window.SWIFTLY_OFFER_FLOW.prefill) || {};
     var confNo = prefill.confirmation_number || prefill.confirmationNumber || prefill.payment_transaction_id || s.confirmationNo;
     if (!confNo && !ofSession) {
       confNo = "MV" + Math.floor(100000 + Math.random() * 899999);
       s = FlowState.set({ confirmationNo: confNo });
     }
 
-    function dollarsFromCents(cents) {
-      return (Math.round(cents) / 100).toFixed(2);
-    }
-    function setText(id, text) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = text;
-    }
-
-    var sumName = document.getElementById("sumName");
-    if (sumName) sumName.innerHTML = s.resortName;
-    setText("sumConf", confNo || "\u2014");
-    setText("sumGuests", prefill.guestsLabel || s.guestsLabel);
-    setText("sumPkg", FlowState.money(s.priceCents));
+    document.getElementById("diningPrice").textContent = FlowState.money(DINING_CENTS);
+    document.getElementById("addBtn").textContent = "ADD DINING CERTIFICATE \u00b7 " + FlowState.money(DINING_CENTS);
+    document.getElementById("sumName").innerHTML = s.resortName;
+    document.getElementById("sumConf").textContent = confNo || "\u2014";
+    document.getElementById("sumPkg").textContent = FlowState.money(s.priceCents);
+    var sumReviews = document.getElementById("sumReviews");
+    if (sumReviews) sumReviews.textContent = (s.ratingReviews || 0).toLocaleString("en-US");
+    document.getElementById("retainPrice").textContent = FlowState.money(DINING_CENTS);
+    var tpPrice = document.getElementById("tpPrice");
+    if (tpPrice) tpPrice.textContent = FlowState.money(TP_CENTS);
+    var tpPriceCopy = document.getElementById("tpPriceCopy");
+    if (tpPriceCopy) tpPriceCopy.textContent = FlowState.money(TP_CENTS);
+    document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 107900);
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
-    // Parse "YYYY-MM-DD" as a LOCAL date so UTC-x timezones don't shift a day back.
     var fmt = function (t) {
       if (!t) return "\u2014";
       var d;
@@ -378,138 +337,89 @@
       }
       return isNaN(d.getTime()) ? "\u2014" : d.toLocaleDateString("en-US", { year: "numeric", month: "numeric", day: "numeric" });
     };
-    var checkIn = prefill.travel_start_date || s.dates.checkIn;
-    var checkOut = prefill.travel_end_date || s.dates.checkOut;
-    setText("sumCheckIn", fmt(checkIn));
-    setText("sumCheckOut", fmt(checkOut));
+    // Estos nodos estan ocultos en Poconos: se escriben solo si existen, para que
+    // comentarlos en el markup no aborte el resto del script.
+    var elCheckIn = document.getElementById("sumCheckIn");
+    if (elCheckIn) elCheckIn.textContent = fmt(prefill.travel_start_date || s.dates.checkIn);
+    var elCheckOut = document.getElementById("sumCheckOut");
+    if (elCheckOut) elCheckOut.textContent = fmt(prefill.travel_end_date || s.dates.checkOut);
 
-    function hasBonus() { return !!FlowState.findUpsell("bonus_vacation"); }
+    function hasDining() { return !!FlowState.findUpsell(UPSELL_TYPE); }
     function hasTP() { return !!FlowState.findUpsell("travel_protection"); }
-    function updateTotals() { setText("sumTotal", FlowState.money(FlowState.totalCents())); }
+    function updateTotals() { document.getElementById("sumTotal").textContent = FlowState.money(FlowState.totalCents()); }
     var CART_OPTS = { editable: false };
-
-    // Keep the visual Upgrades cart in sync in BOTH modes (static preview and
-    // Offer Flow session). The charge itself is still driven by the hidden
-    // fields posted to the flow; this only feeds the summary UI.
-    function syncUpsellUi(type, on, cents) {
-      if (on) {
+    function syncUpsellUi(type, add, cents) {
+      if (add) {
         if (!FlowState.findUpsell(type)) FlowState.addUpsell(type, 1, cents);
       } else if (FlowState.findUpsell(type)) {
         FlowState.removeUpsell(type);
       }
       FlowState.markDecided(type);
-      if (window.PFUpsells) PFUpsells.render("upgradeList", CART_OPTS);
+      PFUpsells.render("upgradeList", CART_OPTS);
       updateTotals();
     }
-
-    function fillChargeFields(dollarsOrEmpty) {
-      var dollars = dollarsOrEmpty == null ? "" : String(dollarsOrEmpty);
-      if (form.elements.amount) form.elements.amount.value = dollars;
-      if (form.elements.total) form.elements.total.value = dollars;
-      return form;
-    }
-
-    function paintPrices() {
-      if (FlowState.refreshUpgradePrices) FlowState.refreshUpgradePrices();
-      BONUS_CENTS = bonusCents();
-      TP_CENTS = tpCents();
-      document.getElementById("extendPrice").textContent = FlowState.money(BONUS_CENTS);
-      document.getElementById("addBtn").textContent = "Add Vacation \u00b7 " + FlowState.money(BONUS_CENTS);
-      var bonusCopyPrice = document.getElementById("bonusCopyPrice");
-      if (bonusCopyPrice) bonusCopyPrice.textContent = FlowState.money(BONUS_CENTS);
-      var tpPrice = document.getElementById("tpPrice");
-      if (tpPrice) tpPrice.textContent = FlowState.money(TP_CENTS);
-      var tpPriceCopy = document.getElementById("tpPriceCopy");
-      if (tpPriceCopy) tpPriceCopy.textContent = FlowState.money(TP_CENTS);
-      document.getElementById("retainPrice").textContent = FlowState.money(BONUS_CENTS);
-      if (window.PFUpsells) PFUpsells.render("upgradeList", CART_OPTS);
-      updateTotals();
-    }
-
-    paintPrices();
-    if (FlowState.onUpgradesReady) FlowState.onUpgradesReady(paintPrices);
-
-    if (window.PFUpsells) { PFUpsells.render("upgradeList", CART_OPTS); }
+    PFUpsells.render("upgradeList", CART_OPTS);
     updateTotals();
 
+    function goNext() {
+      window.location.href = "confirmation-upgrade.html" + window.location.search;
+    }
+
+    function setStepSlug(el, slug) {
+      if (!el) return;
+      el.setAttribute("data-step-slug", slug);
+      if (document.body) document.body.setAttribute("data-swiftly-step", slug);
+    }
+
     function tpDecisionFromSources() {
-      var fromPrefill = String(
-        prefill.travel_protection_two || prefill.travel_protection || ""
-      ).trim();
+      var fromPrefill = String(prefill.travel_protection_two || prefill.travel_protection || "").trim();
       if (/^(yes|no)$/i.test(fromPrefill)) return fromPrefill.charAt(0).toUpperCase() + fromPrefill.slice(1).toLowerCase();
       var fromStore = String(readStored(TP_DECISION_KEY) || "").trim();
       if (/^(yes|no)$/i.test(fromStore)) return fromStore.charAt(0).toUpperCase() + fromStore.slice(1).toLowerCase();
       if (!ofSession && s.tpDecision === "yes") return "Yes";
       if (!ofSession && s.tpDecision === "no") return "No";
-      var hiddenVal = String(form.elements.travel_protection_two.value || "").trim();
+      var hiddenVal = form && form.elements.travel_protection_two
+        ? String(form.elements.travel_protection_two.value || "").trim()
+        : "";
       if (/^(yes|no)$/i.test(hiddenVal)) return hiddenVal.charAt(0).toUpperCase() + hiddenVal.slice(1).toLowerCase();
       return "";
     }
 
-    function submitUpgrade(bonusValue) {
-      form.elements.bonus_vacation.value = bonusValue;
-      if (!form.elements.travel_protection_two.value) {
+    function submitDining(value) {
+      if (form && form.elements.dining_certificate) form.elements.dining_certificate.value = value;
+      if (form && form.elements.travel_protection_two && !form.elements.travel_protection_two.value) {
         form.elements.travel_protection_two.value = tpDecisionFromSources() || "No";
       }
-      setStepSlug(form, "bonus-vacation");
-      fillChargeFields(bonusValue === "Yes" ? dollarsFromCents(BONUS_CENTS) : "");
-      var addedBonus = bonusValue === "Yes" && !hasBonus();
-      syncUpsellUi("bonus_vacation", bonusValue === "Yes", BONUS_CENTS);
-      if (addedBonus && window.PFToast) PFToast("Bonus vacation added!");
-      if (ofSession) {
-        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
-          window.SwiftlyOfferFlow.submitForm(form);
-        }
+      setStepSlug(form, "dining-certificate");
+      var added = value === "Yes" && !hasDining();
+      syncUpsellUi(UPSELL_TYPE, value === "Yes", DINING_CENTS);
+      if (added && window.PFToast) PFToast("Dining Certificate added!");
+      if (ofSession && window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
+        window.SwiftlyOfferFlow.submitForm(form);
         return;
       }
-      console.log("[static-front] bonus-vacation submit mocked", {
-        mode: paymentMode,
-        bonus_vacation: form.elements.bonus_vacation.value,
-        travel_protection_two: form.elements.travel_protection_two.value,
-        amount: form.elements.amount && form.elements.amount.value
-      });
-      setTimeout(function () {
-        window.location.href = "dining-certificate.html" + window.location.search;
-      }, bonusValue === "Yes" ? 900 : 200);
-    }
-
-    function submitTravelProtection(tpValue) {
-      form.elements.travel_protection_two.value = tpValue;
-      form.elements.bonus_vacation.value = "";
-      writeStored(TP_DECISION_KEY, tpValue);
-      setStepSlug(form, "travel-protection-two");
-      fillChargeFields(tpValue === "Yes" ? dollarsFromCents(TP_CENTS) : "");
-      var addedTp = tpValue === "Yes" && !hasTP();
-      syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
-      FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
-      if (addedTp && window.PFToast) PFToast("Travel Protection added!");
-      if (ofSession) {
-        if (window.SwiftlyOfferFlow && typeof window.SwiftlyOfferFlow.submitForm === "function") {
-          window.SwiftlyOfferFlow.submitForm(form);
-        }
-        return;
-      }
-      closeTP();
+      console.log("[static-front] dining-certificate submit mocked", { dining_certificate: value });
+      setTimeout(goNext, value === "Yes" ? 900 : 200);
     }
 
     var modal = document.getElementById("retainModal");
     function openModal() { modal.classList.add("is-open"); modal.setAttribute("aria-hidden", "false"); }
     function closeModal() { modal.classList.remove("is-open"); modal.setAttribute("aria-hidden", "true"); }
 
-    document.getElementById("addBtn").addEventListener("click", function () { submitUpgrade("Yes"); });
+    document.getElementById("addBtn").addEventListener("click", function () { submitDining("Yes"); });
     document.getElementById("skipBtn").addEventListener("click", openModal);
-    document.getElementById("retainYes").addEventListener("click", function () { closeModal(); submitUpgrade("Yes"); });
-    document.getElementById("retainNo").addEventListener("click", function () { closeModal(); submitUpgrade("No"); });
+    document.getElementById("retainYes").addEventListener("click", function () { closeModal(); submitDining("Yes"); });
+    document.getElementById("retainNo").addEventListener("click", function () { closeModal(); submitDining("No"); });
     document.getElementById("retainClose").addEventListener("click", closeModal);
     modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
 
+    // ----- Travel Protection modal (opens on entry; moved from bonus-vacation) -----
     var tpModal = document.getElementById("tpModal");
     var tpContinue = document.getElementById("tpContinue");
     var tpYes = document.getElementById("tpYes");
     var tpNo = document.getElementById("tpNo");
     var tpOptYes = document.getElementById("tpOptYes");
     var tpOptNo = document.getElementById("tpOptNo");
-    document.getElementById("tpRetail").textContent = FlowState.money(s.retailCents || 74800);
 
     function tpSelect() {
       tpOptYes.classList.toggle("is-selected", tpYes.checked);
@@ -538,19 +448,10 @@
       var tpValue = tpYes.checked ? "Yes" : "No";
       form.elements.travel_protection_two.value = tpValue;
       writeStored(TP_DECISION_KEY, tpValue);
-
-      if (paymentMode === "dual") {
-        // First payment step: charge or skip TP, then Offer Flow navigates to bonus-vacation
-        submitTravelProtection(tpValue);
-        return;
-      }
-
-      // single (default): preference only; charge happens on bonus submit.
-      // The visual cart updates in both modes so the shopper sees the add-on.
-      var addedTpSingle = tpValue === "Yes" && !hasTP();
+      var addedTp = tpValue === "Yes" && !hasTP();
       syncUpsellUi("travel_protection", tpValue === "Yes", TP_CENTS);
       FlowState.set({ tpDecision: tpValue === "Yes" ? "yes" : "no" });
-      if (addedTpSingle && window.PFToast) PFToast("Travel Protection added!");
+      if (addedTp && window.PFToast) PFToast("Travel Protection added!");
       closeTP();
     });
 
@@ -568,9 +469,12 @@
       else if (s.tpDecision === "no") { tpNo.checked = true; tpSelect(); }
     }
 
-    // Source UX (04-bonus): TP was already offered on Extend Stay. Only reopen
-    // the modal here if the guest somehow arrived without a decision yet.
-    if (existingTp) {
+    // En Poconos la ventana de TP la abre bonus-vacation (paso anterior), asi que
+    // aca NO se vuelve a forzar: solo se abre como red de seguridad si el huesped
+    // llego sin decision registrada. Evita preguntar Travel Protection dos veces.
+    if (existingTp || (paymentMode === "dual" && existingTp)) {
+      closeTP();
+    } else if (!ofSession && (hasTP() || s.tpDecision === "no")) {
       closeTP();
     } else {
       openTP();

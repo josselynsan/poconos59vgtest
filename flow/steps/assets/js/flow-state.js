@@ -16,7 +16,7 @@
   // --- Baked-in defaults (the Pigeon Forge / Smoky Mountains package) -----------
   var DEFAULTS = {
     packageId: "vg-pigeonforge-4-3-59",
-    resortName: "Country Inn & Suites by Radisson",
+    resortName: "Pocono Mountain Villas",
     stayLabel: "4-Days / 3-Nights",
     roomLabel: "Spacious Room",
     retailCents: 107900, // $1,079
@@ -177,14 +177,16 @@
   var UPSELL_CATALOG = [
     { type: "travel_protection", label: "Travel protection", icon: "shield-check", priceCents: 2499, perQty: false },
     { type: "extend_stay", label: "Extend stay", icon: "plane", priceCents: 1900, perQty: false },
-    { type: "bonus_vacation", label: "Bonus vacation", icon: "palmtree", priceCents: 4900, perQty: false }
+    { type: "bonus_vacation", label: "Bonus vacation", icon: "palmtree", priceCents: 4900, perQty: false },
+    { type: "dining_certificate", label: "Dining Certificate", icon: "utensils", priceCents: 1800, perQty: false }
   ];
 
   // Alias keys that may appear in offers.upgrades_display_json.
   var UPGRADE_KEY_ALIASES = {
     travel_protection: ["travel_protection", "travel-protection", "travel_protection_two", "travel-protection-two"],
     extend_stay: ["extend_stay", "extend-stay", "extend_your_stay", "extend-your-stay"],
-    bonus_vacation: ["bonus_vacation", "bonus-vacation"]
+    bonus_vacation: ["bonus_vacation", "bonus-vacation"],
+    dining_certificate: ["dining_certificate", "dining-certificate", "dining_dough", "dining-dough", "dining_dough_offer"]
   };
 
   function normalizeUpgradeKey(key) {

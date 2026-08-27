@@ -651,6 +651,32 @@
     });
   })();
   </script>
+  <!-- ---- Address autocomplete (Google Places) --------------------------
+       Aditivo: sin key, con maps.googleapis.com bloqueado o si la API falla,
+       el campo sigue siendo un input de texto normal y el form envia igual.
+       Nada del submit depende de haber elegido una sugerencia. -->
+  <script>
+  window.pfAddressAutocomplete = {
+    offerCountry: "US",
+    language: "en",
+    region: "us",
+    minChars: 3,
+    primaryTypes: ["street_address", "premise", "subpremise", "route"]
+  };
+  </script>
+  <script src="assets/js/maps-config.js?v=20260825maps"></script>
+  <script src="assets/js/address-autocomplete.js?v=20260825ac"></script>
+  <script>
+  (function () {
+    var key = (window.pfMapsConfig && window.pfMapsConfig.apiKey) || "";
+    if (!key) return;
+    var s = document.createElement("script");
+    s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(key)
+      + "&libraries=places&v=weekly&loading=async&callback=pfInitAddressAutocomplete";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+  </script>
   <script>lucide.createIcons();</script>
   <script src="/js/swiftly-offer-flow.js?v=20260805shift4payhide" defer></script>
 </body>

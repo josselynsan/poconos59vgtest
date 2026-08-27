@@ -134,6 +134,14 @@
         </div>
         <div class="ty-list">
           <div class="ty-block">
+            <div class="ty-block__head"><i data-lucide="user-round" class="pf-i" aria-hidden="true"></i> Your details</div>
+            <div class="ty-lines">
+              <div class="ty-line"><i data-lucide="user" class="pf-i"></i><span class="k">Name:</span><span class="v" id="guestName">&mdash;</span></div>
+              <div class="ty-line"><i data-lucide="mail" class="pf-i"></i><span class="k">Email:</span><span class="v" id="guestEmail">&mdash;</span></div>
+            </div>
+          </div>
+
+          <div class="ty-block">
             <div class="ty-block__head"><i data-lucide="luggage" class="pf-i" aria-hidden="true"></i> Vacation package</div>
             <div class="ty-lines">
               <div class="ty-line"><i data-lucide="clipboard-check" class="pf-i"></i><span class="k">Receipt #</span><span class="v" id="receiptNo">&mdash;</span></div>
@@ -221,6 +229,17 @@
     }
     var pkgPrice = document.getElementById("pkgPrice");
     if (pkgPrice) pkgPrice.textContent = FlowState.money(s.priceCents);
+
+    // Lead capture — Name + Email from customers.* (Offer Flow prefill), then FlowState.
+    var g = s.guest || {};
+    var first = prefill.fname || prefill.firstName || prefill.first_name || g.firstName || "";
+    var last = prefill.lname || prefill.lastName || prefill.last_name || g.lastName || "";
+    var email = prefill.email || g.email || "";
+    var fullName = (String(first) + " " + String(last)).trim();
+    var guestName = document.getElementById("guestName");
+    if (guestName) guestName.textContent = fullName || "\u2014";
+    var guestEmail = document.getElementById("guestEmail");
+    if (guestEmail) guestEmail.textContent = email || "\u2014";
 
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
